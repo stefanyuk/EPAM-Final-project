@@ -1,0 +1,10 @@
+insert into department (id, name, description) values ('7c0890ff-4a18-454e-9abc-0843e65ae356', 'Python', 'augue aliquam erat volutpat in congue etiam justo etiam pretium iaculis justo in hac habitasse platea dictumst etiam');
+insert into department (id, name, description) values ('beed0106-7e25-4979-8d32-347119c72eda', 'Marketing', 'montes nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum');
+insert into department (id, name, description) values ('5b10ce29-6881-4cd9-b785-c3606e73b61b', 'Product Management', 'sollicitudin mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non quam nec');
+insert into department (id, name, description) values ('758f5b04-54b0-4b79-b7a4-57e7a3e6c482', 'Java', 'nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante');
+insert into department (id, name, description) values ('23fbb0ef-bfad-49ce-8f80-5c3b6d3c6564', 'Go', 'rhoncus sed vestibulum sit amet cursus id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue vel');
+insert into department (id, name, description) values ('52f63258-1fcf-43bd-9f6d-73f4f072a4f1', 'Research and Development', 'mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non quam nec');
+insert into department (id, name, description) values ('a1136e65-2176-4dc3-9449-583d22bd2b14', 'Engineering', 'nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec');
+insert into department (id, name, description) values ('20ef3ef1-1789-4075-b2ef-d1603f8a2ea4', 'C++', 'justo nec condimentum neque sapien placerat ante nulla justo aliquam quis turpis eget elit sodales');
+insert into department (id, name, description) values ('56fe0038-dd48-49e8-b569-57629b210b54', 'Training', 'magnis dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean auctor gravida sem praesent');
+insert into department (id, name, description) values ('1a077688-eb15-464d-9c36-9d2c7c4f8dd3', 'Legal', 'sapien a libero nam dui proin leo odio porttitor id consequat in consequat ut nulla sed accumsan');
