@@ -87,9 +87,9 @@ def update_department(department_id, **kwargs):
     """
     department = get_row_by_id(Department, department_id)
 
-    for field in kwargs:
-        if kwargs[field]:
-            setattr(department, field, kwargs[field])
+    for key, value in kwargs.items():
+        if value:
+            setattr(department, key, value)
 
     db.session.commit()
 

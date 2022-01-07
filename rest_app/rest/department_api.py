@@ -3,7 +3,7 @@ from flask import jsonify
 from flask_restful import Resource
 from rest_app.service.department_service import *
 from rest_app.service.common_services import *
-from rest_app.error_services.error_messages import error_department_not_found
+from rest_app.errors.error_messages import record_not_found_by_id_error
 from rest_app.models import Department
 from rest_app.rest.auth import auth
 
@@ -32,14 +32,6 @@ class DepartmentsAPI(Resource):
 
         return {'message': f'department with id - {new_dept_id} - has been created'}, 201
 
-    def delete(self):
-        """
-        Deletes all departments from the database
-        """
-        delete_all_rows_from_db(Department)
-
-        return {'message': 'all departments were deleted from the database'}
-
 
 class DepartmentAPI(Resource):
     """
@@ -56,7 +48,7 @@ class DepartmentAPI(Resource):
         try:
             department = get_row_by_id(Department, department_id)
         except exc.NoResultFound:
-            return error_department_not_found, 404
+            return record_not_found_by_id_error('department'), 404
 
         return department_data_to_dict(department)
 
@@ -66,14 +58,11 @@ class DepartmentAPI(Resource):
         try:
             update_department(department_id, **args)
         except exc.NoResultFound:
-            return error_department_not_found, 404
+            return record_not_found_by_id_error('department'), 404
 
-        return {'message': 'department name was updated'}
+        return {'message': f'department - {department_id} - has been updated'}
 
     def delete(self, department_id):
-        try:
-            delete_row_by_id(Department, department_id)
-        except exc.NoResultFound:
-            return error_department_not_found, 404
+        delete_row_by_id(Department, department_id)
 
-        return {'message': 'department was deleted'}
+        return '', 204

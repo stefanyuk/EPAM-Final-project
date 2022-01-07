@@ -1,0 +1,272 @@
+/* WELCOME SECTION */
+
+body{
+    background-color: #CD2F2C;
+}
+
+.welcome_page{
+    height: 938px;
+}
+
+.welcome_logo{
+    display: block;
+    height: 302px;
+    width: 427px;
+    margin: 0 auto;
+}
+
+.welcome_nav{
+    width: 427px;
+    margin: 0 auto;
+}
+
+.menu{
+    display: flex;
+    justify-content: space-between;
+    list-style-type: none;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.menu .menu_link{
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.welcome_sweets{
+    position: absolute;
+    top: 0;
+    right: -100px;
+    opacity: 40%;
+    z-index: -1;
+    height: 938px;
+}
+.welcome_girl{
+    margin-top: 61px;
+    position: relative;
+    z-index: 1;
+    width: 567px;
+    height: 400px;
+}
+
+.main_info{
+    display: flex;
+    justify-content: space-between;
+}
+
+.main_info .welcome_text{
+    margin-top: 150px;
+    width: 610px;
+    color: white;
+}
+
+.main_info .welcome_text .welcome_subtitle{
+    font-size: 24px;
+}
+
+.main_info .welcome_text .welcome_title{
+    font-size: 48px;
+}
+
+.welcome_button{
+    margin-top: 49px;
+    width: 219px;
+    height: 54px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 14px 40px;
+
+    border-radius: 30px;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: #E99695;
+    transition: background .1s linear;
+}
+
+.welcome_button:hover{
+    background-color: #f58580;
+    color: white;
+    text-decoration: none;
+}
+
+
+/* DRINKS SECTION*/
+
+.drinks{
+    padding: 45px 0 71px 0;
+    height: 979px;
+}
+
+.drinks_title, .about_title{
+    text-align: center;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 62px;
+    color: white;
+}
+
+.drinks_line, .about_title_line{
+    margin: 0 auto;
+    margin-top: 15px;
+    width: 130px;
+    height: 1px;
+    background-color: white;
+}
+
+.drinks_title_text, .about_title_text{
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 30px;
+    text-align: center;
+    color: white;
+}
+
+.drinks_link{
+    text-decoration: none;
+    display: block;
+    width: 77px;
+    margin: 0 auto;
+    margin-top: 30px;
+    color: white;
+}
+.drinks .offer_outer{
+    margin-top: 30px;
+    color: white;
+}
+
+.drinks .drink_sale_offer{
+    padding: 18px 18px;
+    border-radius: 41px;
+    width: 329px;
+    height: 589px;
+    background: rgba(251, 219, 219, 0.6);
+    box-shadow: 0px 27px 32px 2px rgba(0, 0, 0, 0.25);
+}
+
+.drinks .drink_sale_offer_2{
+    padding: 18px 18px;
+    width: 329px;
+    height: 589px;
+    background: rgba(58, 8, 8, 0.6);
+    box-shadow: 0px 27px 32px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 41px;
+}
+
+.drinks .drink_order_button{
+    text-decoration: none;
+    color: white;
+}
+
+.drinks .sign_and_price{
+    margin: 0 auto;
+    margin-top: 30px;
+    width: 62px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.drinks .sign_and_price .sign{
+    font-size: 40px;
+}
+
+.drinks .sign_and_price .price{
+    font-size: 30px;
+    margin-bottom: 0;
+    margin-left: 5px;
+}
+
+.drinks .offer_img{
+    display: block;
+    width: 150px;
+    margin: 0 auto;
+    filter: drop-shadow(0px 12px 10px rgba(10, 0, 0, 0.25));
+}
+
+.drinks .drink_name{
+    font-size: 45px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.drinks .drink_bottom_text{
+    margin-top: 19px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.drinks .drink_button_outer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.drinks .drink_button_outer .drink_order_button{
+    display: block;
+    margin: 0 auto;
+    margin-top: 61px;
+    width: 280px;
+    height: 54px;
+    padding: 7px 47px;
+
+    border-radius: 30px;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: #C64C4B;
+    transition: background .1s linear;
+    font-size: 24px;
+    text-align: center;
+}
+
+
+.drinks .drink_button_outer .drink_order_button:hover{
+    background-color: #863231;
+    color: white;
+}
+
+
+/* ABOUT SECTION */
+
+.about{
+    position: relative;
+    height: 1000px;
+    padding: 59px 0 169px 0;
+}
+
+.about_vector{
+    position: absolute;
+    width: 601.44px;
+    height: 683.22px;
+    left: 0;
+    top: 226.37px;
+    z-index: -1;
+    opacity: 70%;
+}
+
+.about_logo_img{
+    width: 571px;
+    height: 419px;
+}
+
+.about .about_main_outer{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 73px;
+}
+
+.about .about_main_outer .about_main_text{
+    margin-left: 110px;
+    color: white;
+}
+
+.about .about_main_outer .about_main_text .text{
+    margin-top: 30px;
+}

@@ -71,16 +71,24 @@ def user_data_to_dict(user):
 
 def update_user(user_id, **kwargs):
     """
-    Update an existing user
+    Updates an existing user
 
     :param user_id: unique user id
     """
     user = get_row_by_id(User, user_id)
 
-    for field in kwargs:
-        if field in ('is_admin', 'is_employee') and kwargs[field] is False:
-            setattr(user, field, kwargs[field])
-        elif kwargs[field]:
-            setattr(user, field, kwargs[field])
+    for key, value in kwargs.items():
+        if key in ('is_admin', 'is_employee') and value is False:
+            setattr(user, key, value)
+        elif value:
+            setattr(user, key, value)
 
     db.session.commit()
+
+
+def update_user_data_parser():
+    parser = user_data_parser().copy()
+
+    parser.replace_argument('last_name', type=str)
+
+    return parser

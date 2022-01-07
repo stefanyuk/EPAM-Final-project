@@ -86,17 +86,23 @@ def update_order(order_id, **kwargs):
     if products := kwargs['products']:
         update_order_items(products, order.id)
 
-    for field in items_except_products:
-        if kwargs[field]:
-            setattr(order, field, kwargs[field])
+    for key, value in items_except_products.items():
+        if value:
+            setattr(order, key, value)
 
 
-def order_data_parser():
+def create_order_data_parser():
     parser = reqparse.RequestParser()
 
-    parser.add_argument('status', type=str, help='status of the order')
     parser.add_argument('comments', type=str, help='comments to the order')
     parser.add_argument('user_id', type=str, help='id of the user who placed an order')
     parser.add_argument('products', type=str, action='append', help='id of the customer who placed an order')
+
+    return parser
+
+
+def update_order_data_parser():
+    parser = create_order_data_parser().copy()
+    parser.add_argument('status', type=str, help='status of the order')
 
     return parser

@@ -5,6 +5,8 @@ from rest_app.models import User
 auth = HTTPBasicAuth()
 
 
+# TODO correct the problem when user enters correct username but wrong password
+
 @auth.verify_password
 def verify_password(username, password):
     if username and password:

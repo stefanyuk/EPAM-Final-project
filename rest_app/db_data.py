@@ -8,10 +8,6 @@ from rest_app.models import *
 # C:/Users/stefa/Downloads/user.sql
 # C:/Users/stefa/Downloads/department.sql
 # C:/Users/stefa/Downloads/product.sql
-# /home/stefanyuk/database_sqls/user.sql
-# /home/stefanyuk/database_sqls/department.sql
-# /home/stefanyuk/database_sqls/product.sql
-
 engine = create_engine('postgresql+psycopg2://test:test@localhost:5432/restwebapp')
 session = sessionmaker(engine)()
 

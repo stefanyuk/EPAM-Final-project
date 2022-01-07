@@ -3,7 +3,7 @@ from flask import jsonify
 from flask_restful import Resource
 from rest_app.service.vacation_service import *
 from rest_app.service.common_services import *
-from rest_app.error_services.error_messages import error_vacation_not_found
+from rest_app.errors.error_messages import record_not_found_by_id_error
 from rest_app.rest.auth import auth
 from rest_app.models import Vacation
 
@@ -32,14 +32,6 @@ class VacationsAPI(Resource):
 
         return {'message': f'vacation with id - {vacation_id} - has been created'}, 201
 
-    def delete(self):
-        """
-        Deletes all vacations from the database
-        """
-        delete_all_rows_from_db(Vacation)
-
-        return {'message': 'all vacations were deleted from the database'}
-
 
 class VacationAPI(Resource):
     """
@@ -56,7 +48,7 @@ class VacationAPI(Resource):
         try:
             vacation = get_row_by_id(Vacation, vacation_id)
         except exc.NoResultFound:
-            return error_vacation_not_found, 404
+            return record_not_found_by_id_error('vacation'), 404
 
         return vacation_data_to_dict(vacation)
 
@@ -71,7 +63,7 @@ class VacationAPI(Resource):
         try:
             update_vacation(vacation_id, **args)
         except exc.NoResultFound:
-            return error_vacation_not_found, 404
+            return record_not_found_by_id_error('vacation'), 404
 
         return {'message': f'vacation - {vacation_id} - has been updated'}
 
@@ -81,9 +73,6 @@ class VacationAPI(Resource):
 
         :param vacation_id: unique id that identifies vacation
         """
-        try:
-            delete_row_by_id(Vacation, vacation_id)
-        except exc.NoResultFound:
-            return error_vacation_not_found, 404
+        delete_row_by_id(Vacation, vacation_id)
 
-        return {'message': f'vacation - {vacation_id} - has been deleted'}
+        return '', 204

@@ -2,7 +2,7 @@ from sqlalchemy import exc
 from flask import jsonify
 from flask_restful import Resource
 from rest_app.service.employee_service import *
-from rest_app.error_services.error_messages import error_employee_not_found
+from rest_app.errors.error_messages import record_not_found_by_id_error
 from rest_app.service.common_services import *
 from rest_app.rest.auth import auth
 
@@ -31,14 +31,6 @@ class EmployeesAPI(Resource):
 
         return {'message': f'employee with id - {employee_id} - has been created'}, 201
 
-    def delete(self):
-        """
-        Deletes all employees from the database
-        """
-        delete_all_rows_from_db(EmployeeInfo)
-
-        return {'message': 'all employees were deleted from the database'}
-
 
 class EmployeeAPI(Resource):
     """
@@ -55,7 +47,7 @@ class EmployeeAPI(Resource):
         try:
             employee = get_row_by_id(EmployeeInfo, employee_id)
         except exc.NoResultFound:
-            return error_employee_not_found, 404
+            return record_not_found_by_id_error('employee'), 404
 
         return employee_data_to_dict(employee)
 
@@ -70,7 +62,7 @@ class EmployeeAPI(Resource):
         try:
             update_employee(employee_id, **args)
         except exc.NoResultFound:
-            return error_employee_not_found, 404
+            return record_not_found_by_id_error('employee'), 404
 
         return {'message': f'employee - {employee_id} - has been updated'}
 
@@ -80,9 +72,6 @@ class EmployeeAPI(Resource):
 
         :param employee_id: id of the employee
         """
-        try:
-            delete_row_by_id(EmployeeInfo, employee_id)
-        except exc.NoResultFound:
-            return error_employee_not_found, 404
+        delete_row_by_id(EmployeeInfo, employee_id)
 
-        return {'message': 'employee was deleted'}
+        return '', 204

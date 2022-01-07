@@ -4,18 +4,7 @@ from rest_app import db
 def delete_row_by_id(model, model_id):
     """Deletes the table row with the specified id"""
 
-    record = db.session.query(model).filter(model.id == model_id).one()
-
-    db.session.delete(record)
-    db.session.commit()
-
-
-def delete_all_rows_from_db(model):
-    """Deletes all rows of the specified table"""
-
-    for row in model.query.all():
-        db.session.delete(row)
-
+    db.session.query(model).filter(model.id == model_id).delete()
     db.session.commit()
 
 
