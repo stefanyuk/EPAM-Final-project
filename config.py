@@ -8,6 +8,10 @@ class Config(object):
     DEBUG = False
     TESTING = False
     API_VERSION = 1
+    JSON_SORT_KEYS = False
+    MIGRATION_DIR = os.path.join(basedir, 'my_app\migrations')
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://test:test@localhost:5432/restwebapp'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):
@@ -15,16 +19,9 @@ class DevelopmentConfig(Config):
 
     DEBUG = True
     SECRET_KEY = 'dev'
-    API_VERSION = 1
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://test:test@localhost:5432/restwebapp'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MIGRATION_DIR = os.path.join(basedir, 'my_app\migrations')
 
 
 class TestingConfig(Config):
     """Testing Configuration"""
 
     TESTING = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MIGRATION_DIR = os.path.join(basedir, 'my_app\migrations')
-    API_VERSION = 1

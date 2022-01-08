@@ -7,7 +7,7 @@ from rest_app import db
 
 
 def add_employee(username, first_name, last_name, gender, salary, phone_number, department_id,
-                 hire_date, birth_date, is_admin, is_employee, email, password):
+                 hire_date, birth_date, is_admin, is_employee, email, password, available_holidays):
     """
     Add new employee to the database
 
@@ -24,6 +24,7 @@ def add_employee(username, first_name, last_name, gender, salary, phone_number, 
     :param is_admin: database attribute that specifies user rights
     :param is_employee: database attribute that defines whether a user is employee
     :param department_id: id of the department where employee works
+    :param available_holidays: amount of employee holidays
     """
     user_id = add_user(username, password, first_name, last_name, email, phone_number, gender,
                        birth_date, is_admin, is_employee)
@@ -34,6 +35,7 @@ def add_employee(username, first_name, last_name, gender, salary, phone_number, 
         department_id=department_id,
         salary=salary,
         user_id=user_id,
+        available_holidays=available_holidays
     )
 
     db.session.add(employee)
@@ -67,7 +69,7 @@ def update_employee(employee_id, **kwargs):
     """
     Update an existing employee
 
-    :param employee_id: unique employee identificator
+    :param employee_id: unique employee identifier
     """
     employee = get_row_by_id(EmployeeInfo, employee_id)
     user = employee.user
@@ -95,7 +97,7 @@ def employee_data_parser():
 
     user_parser_copy.add_argument('hire_date', type=str, default=datetime.datetime.now().date())
     user_parser_copy.add_argument('salary', type=float, help='you did not provide employee salary')
-    user_parser_copy.add_argument('available_holidays', type=int, help='holidays that employee can use')
-    user_parser_copy.add_argument('department_id', type=str, help='department of the employee')
+    user_parser_copy.add_argument('available_holidays', type=int, default=25)
+    user_parser_copy.add_argument('department_id', type=str, help='you did not provide employee department id')
 
     return user_parser_copy

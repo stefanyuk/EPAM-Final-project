@@ -1,20 +1,11 @@
-/* WELCOME SECTION */
+@import url(auth.css);
+@import url(admin.css);
 
-body{
-    background-color: #CD2F2C;
+*{
+    margin: 0;
+    padding: 0;
 }
-
-.welcome_page{
-    height: 938px;
-}
-
-.welcome_logo{
-    display: block;
-    height: 302px;
-    width: 427px;
-    margin: 0 auto;
-}
-
+/* HEADER */
 .welcome_nav{
     width: 427px;
     margin: 0 auto;
@@ -34,6 +25,24 @@ body{
     font-size: 15px;
     color: #FFFFFF;
     text-decoration: none;
+}
+
+
+/* WELCOME SECTION */
+
+body{
+    background-color: #CD2F2C;
+}
+
+.welcome_page{
+    height: 938px;
+}
+
+.welcome_logo{
+    display: block;
+    height: 302px;
+    width: 427px;
+    margin: 0 auto;
 }
 
 .welcome_sweets{

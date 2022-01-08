@@ -1,0 +1,75 @@
+/* ADMIN HEADER */
+
+.admin_header{
+    width: 100%;
+    height: 80px;
+    background-color: #AD0300;
+}
+
+.admin_nav_img{
+    width: 121px;
+    height: 80px;
+}
+
+.navigation_outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin_header .admin_upper_nav{
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+.admin_header .admin_upper_nav .menu_item .menu_link{
+    text-decoration: none;
+    color: white;
+}
+
+.admin_header .admin_upper_nav .menu_item .menu_link:hover{
+    color: #c0b9b9;
+}
+
+
+/* ADMIN MAIN */
+
+.admin_main{
+    min-height: 900px;
+}
+
+.admin_main .admin_navigation{
+    margin-top: 60px;
+    width: 1088px;
+    min-height: 130px;
+    background: #E99695;
+    border-radius: 33px;
+    padding: 35px 40px 0 40px;
+}
+
+.admin_main .navigation_outer{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.navigation_item{
+    background-color: #cd2f2c;
+    width: 150px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 40px;
+    border-radius: 33px;
+    text-decoration: none;
+    color: white;
+}
+
+.navigation_item:hover{
+    background-color: #dc7569;
+    color: white;
+    text-decoration: none;
+}
+

@@ -9,3 +9,5 @@ class Product(db.Model):
     summary = db.Column(db.Text)
     price = db.Column(db.Numeric(7, 2), nullable=False)
     order_items = db.relationship('OrderItem', backref='product', lazy='dynamic')
+    category_id = db.Column(db.ForeignKey('category.id', ondelete='SET NULL'), nullable=False)
+

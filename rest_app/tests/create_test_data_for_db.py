@@ -37,10 +37,11 @@ def create_user(ses, user_info):
     return user
 
 
-def create_employee(ses, user_id, **kwargs):
+def create_employee(ses, user_id, department_id, **kwargs):
     employee = EmployeeInfo(
         **kwargs,
-        user_id=user_id
+        user_id=user_id,
+        department_id=department_id
     )
 
     ses.add(employee)
@@ -69,9 +70,9 @@ def main(ses):
     for user in users:
         user = create_user(ses, user)
         if user.is_employee:
-            create_employee(ses, user.id, **next(employees))
+            department_id = random.choice(test_info['department'])['id']
+            create_employee(ses, user.id, department_id, **next(employees))
             create_address(ses, user.id, **next(addresses))
-            user.employee.department_id = random.choice(test_info['department'])['id']
 
 
 if __name__ == '__main__':

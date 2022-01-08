@@ -8,4 +8,6 @@ from rest_app.models.table import Table
 from rest_app.models.address import Address
 from rest_app.models.booking import Booking
 from rest_app.models.vacation import Vacation
+from rest_app.models.category import Category
 
+# TODO ADD REPR TO EACH MODEL

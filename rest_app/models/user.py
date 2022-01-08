@@ -1,16 +1,22 @@
-from rest_app import db
+from rest_app import db, login_manager
+from flask_login import UserMixin
 
 
-class User(db.Model):
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.String, primary_key=True)
-    username = db.Column(db.String(15), unique=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
     registered_at = db.Column(db.Date)
-    first_name = db.Column(db.String(20))
-    last_name = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    email = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String)
     last_login_date = db.Column(db.Date)
     birth_date = db.Column(db.Date)

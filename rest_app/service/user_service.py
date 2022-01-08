@@ -13,8 +13,8 @@ def add_user(username, password, first_name, last_name, email, phone_number, gen
 
     user = User(
         id=str(uuid4()),
-        username=username if username else str(uuid4())[0:5] + last_name,
-        password_hash=generate_password_hash(password) if password else generate_password_hash('12345'),
+        username=username if username else str(uuid4())[0:8],
+        password_hash=generate_password_hash(password) if password else generate_password_hash('12345lacrema'),
         registered_at=datetime.datetime.now().date(),
         first_name=first_name,
         last_name=last_name,
@@ -37,16 +37,18 @@ def user_data_parser():
 
     parser = reqparse.RequestParser()
 
-    parser.add_argument('username', type=str)
-    parser.add_argument('password', type=str)
-    parser.add_argument('first_name', type=str)
-    parser.add_argument('last_name', type=str, help='you didn\'t provide last name', required=True)
-    parser.add_argument('email', type=str)
-    parser.add_argument('phone_number', type=str)
-    parser.add_argument('birth_date', type=str)
-    parser.add_argument('gender', type=str)
-    parser.add_argument('is_admin', type=inputs.boolean)
-    parser.add_argument('is_employee', type=inputs.boolean)
+    parser.add_argument('username', type=str, location=['json', 'form'])
+    parser.add_argument('password', type=str, location=['json', 'form'])
+    parser.add_argument('first_name',
+                        help='you didn\'t provide first name', type=str, location=['json', 'form'])
+    parser.add_argument('last_name', type=str,
+                        help='you didn\'t provide last name', location=['json', 'form'])
+    parser.add_argument('email', type=str, location=['json', 'form'])
+    parser.add_argument('phone_number', type=str, location=['json', 'form'])
+    parser.add_argument('birth_date', type=str, location=['json', 'form'])
+    parser.add_argument('gender', type=str, location=['json', 'form'])
+    parser.add_argument('is_admin', type=inputs.boolean, location=['json', 'form'])
+    parser.add_argument('is_employee', type=inputs.boolean, location=['json', 'form'])
 
     return parser
 
@@ -84,11 +86,3 @@ def update_user(user_id, **kwargs):
             setattr(user, key, value)
 
     db.session.commit()
-
-
-def update_user_data_parser():
-    parser = user_data_parser().copy()
-
-    parser.replace_argument('last_name', type=str)
-
-    return parser

@@ -1,0 +1,54 @@
+.register_inner, .login_inner{
+    min-height: 609px;
+    padding: 40px 40px;
+    max-width: 528px;
+    margin: 0 auto;
+    margin-top: 100px;
+    background-color: #fac2c0;
+    border-radius: 20px;
+}
+
+.login_inner{
+    min-height: 450px;
+}
+
+.register .register_inner .form_label, .login .login_inner .form_label{
+    color: #6c0d0d;
+}
+
+.register .register_inner .form_legend, .login .login_inner .form_legend{
+    color: #6c0d0d;
+    border-bottom: 2px solid white;
+    margin-bottom: 20px;
+}
+
+
+.register .register_button, .login .login_button{
+    width: 150px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 40px;
+
+    border-radius: 30px;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: #cd2f2c;
+    transition: background .1s linear;
+}
+
+.form_bottom_question{
+    text-decoration: none;
+}
+
+.register .register_button--red, .login .login_button--red{
+    background-color: #cd2f2c;
+}
+
+.register .register_button--red:hover, .login .login_button--red:hover{
+    background-color: #f58580;
+    color: #6c0d0d;
+}

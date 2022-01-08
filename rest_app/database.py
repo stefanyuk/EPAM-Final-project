@@ -41,6 +41,7 @@ def create_superuser():
         'last_name': 'Admin',
         'is_admin': True,
         'is_employee': True,
+        'email': 'admin'
     }
 
     user = User(**admin_user_info)

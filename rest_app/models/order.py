@@ -1,5 +1,3 @@
-# import rest_app.models.address as address
-# TODO ASK WHETHER IT'S CORRECT TO IMPORT LIKE THIS
 from rest_app import db
 
 
