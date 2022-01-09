@@ -1,3 +1,5 @@
+from flask_restful import reqparse
+
 from rest_app.models import EmployeeInfo
 from rest_app.service.user_service import add_user, user_data_parser
 from rest_app.service.common_services import get_row_by_id
@@ -6,28 +8,16 @@ from uuid import uuid4
 from rest_app import db
 
 
-def add_employee(username, first_name, last_name, gender, salary, phone_number, department_id,
-                 hire_date, birth_date, is_admin, is_employee, email, password, available_holidays):
+def add_employee(salary, department_id, hire_date, available_holidays, user_id):
     """
     Add new employee to the database
-
-    :param username: employee username
-    :param first_name: employee name
-    :param last_name: employee surname
-    :param email: employee email
-    :param password: password to login to the system
-    :param gender: employee gender
+    
     :param salary: employee salary
-    :param phone_number: employee phone number
     :param hire_date: date when employee was hired
-    :param birth_date: date when employee was born
-    :param is_admin: database attribute that specifies user rights
-    :param is_employee: database attribute that defines whether a user is employee
     :param department_id: id of the department where employee works
     :param available_holidays: amount of employee holidays
+    :param user_id: id of the user with which employee is associated
     """
-    user_id = add_user(username, password, first_name, last_name, email, phone_number, gender,
-                       birth_date, is_admin, is_employee)
 
     employee = EmployeeInfo(
         id=str(uuid4()),
@@ -41,7 +31,7 @@ def add_employee(username, first_name, last_name, gender, salary, phone_number, 
     db.session.add(employee)
     db.session.commit()
 
-    return employee.id
+    return employee
 
 
 def employee_data_to_dict(employee):
@@ -93,11 +83,11 @@ def employee_data_parser():
     Creates a parser in order to parse information
     provided by user for employee creation
     """
-    user_parser_copy = user_data_parser().copy()
+    parser = reqparse.RequestParser()
 
-    user_parser_copy.add_argument('hire_date', type=str, default=datetime.datetime.now().date())
-    user_parser_copy.add_argument('salary', type=float, help='you did not provide employee salary')
-    user_parser_copy.add_argument('available_holidays', type=int, default=25)
-    user_parser_copy.add_argument('department_id', type=str, help='you did not provide employee department id')
+    parser.add_argument('hire_date', type=str, default=datetime.datetime.now().date())
+    parser.add_argument('salary', type=float, help='you did not provide employee salary')
+    parser.add_argument('available_holidays', type=int, default=25)
+    parser.add_argument('department_id', type=str, help='you did not provide employee department id')
 
-    return user_parser_copy
+    return parser

@@ -17,6 +17,8 @@ def add_address(user_id, city, postal_code, street, street_number):
     db.session.add(address)
     db.session.commit()
 
+    return address
+
 
 def address_data_parser():
     parser = reqparse.RequestParser()

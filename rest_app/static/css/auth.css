@@ -23,7 +23,7 @@
 }
 
 
-.register .register_button, .login .login_button{
+.register .register_button, .login .login_button , .personal_profile_button{
     width: 150px;
     height: 54px;
     display: flex;
@@ -44,11 +44,7 @@
     text-decoration: none;
 }
 
-.register .register_button--red, .login .login_button--red{
-    background-color: #cd2f2c;
-}
-
-.register .register_button--red:hover, .login .login_button--red:hover{
+.register .register_button--red:hover, .login .login_button--red:hover, .personal_profile_button--red:hover{
     background-color: #f58580;
     color: #6c0d0d;
 }

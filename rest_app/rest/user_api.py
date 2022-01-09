@@ -31,8 +31,8 @@ class UsersAPI(Resource):
         user = User.query.filter(User.username == args['username']).first()
 
         if not user:
-            user_id = add_user(**args)
-            return {'message': f'user with id - {user_id} - has been created'}, 201
+            user = add_user(**args)
+            return {'message': f'user with id - {user.id} - has been created'}, 201
 
         return {'message': 'User already exists'}, 202
 

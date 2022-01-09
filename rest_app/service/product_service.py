@@ -12,8 +12,8 @@ def add_product(title, summary, price, category_id):
     :param price: product price
     :param category_id: category of the product
     """
-    product = Product.create(
-        public_id=str(uuid4()),
+    product = Product(
+        id=str(uuid4()),
         title=title,
         summary=summary,
         price=price,
@@ -23,4 +23,20 @@ def add_product(title, summary, price, category_id):
     db.session.add(product)
     db.session.commit()
 
-    return product.id
+    return product
+
+
+def product_data_to_dict(product):
+    """
+    Serializer that returns a dictionary from its fields
+
+    :param product: product object that needs to be serialized
+    :return: product information
+    """
+    product_info = {
+        'title': product.title,
+        'price': product.price,
+        'category': product.category.name
+    }
+
+    return product_info

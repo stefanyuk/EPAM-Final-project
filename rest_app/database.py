@@ -6,6 +6,7 @@ from rest_app import db
 from rest_app.models import User
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
+from rest_app.populate_db_with_data import main
 
 
 @compiles(DropTable, "postgresql")
@@ -27,10 +28,11 @@ def reset_db_command():
     click.echo('Database has been reset.')
 
 
-@click.command('db-populate')
+@click.command('populate-db')
 @with_appcontext
-def populate_db_with_data():
-    pass
+def populate_db_command():
+    main(250)
+    click.echo('Test data has been added to the database.')
 
 
 def create_superuser():

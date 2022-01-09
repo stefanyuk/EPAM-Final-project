@@ -29,7 +29,17 @@ def add_user(username, password, first_name, last_name, email, phone_number, gen
     db.session.add(user)
     db.session.commit()
 
-    return user.id
+    return user
+
+
+def get_total_value_spent_in_the_restaurant(user_id):
+    total_value = 0
+    user = User.query.get(user_id)
+
+    for order in user.orders:
+        total_value += order.total_price
+
+    return total_value
 
 
 def user_data_parser():
@@ -65,7 +75,8 @@ def user_data_to_dict(user):
         'birth_date': str(user.birth_date),
         'gender': user.gender,
         'is_admin': user.is_admin,
-        'is_employee': user.is_employee
+        'is_employee': user.is_employee,
+        'total_value': get_total_value_spent_in_the_restaurant(user.id)
     }
 
     return user_info

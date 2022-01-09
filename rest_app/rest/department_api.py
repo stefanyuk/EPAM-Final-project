@@ -28,9 +28,13 @@ class DepartmentsAPI(Resource):
         Creates new department in the database
         """
         args = department_data_parser().parse_args()
-        new_dept_id = add_department(**args)
+        dept = Department.query.filter(Department.name == args['name']).first()
 
-        return {'message': f'department with id - {new_dept_id} - has been created'}, 201
+        if not dept:
+            new_dept = add_department(**args)
+            return {'message': f'department with id - {new_dept.id} - has been created'}, 201
+
+        return {'message': 'Department already exists'}, 202
 
 
 class DepartmentAPI(Resource):

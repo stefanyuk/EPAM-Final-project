@@ -18,8 +18,7 @@ def register():
     if form.validate_on_submit():
         data = user_data_parser().parse_args()
         add_user(**data)
-        return redirect(url_for('wlc.welcome_landing'))
-    # TODO here you need to add redirect to my profile page
+        return redirect(url_for('auth.login'))
 
     return render_template('register.html', form=form)
 

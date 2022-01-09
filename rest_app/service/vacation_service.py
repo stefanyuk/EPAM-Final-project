@@ -16,7 +16,7 @@ def add_vacation(employee_id, vacation_start, vacation_end):
     db.session.add(vacation)
     db.session.commit()
 
-    return vacation.id
+    return vacation
 
 
 def vacation_data_to_dict(vacation):

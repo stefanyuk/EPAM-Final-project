@@ -1,0 +1,26 @@
+.profile_title, .address_title{
+    margin-top: 40px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 35px;
+    color: white;
+}
+
+.address_title{
+    margin-top: 20px;
+}
+
+.personal_info_inner, .personal_info_address{
+    margin-top: 20px;
+    background-color: #fac2c0;
+    border-radius: 20px;
+    padding: 30px 30px;
+    min-height: 250px;
+}
+
+.personal_profile_button{
+    width: 110px;
+    height: 42px;
+    padding: 0;
+}
+

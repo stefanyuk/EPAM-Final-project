@@ -19,25 +19,29 @@ def get_order_products_total_price(products: list):
         product = db.session.query(Product).filter(Product.title == title).one()
         total_price += product.price
 
+    # TODO HERE YOU NEED TO CHANGE ONE TO FIRST AND FIGUREE OUT HOW TO PROVIDE USER WITH THE REPLY
     return total_price
 
 
-def create_order(products: list, comments, user_id):
+def create_order(products: list, comments, user_id, address_id, status=None):
     """
     Creates new order in the database
 
     :param products: products ordered by a client
     :param comments: comments that customer left for this order
     :param user_id: unique id of a customer
+    :param status: status of the order
+    :param address_id: id of the address where food should be delivered
     """
     order = Order(
         id=str(uuid4()),
-        status='awaiting fulfilment',
+        status=status if status else 'awaiting fulfilment',
         order_date=datetime.now().date(),
         comments=comments,
         user_id=user_id,
         order_time=datetime.now().time(),
-        total_price=get_order_products_total_price(products)
+        total_price=get_order_products_total_price(products),
+        address_id=address_id
     )
 
     db.session.add(order)
@@ -45,7 +49,7 @@ def create_order(products: list, comments, user_id):
 
     create_order_items(products, order.id)
 
-    return order.id
+    return order
 
 
 def order_data_to_dict(order):
@@ -53,7 +57,7 @@ def order_data_to_dict(order):
         'id': order.id,
         'status': order.status,
         'order_date': str(order.order_date),
-        'order_time': str(order.order_time),
+        'order_time': str(order.order_time)[:8],
         'customer_id': order.user_id,
         'total_price': float(order.total_price),
         'order_items': [order_item.product.title for order_item in order.order_items]

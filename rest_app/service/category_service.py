@@ -12,4 +12,4 @@ def add_category(name):
     db.session.add(category)
     db.session.commit()
 
-    return category.id
+    return category

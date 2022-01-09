@@ -19,9 +19,9 @@ class OrdersAPI(Resource):
 
     def post(self):
         args = create_order_data_parser().parse_args()
-        order_id = create_order(**args)
+        order = create_order(**args)
 
-        return {'message': f'Order with the number {order_id} has been created'}, 201
+        return {'message': f'Order with the number {order.id} has been created'}, 201
 
 
 class OrderAPI(Resource):

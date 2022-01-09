@@ -17,6 +17,23 @@
     align-items: center;
 }
 
+.admin_upper_nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin_upper_nav .menu_item:last-child{
+    margin-left: 25px;
+}
+
+.admin_navigation_outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .admin_header .admin_upper_nav{
     margin-bottom: 0;
     list-style-type: none;
@@ -35,12 +52,12 @@
 /* ADMIN MAIN */
 
 .admin_main{
-    min-height: 900px;
+    min-height: 130px;
 }
 
 .admin_main .admin_navigation{
-    margin-top: 60px;
-    width: 1088px;
+    margin-top: 30px;
+    max-width: 1088px;
     min-height: 130px;
     background: #E99695;
     border-radius: 33px;
@@ -54,7 +71,7 @@
     flex-direction: row;
 }
 
-.navigation_item{
+.navigation_item, .add_button{
     background-color: #cd2f2c;
     width: 150px;
     height: 54px;
@@ -73,3 +90,40 @@
     text-decoration: none;
 }
 
+.add_button{
+    margin-top: 30px;
+    background-color: #E99695;
+    width: 202px;
+}
+
+.add_button:hover{
+    text-decoration: none;
+    color: white;
+    background-color: #dc7569;
+}
+
+
+/* TABLE */
+
+.table_outer{
+    margin-top: 40px;
+    background-color: #dc7569;
+}
+
+td a {
+   display: block;
+   text-decoration: none;
+    padding: 2px;
+    color: black;
+}
+
+td a:hover{
+    text-decoration: none;
+    color: black;
+}
+
+/* PAGINATION */
+
+.btn{
+    background-color: #dc7569;
+}

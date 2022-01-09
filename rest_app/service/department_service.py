@@ -18,7 +18,7 @@ def add_department(name, description):
     db.session.add(new_dept)
     db.session.commit()
 
-    return new_dept.id
+    return new_dept
 
 
 def department_data_to_dict(department):

@@ -23,20 +23,18 @@ def create_app(test_config=None):
     migrate.init_app(app, db, directory=app.config['MIGRATION_DIR'])
     login_manager.init_app(app)
 
-    from rest_app.database import reset_db_command
+    # cli commands
+    from rest_app.database import reset_db_command, populate_db_command
     app.cli.add_command(reset_db_command)
+    app.cli.add_command(populate_db_command)
 
     # blueprints
     from rest_app.rest import rp_api
     app.register_blueprint(rp_api)
     from rest_app.errors.errors_service import errors
     app.register_blueprint(errors)
-    from rest_app.views.welcome import wlc
-    app.register_blueprint(wlc)
-    from rest_app.views.auth import auth
-    app.register_blueprint(auth)
-    from rest_app.views.admin import admin
-    app.register_blueprint(admin)
+    from rest_app.views import register_view_blueprints
+    register_view_blueprints(app)
 
     # @app.route('/test')
     # def index():

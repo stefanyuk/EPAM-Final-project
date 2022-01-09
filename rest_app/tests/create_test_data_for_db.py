@@ -1,3 +1,4 @@
+import datetime
 import json
 import random
 from rest_app.models import *
@@ -52,6 +53,17 @@ def create_address(ses, user_id, **kwargs):
     address = Address(
         user_id=user_id,
         **kwargs
+    )
+
+    ses.add(address)
+    ses.commit()
+
+
+def create_order(ses, user_id, **kwargs):
+    order = Order(
+        order_date=datetime.datetime.now().date(),
+        user_id=user_id,
+        order_time=datetime.datetime.now().time()
     )
 
     ses.add(address)

@@ -27,9 +27,9 @@ class EmployeesAPI(Resource):
         Creates a new employee in the database
         """
         args = employee_data_parser().parse_args()
-        employee_id = add_employee(**args)
+        employee = add_employee(**args)
 
-        return {'message': f'employee with id - {employee_id} - has been created'}, 201
+        return {'message': f'employee with id - {employee.id} - has been created'}, 201
 
 
 class EmployeeAPI(Resource):
