@@ -23,8 +23,11 @@
     align-items: center;
 }
 
-.admin_upper_nav .menu_item:last-child{
+.admin_upper_nav .menu_item{
     margin-left: 25px;
+}
+.admin_upper_nav .menu_item:first-child{
+    margin-left: 0;
 }
 
 .admin_navigation_outer{

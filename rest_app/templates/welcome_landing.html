@@ -11,7 +11,7 @@
                         <li class="menu_item"><a href="#" class="menu_link">About</a></li>
                         <li class="menu_item"><a href="#" class="menu_link">Contact</a></li>
                         {% if current_user.is_authenticated %}
-                            <li class="menu_item"><a href="#" class="menu_link">My profile</a></li>
+                            <li class="menu_item"><a href="{{ url_for('user.user_detail', user_id=current_user.id) }}" class="menu_link">My profile</a></li>
                             <li class="menu_item"><a href="{{ log_out_url }}" class="menu_link">Log Out</a></li>
                         {% else %}
                             <li class="menu_item"><a href="{{ login_url }}" class="menu_link">Log in</a></li>

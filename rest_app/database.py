@@ -31,7 +31,7 @@ def reset_db_command():
 @click.command('populate-db')
 @with_appcontext
 def populate_db_command():
-    main(250)
+    main(100)
     click.echo('Test data has been added to the database.')
 
 

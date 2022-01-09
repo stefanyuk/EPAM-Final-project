@@ -22,12 +22,16 @@ def add_address(user_id, city, postal_code, street, street_number):
 
 def address_data_parser():
     parser = reqparse.RequestParser()
-    
-    parser.add_argument('city', type=str, help='you did not provide city name')
-    parser.add_argument('street', type=str, help='you did not provide name of the street')
-    parser.add_argument('street_number', type=str, help='you did not provide number of the street')
-    parser.add_argument('postal_code', type=str, help='you did not provide postal code')
-    parser.add_argument('user_id', type=str, help='you did not provide user id')
+
+    parser.add_argument('city', type=str, help='you did not provide city name', required=True,
+                        location='json')
+    parser.add_argument('street', type=str, help='you did not provide name of the street', required=True,
+                        location='json')
+    parser.add_argument('street_number', type=str, help='you did not provide number of the street', required=True,
+                        location='json')
+    parser.add_argument('postal_code', type=str, help='you did not provide postal code', required=True,
+                        location='json')
+    parser.add_argument('user_id', type=str, help='you did not provide user id', required=True,
+                        location='json')
 
     return parser
-

@@ -86,8 +86,8 @@ def employee_data_parser():
     parser = reqparse.RequestParser()
 
     parser.add_argument('hire_date', type=str, default=datetime.datetime.now().date())
-    parser.add_argument('salary', type=float, help='you did not provide employee salary')
+    parser.add_argument('salary', type=float, help='you did not provide employee salary', required=True)
     parser.add_argument('available_holidays', type=int, default=25)
-    parser.add_argument('department_id', type=str, help='you did not provide employee department id')
+    parser.add_argument('department_id', type=str, help='you did not provide employee department id', required=True)
 
     return parser

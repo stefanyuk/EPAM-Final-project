@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, url_for
 from flask_login import login_required, current_user
+from functools import wraps
 from rest_app.service.department_service import department_data_to_dict
 from rest_app.service.employee_service import employee_data_to_dict
 from rest_app.service.order_service import order_data_to_dict
@@ -22,15 +23,13 @@ def admin_main():
 @admin.route('/departments')
 def departments_list():
     page = request.args.get('page', 1, type=int)
-    index = (page * 10) - 1 if page > 1 else page
     departments_pagination = Department.query.paginate(page=page, per_page=10)
     departments_info = [department_data_to_dict(department) for department in departments_pagination.items]
 
     return render_template(
         'departments.html',
         departments=departments_info,
-        departments_pagination=departments_pagination,
-        index=index
+        departments_pagination=departments_pagination
     )
 
 
@@ -92,10 +91,28 @@ def users_list():
 # TODO CHECK HOW TO ADD INDEX TO THE TABLE IF DON'T KNOW DELETE ROW NUMBER
 
 
+def admin_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if current_user.is_admin:
+            return func(*args, **kwargs)
+        else:
+            return 'Unauthorised access'
+    return wrapper
+
+
 @admin.before_request
+@admin_required
 @login_required
 def before_admin_request():
     """ Protect all of the admin endpoints. """
-    if current_user:
-        if not check_if_admin(current_user):
-            return 'Unauthorised access'
+
+
+def admin_or_user_required(func):
+    @wraps(func)
+    def wrapper(user_id):
+        if current_user.is_admin or current_user.id == user_id:
+            return func(user_id)
+        else:
+            return 'You cannot access this page'
+    return wrapper

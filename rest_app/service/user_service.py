@@ -63,6 +63,15 @@ def user_data_parser():
     return parser
 
 
+def form_user_data_parser():
+    parser = user_data_parser().copy()
+
+    parser.replace_argument('is_admin', type=bool, location='form')
+    parser.replace_argument('is_employee', type=bool, location='form')
+
+    return parser
+
+
 def user_data_to_dict(user):
     user_info = {
         'id': user.id,
@@ -76,7 +85,9 @@ def user_data_to_dict(user):
         'gender': user.gender,
         'is_admin': user.is_admin,
         'is_employee': user.is_employee,
-        'total_value': get_total_value_spent_in_the_restaurant(user.id)
+        'total_value': get_total_value_spent_in_the_restaurant(user.id),
+        'registered_on': user.registered_at,
+        'last_login_date': user.last_login_date
     }
 
     return user_info

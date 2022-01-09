@@ -10,6 +10,6 @@ class Order(db.Model):
     comments = db.Column(db.Text)
     total_price = db.Column(db.Numeric(10, 3))
     order_time = db.Column(db.Time)
-    user_id = db.Column(db.ForeignKey('user.id', ondelete='SET NULL'), nullable=False)
-    address_id = db.Column(db.ForeignKey('address.id', ondelete='SET NULL'), nullable=False)
+    user_id = db.Column(db.ForeignKey('user.id', ondelete='SET NULL'))
+    address_id = db.Column(db.ForeignKey('address.id', ondelete='SET NULL'))
     order_items = db.relationship('OrderItem', backref='order', passive_deletes=True)
