@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, url_for
+from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from functools import wraps
 from rest_app.service.department_service import department_data_to_dict
@@ -9,10 +9,6 @@ from rest_app.service.user_service import user_data_to_dict
 from rest_app.models import *
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
-
-
-def check_if_admin(user_object):
-    return True if user_object.is_admin else False
 
 
 @admin.route('/')
@@ -94,10 +90,10 @@ def users_list():
 def admin_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if current_user.is_admin:
-            return func(*args, **kwargs)
-        else:
-            return 'Unauthorised access'
+        if current_user.is_authenticated:
+            if not current_user.is_admin:
+                return 'Unauthorized access'
+        return func(*args, **kwargs)
     return wrapper
 
 

@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {% include 'nav_bar.html' %}
+    <div class="container">
+        <a class="add_button" href="">Empty cart</a>
+        <div class="table_outer">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Product name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in cart_items %}
+                    <tr class="clickable-row">
+                        <td> {{ item['title'] }} </td>
+                        <td> {{ item['price'] }}</td>
+                        <td><input type="number"></td>
+                        <td><a class="remove_button" href="">Delete</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

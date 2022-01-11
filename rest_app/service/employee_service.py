@@ -46,9 +46,9 @@ def employee_data_to_dict(employee):
         'first_name': employee.user.first_name,
         'last_name': employee.user.last_name,
         'id': employee.id,
-        'hire_date': employee.hire_date,
+        'hire_date': str(employee.hire_date),
         'department_name': employee.department.name,
-        'salary': employee.salary,
+        'salary': str(employee.salary),
         'available_holidays': employee.available_holidays
     }
 

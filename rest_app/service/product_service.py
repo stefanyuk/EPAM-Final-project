@@ -1,4 +1,4 @@
-from rest_app.models import Product
+from rest_app.models import Product, Category
 from rest_app import db
 from uuid import uuid4
 
@@ -34,9 +34,26 @@ def product_data_to_dict(product):
     :return: product information
     """
     product_info = {
+        'id': product.id,
         'title': product.title,
         'price': product.price,
         'category': product.category.name
     }
 
     return product_info
+
+
+def get_all_products():
+    """
+    Gathers all the information about each product that is in the database.
+    And prepares it for display on the page
+    """
+    info_about_products = []
+
+    for category in Category.query.all():
+        for product in category.products:
+            info_about_products.append(
+                product_data_to_dict(product)
+            )
+
+    return info_about_products

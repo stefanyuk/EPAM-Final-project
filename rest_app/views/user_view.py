@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required
 from rest_app.service.user_service import form_user_data_parser, update_user, add_user
-from rest_app.service.address_service import add_address, address_data_parser
+from rest_app.service.address_service import add_address
 from rest_app.service.common_services import delete_row_by_id
 from rest_app.forms.personal_info_forms import UpdateProfileForm, AddressForm, populate_form_values
 from rest_app.models import Address, User
@@ -44,7 +44,7 @@ def create_user():
 
 
 @user.route('/<string:user_id>/update', methods=['POST'])
-@admin_required
+@admin_or_user_required
 @login_required
 def update_user_values(user_id):
     profile_form = UpdateProfileForm(user_id)
@@ -70,7 +70,7 @@ def delete_user(user_id):
 
 
 @user.route('/<string:user_id>/update_address', methods=['POST'])
-@admin_required
+@admin_or_user_required
 @login_required
 def update_address_details(user_id):
     profile_form = UpdateProfileForm(user_id)

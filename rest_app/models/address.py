@@ -5,7 +5,7 @@ class Address(db.Model):
     __tablename__ = 'address'
 
     id = db.Column(db.String, primary_key=True)
-    user_id = db.Column(db.String, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.String, db.ForeignKey('user.id', ondelete='CASCADE'))
     city = db.Column(db.String, nullable=False)
     street = db.Column(db.String, nullable=False)
     street_number = db.Column(db.String, nullable=False)

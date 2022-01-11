@@ -9,10 +9,10 @@ from rest_app.service.common_services import get_row_by_id
 
 
 def add_user(username, password, first_name, last_name, email, phone_number, gender,
-             birth_date, is_admin, is_employee):
+             birth_date, is_admin, is_employee, id=None):
 
     user = User(
-        id=str(uuid4()),
+        id=id if id else str(uuid4()),
         username=username if username else str(uuid4())[0:8],
         password_hash=generate_password_hash(password) if password else generate_password_hash('12345lacrema'),
         registered_at=datetime.datetime.now().date(),
@@ -85,9 +85,9 @@ def user_data_to_dict(user):
         'gender': user.gender,
         'is_admin': user.is_admin,
         'is_employee': user.is_employee,
-        'total_value': get_total_value_spent_in_the_restaurant(user.id),
-        'registered_on': user.registered_at,
-        'last_login_date': user.last_login_date
+        'total_value': str(get_total_value_spent_in_the_restaurant(user.id)),
+        'registered_on': str(user.registered_at),
+        'last_login_date': str(user.last_login_date)
     }
 
     return user_info

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from rest_app.views.admin_views import check_if_admin
+from rest_app.views.admin_views import admin_required
 
 
 department = Blueprint('department', __name__, url_prefix='/department')
@@ -27,9 +27,7 @@ def delete_department(department_id):
 
 
 @department.before_request
+@admin_required
 @login_required
 def before_admin_request():
     """ Protect all of the admin endpoints. """
-    if current_user:
-        if not check_if_admin(current_user):
-            return 'Unauthorised access'

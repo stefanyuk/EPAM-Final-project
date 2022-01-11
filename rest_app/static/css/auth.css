@@ -27,7 +27,7 @@
 }
 
 
-.register .register_button, .login .login_button , .personal_profile_button, .add_btn{
+.register .register_button, .login .login_button , .personal_profile_button, .add_btn, .remove_button{
     width: 150px;
     height: 54px;
     display: flex;
@@ -52,4 +52,11 @@
 .personal_profile_button--red:hover, .add_btn:hover, .delete_btn:hover{
     background-color: #f58580;
     color: #6c0d0d;
+}
+
+
+.register_question{
+    margin-top: 10px;
+    margin-left: 8px;
+    display: block;
 }

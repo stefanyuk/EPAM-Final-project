@@ -7,7 +7,7 @@
                 <nav class="welcome_nav">
                     <ul class="menu">
                         <li class="menu_item"><a href="#" class="menu_link">Home</a></li>
-                        <li class="menu_item"><a href="#" class="menu_link">Our Menu</a></li>
+                        <li class="menu_item"><a href="{{ url_for('shop.products') }}" class="menu_link">Our Menu</a></li>
                         <li class="menu_item"><a href="#" class="menu_link">About</a></li>
                         <li class="menu_item"><a href="#" class="menu_link">Contact</a></li>
                         {% if current_user.is_authenticated %}
@@ -27,7 +27,7 @@
                 <div class="welcome_text">
                     <h2 class="welcome_subtitle">Welcome!</h2>
                     <h1 class="welcome_title">We serve the reachest cofee in the city</h1>
-                    <a class="welcome_button" href="#">Check our products</a>
+                    <a class="welcome_button" href="{{ url_for('shop.products') }}">Check our products</a>
                 </div>
                 <img class="welcome_girl" src="{{ url_for('static', filename='img/welcome_girl.jpg') }}" alt="">
             </div>

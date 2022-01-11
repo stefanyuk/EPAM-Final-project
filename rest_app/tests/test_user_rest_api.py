@@ -11,9 +11,9 @@ def test_add_test_data_to_db():
     departments = Department.query.all()
 
     assert len(users) == 11  # + admin user
-    assert len(addresses) == 5
+    assert len(addresses) == 10
     assert len(employees) == 5
-    assert len(departments) == 5
+    assert len(departments) == 8
     assert departments[-1].name == 'Python'
 
 
@@ -23,7 +23,14 @@ def test_get_users_list(client):
 
     assert response.status_code == 200
     assert len(data) == 11
-    assert data[-2]['username'] == 'lmulcaster9'
+    assert data[0]['first_name'] == 'Charlton'
+    assert data[-2]['username'] == 'sboadby9'
+
+
+def test_get_users_list_without_auth(client):
+    response = client.get(url_for('rp_api.user_list'))
+
+    assert response.status_code == 401
 
 
 def test_create_new_user(client):
@@ -44,9 +51,9 @@ def test_create_new_user(client):
 @pytest.mark.parametrize(
     ('user_id', 'username'),
     (
-            ('cc760630-afa5-4acd-ae68-a4d90ac9eeb3', 'nhealeas0'),
-            ('1a9ebbbe-a0ac-4081-a4a3-ae4624422757', 'jregler1'),
-            ('f7155f2b-2ad6-41c4-905c-f3ccfe77105b', 'gmcbeath2')
+            ('9da00efd-fe86-4b90-ac85-237c0eeaf7e6', 'cglyn0'),
+            ('2c67e8e4-c499-4844-bc31-dd46f200bf00', 'ldally1'),
+            ('6b6cefad-6d6e-4585-8f49-13bc468f3159', 'ehansford2')
     )
 )
 def test_get_user(client, user_id, username):
@@ -84,9 +91,9 @@ def test_get_user_atypical_behaviour(client, user_id, username):
 @pytest.mark.parametrize(
     ('user_id', 'new_username'),
     (
-            ('cc760630-afa5-4acd-ae68-a4d90ac9eeb3', 'test_1'),
-            ('1a9ebbbe-a0ac-4081-a4a3-ae4624422757', 'test_2'),
-            ('f7155f2b-2ad6-41c4-905c-f3ccfe77105b', 'test_3')
+            ('9da00efd-fe86-4b90-ac85-237c0eeaf7e6', 'test1'),
+            ('2c67e8e4-c499-4844-bc31-dd46f200bf00', 'test2'),
+            ('6b6cefad-6d6e-4585-8f49-13bc468f3159', 'test3')
     )
 )
 def test_update_user(client, user_id, new_username):

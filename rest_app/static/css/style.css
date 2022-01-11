@@ -280,3 +280,51 @@ body{
 .about .about_main_outer .about_main_text .text{
     margin-top: 30px;
 }
+
+
+
+/* PRODUCT PAGE */
+
+.products_outer{
+    padding-left: 30px;
+}
+
+.products_outer .card{
+    width: 18rem;
+}
+
+
+.product_main .product_navigation{
+    min-height: 102px;
+    padding: 22px 40px 0 40px;
+}
+
+.products_outer .card-body{
+    min-height: 170px;
+}
+
+.product_main{
+    min-height: 110px;
+}
+
+
+.checkout_btn{
+    color: white;
+    border-color: white;
+    margin-left: 10px;
+}
+
+.checkout_btn:hover{
+    background-color: #f58580;
+    border-color: white;
+}
+
+.products_in_cart{
+    color: white;
+}
+
+
+.remove_button{
+    width: 112px;
+    height: 39px;
+}

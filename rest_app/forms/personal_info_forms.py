@@ -1,8 +1,6 @@
 from flask_wtf import FlaskForm
-from flask_login import current_user
-import datetime
 from wtforms import StringField, SubmitField, ValidationError, DateField
-from wtforms.validators import DataRequired, Length, Email
+from wtforms.validators import DataRequired, Length, Email, Optional
 from rest_app.models import User
 
 
@@ -15,11 +13,9 @@ class UpdateProfileForm(FlaskForm):
                            validators=[DataRequired(), Length(min=4)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
-    first_name = StringField('First Name',
-                             validators=[DataRequired()])
-    last_name = StringField('Last Name',
-                            validators=[DataRequired()])
-    birth_date = DateField()
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    birth_date = DateField(validators=[Optional()])
 
     submit = SubmitField('Update')
 
@@ -49,7 +45,7 @@ class AddressForm(FlaskForm):
 
 
 def populate_form_values(address_form, profile_form, user_id, address_object, user_object):
-    address = address_object.query.filter(address_object.user_id == user_id).all()[-1]
+    address = address_object.query.filter(address_object.user_id == user_id).all()
     user = user_object.query.filter(user_object.id == user_id).first()
 
     profile_form = profile_form
@@ -61,6 +57,7 @@ def populate_form_values(address_form, profile_form, user_id, address_object, us
     profile_form.birth_date.data = user.birth_date
 
     if address:
+        address = address.pop()
         address_form.city.data = address.city
         address_form.street.data = address.street
         address_form.street_number.data = address.street_number

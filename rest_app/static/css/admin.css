@@ -54,11 +54,11 @@
 
 /* ADMIN MAIN */
 
-.admin_main{
+.admin_main {
     min-height: 130px;
 }
 
-.admin_main .admin_navigation{
+.admin_main .admin_navigation, .product_main .product_navigation{
     margin-top: 30px;
     max-width: 1088px;
     min-height: 130px;
@@ -67,7 +67,7 @@
     padding: 35px 40px 0 40px;
 }
 
-.admin_main .navigation_outer{
+.admin_main .navigation_outer, .product_main .product_navigation_outer{
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
