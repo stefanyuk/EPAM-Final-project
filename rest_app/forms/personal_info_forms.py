@@ -44,17 +44,8 @@ class AddressForm(FlaskForm):
     submit = SubmitField('Update')
 
 
-def populate_form_values(address_form, profile_form, user_id, address_object, user_object):
+def add_values_to_address_form(address_form, address_object, user_id):
     address = address_object.query.filter(address_object.user_id == user_id).all()
-    user = user_object.query.filter(user_object.id == user_id).first()
-
-    profile_form = profile_form
-    address_form = address_form
-    profile_form.username.data = user.username
-    profile_form.email.data = user.email
-    profile_form.first_name.data = user.first_name
-    profile_form.last_name.data = user.last_name
-    profile_form.birth_date.data = user.birth_date
 
     if address:
         address = address.pop()
@@ -63,4 +54,16 @@ def populate_form_values(address_form, profile_form, user_id, address_object, us
         address_form.street_number.data = address.street_number
         address_form.postal_code.data = address.postal_code
 
-    return profile_form, address_form
+    return address_form
+
+
+def add_values_to_profile_form(profile_form, user_object, user_id):
+    user = user_object.query.filter(user_object.id == user_id).first()
+
+    profile_form.username.data = user.username
+    profile_form.email.data = user.email
+    profile_form.first_name.data = user.first_name
+    profile_form.last_name.data = user.last_name
+    profile_form.birth_date.data = user.birth_date
+
+    return profile_form

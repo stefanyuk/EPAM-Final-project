@@ -3,7 +3,8 @@ from flask_login import login_required
 from rest_app.service.user_service import form_user_data_parser, update_user, add_user
 from rest_app.service.address_service import add_address
 from rest_app.service.common_services import delete_row_by_id
-from rest_app.forms.personal_info_forms import UpdateProfileForm, AddressForm, populate_form_values
+from rest_app.forms.personal_info_forms import UpdateProfileForm, AddressForm, \
+    add_values_to_address_form, add_values_to_profile_form
 from rest_app.models import Address, User
 from rest_app.forms.admin_forms import AddUser
 from rest_app.views.admin_views import admin_or_user_required, admin_required
@@ -15,9 +16,8 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @admin_or_user_required
 @login_required
 def user_detail(user_id):
-    profile_form = UpdateProfileForm(user_id)
-    address_form = AddressForm()
-    profile_form, address_form = populate_form_values(address_form, profile_form, user_id, Address, User)
+    address_form = add_values_to_address_form(AddressForm(), Address, user_id)
+    profile_form = add_values_to_profile_form(UpdateProfileForm(user_id), User, user_id)
 
     return render_template(
         'personal_info.html',
@@ -56,7 +56,8 @@ def update_user_values(user_id):
         flash('User information was updated', 'success')
         return redirect(url_for('user.user_detail', user_id=user_id))
 
-    profile_form, address_form = populate_form_values(address_form, profile_form, user_id, Address, User)
+    address_form = add_values_to_address_form(address_form, Address, user_id)
+    profile_form = add_values_to_profile_form(profile_form, User, user_id)
     return render_template('personal_info.html', profile_form=profile_form, address_form=address_form)
 
 

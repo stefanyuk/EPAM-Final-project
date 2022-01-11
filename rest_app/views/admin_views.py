@@ -107,8 +107,9 @@ def before_admin_request():
 def admin_or_user_required(func):
     @wraps(func)
     def wrapper(user_id):
-        if current_user.is_admin or current_user.id == user_id:
-            return func(user_id)
+        if current_user.is_authenticated:
+            if current_user.is_admin or current_user.id == user_id:
+                return func(user_id)
         else:
             return 'You cannot access this page'
     return wrapper

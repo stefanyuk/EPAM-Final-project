@@ -19,6 +19,12 @@ class OrdersAPI(Resource):
 
     def post(self):
         args = create_order_data_parser().parse_args()
+        if n := verify_product_names(args['products']):
+            return {
+                'message': 'You provided wrong product names. Please verify you data',
+                'products_not_found': n
+            }
+
         order = create_order(**args)
 
         return {'message': f'Order with the number {order.id} has been created'}, 201

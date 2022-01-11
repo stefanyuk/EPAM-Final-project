@@ -19,7 +19,6 @@ def get_order_products_total_price(products: list):
         product = db.session.query(Product).filter(Product.title == title).one()
         total_price += product.price
 
-    # TODO HERE YOU NEED TO CHANGE ONE TO FIRST AND FIGUREE OUT HOW TO PROVIDE USER WITH THE REPLY
     return total_price
 
 
@@ -64,6 +63,22 @@ def order_data_to_dict(order):
     }
 
     return order_data
+
+
+def verify_product_names(products):
+    """
+    Verifies whether user provided correct product names
+    :param products: list of product names
+    """
+    products_not_found = []
+
+    for title in products:
+        product = db.session.query(Product).filter(Product.title == title).first()
+        if not product:
+            products_not_found.append(title)
+
+    return products_not_found
+
 
 
 def get_all_client_orders(user_id):

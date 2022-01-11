@@ -2,10 +2,9 @@
     <div class="container">
         <div class="product_navigation">
             <div class="product_navigation_outer">
-                <a href="#" class="navigation_item">Croissants</a>
-                <a href="#" class="navigation_item">Tea</a>
-                <a href="#" class="navigation_item">Coffee</a>
-                <a href="#" class="navigation_item">Bakery</a>
+                {% for category in categories %}
+                    <a href="{{ url_for('shop.products_by_category',  category_id=category.id) }}" class="navigation_item">{{ category.name }}</a>
+                {% endfor %}
             </div>
         </div>
     </div>

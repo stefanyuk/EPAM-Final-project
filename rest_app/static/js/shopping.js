@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('.add_to_cart_btn').on('click', function () {
-        var product_id = $(this).attr('product_id');
+        const product_id = $(this).attr('product_id');
 
         req = $.ajax({
             url: '/add_product',
@@ -13,7 +13,7 @@ $(document).ready(function () {
                 window.location = data.url;
             }
             else {
-             $('.admin_navigation_upper').html(data)
+             $('.admin_header').html(data)
             }
         });
     });

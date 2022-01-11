@@ -1,0 +1,59 @@
+
+{{ address_form.hidden_tag() }}
+<fieldset class="form-group">
+    <div class="form-group mb-2">
+        {{ address_form.city.label (class='form_label')}}
+        {% if address_form.city.errors %}
+            {{ address_form.city(class="form-control form-control-sm is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in address_form.city.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ address_form.city (class='form-control form-control-sm')}}
+        {% endif %}
+    </div>
+    <div class="form-group mb-2">
+        {{ address_form.street.label (class='form_label')}}
+        {% if address_form.street.errors %}
+            {{ address_form.street(class="form-control form-control-sm is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in address_form.street.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ address_form.street (class='form-control form-control-sm')}}
+        {% endif %}
+    </div>
+    <div class="form-group mb-2">
+        {{ address_form.street_number.label (class='form_label')}}
+        {% if address_form.street_number.errors %}
+            {{ address_form.street_number(class="form-control form-control-sm is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in address_form.street_number.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ address_form.street_number (class='form-control form-control-sm')}}
+        {% endif %}
+    </div>
+    <div class="form-group mb-2">
+        {{ address_form.postal_code.label (class='form_label')}}
+        {% if address_form.postal_code.errors %}
+            {{ address_form.postal_code(class="form-control form-control-sm is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in address_form.postal_code.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ address_form.postal_code (class='form-control form-control-sm')}}
+        {% endif %}
+    </div>
+</fieldset>
+<div class="form-group">
+    {{ address_form.submit (class='personal_profile_button personal_profile_button--red')}}
+</div>

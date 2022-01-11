@@ -45,4 +45,4 @@ def login():
 def logout():
     session.clear()
     logout_user()
-    return redirect(url_for('wlc.welcome_landing'))
+    return redirect(url_for('shop.welcome_landing'))

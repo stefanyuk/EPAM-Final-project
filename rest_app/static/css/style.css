@@ -1,6 +1,7 @@
 @import url(auth.css);
 @import url(admin.css);
 @import url(personal_profile.css);
+@import url(checkout.css);
 
 *{
     margin: 0;
@@ -314,17 +315,12 @@ body{
     margin-left: 10px;
 }
 
+
+.add_to_cart .add_to_cart_btn{
+    margin-top: 10px;
+}
+
 .checkout_btn:hover{
     background-color: #f58580;
     border-color: white;
-}
-
-.products_in_cart{
-    color: white;
-}
-
-
-.remove_button{
-    width: 112px;
-    height: 39px;
 }
