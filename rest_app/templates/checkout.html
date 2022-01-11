@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {% include 'add_to_cart_nav_bar.html' %}
+    <div class="container">
+        <a class="add_button" href="{{ url_for('shop.empty_cart') }}">Empty cart</a>
+        <div class="content-section">
+            <div class="cart-row">
+                <span class="cart-item cart-header cart-column">ITEM</span>
+                <span class="cart-price cart-header cart-column">PRICE</span>
+                <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+            </div>
+            <div class="cart-items">
+            {% for item in cart_items %}
+                <div class="cart-row">
+                    <div class="cart-item cart-column">
+                        <img src="{{ url_for('static', filename='img/cappucino.png') }}" alt="">
+                        <span class="cart-item-title">{{ item['title'] }}</span>
+                    </div>
+                    <span class="cart-price cart-column">{{ item['price'] }}</span>
+                    <div class="cart-quantity cart-column">
+                        <input class="cart-quantity-input" type="number" value="1">
+                        <button data-product="{{ item['id'] }}" class="remove_button">Delete</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        </div>
+        <hr>
+        <div class="finalize_outer">
+            <h4 class="cart-total-price"></h4>
+            <a class="finalize_btn" href="{{ url_for('shop.finalize_checkout') }}">Finalize</a>
+        </div>
+        <hr>
+    </div>
+{% endblock %}
+
+
+
+{##}
+{#<div class="table_outer">#}
+{#            <table class="table table-striped table-hover">#}
+{#                <thead>#}
+{#                    <tr>#}
+{#                        <th scope="col">Product name</th>#}
+{#                        <th scope="col">Price</th>#}
+{#                        <th scope="col">Qty</th>#}
+{#                    </tr>#}
+{#                </thead>#}
+{#                <tbody>#}
+{#                {% for item in cart_items %}#}
+{#                    <tr class="clickable-row">#}
+{#                        <td class="item-title"> {{ item['title'] }} </td>#}
+{#                        <td class="item-price"> {{ item['price'] }}</td>#}
+{#                        <td>Qty</td>#}
+{#                        <td><a class="remove_button" href="{{ url_for('shop.delete_item_from_cart', product_id=item['id']) }}">Delete</a></td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#                </tbody>#}
+{#            </table>#}
+{#        </div>#}

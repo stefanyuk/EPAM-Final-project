@@ -1,0 +1,132 @@
+/* ADMIN HEADER */
+
+.admin_header{
+    width: 100%;
+    height: 80px;
+    background-color: #AD0300;
+}
+
+.nav_img{
+    width: 121px;
+    height: 80px;
+}
+
+.navigation_outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin_upper_nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin_upper_nav .menu_item{
+    margin-left: 25px;
+}
+.admin_upper_nav .menu_item:first-child{
+    margin-left: 0;
+}
+
+.admin_navigation_outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.admin_header .admin_upper_nav{
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+.admin_header .admin_upper_nav .menu_item .menu_link{
+    text-decoration: none;
+    color: white;
+}
+
+.admin_header .admin_upper_nav .menu_item .menu_link:hover{
+    color: #c0b9b9;
+}
+
+
+/* ADMIN MAIN */
+
+.admin_main {
+    min-height: 130px;
+}
+
+.admin_main .admin_navigation, .product_main .product_navigation{
+    margin-top: 30px;
+    max-width: 1088px;
+    min-height: 130px;
+    background: #E99695;
+    border-radius: 33px;
+    padding: 35px 40px 0 40px;
+}
+
+.admin_main .navigation_outer, .product_main .product_navigation_outer{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.navigation_item, .add_button{
+    background-color: #cd2f2c;
+    width: 150px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 40px;
+    border-radius: 33px;
+    text-decoration: none;
+    color: white;
+}
+
+.navigation_item:hover{
+    background-color: #dc7569;
+    color: white;
+    text-decoration: none;
+}
+
+.add_button{
+    margin-top: 30px;
+    background-color: #E99695;
+    width: 202px;
+}
+
+.add_button:hover{
+    text-decoration: none;
+    color: white;
+    background-color: #dc7569;
+}
+
+
+/* TABLE */
+
+.table_outer{
+    margin-top: 40px;
+    background-color: #dc7569;
+}
+
+td a {
+   display: block;
+   text-decoration: none;
+    padding: 2px;
+    color: black;
+}
+
+td a:hover{
+    text-decoration: none;
+    color: black;
+}
+
+/* PAGINATION */
+
+.btn{
+    background-color: #dc7569;
+}

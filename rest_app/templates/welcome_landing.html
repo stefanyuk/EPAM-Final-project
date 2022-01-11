@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <section class="welcome_page">
+        <div class="container">
+            <header class="welcome_header">
+                <img class="welcome_logo" src="{{ url_for('static', filename='img/LaCremaLogo.png') }}" alt="logo">
+                <nav class="welcome_nav">
+                    <ul class="menu">
+                        <li class="menu_item"><a href="#" class="menu_link">Home</a></li>
+                        <li class="menu_item"><a href="{{ url_for('shop.products') }}" class="menu_link">Our Menu</a></li>
+                        <li class="menu_item"><a href="#" class="menu_link">About</a></li>
+                        <li class="menu_item"><a href="#" class="menu_link">Contact</a></li>
+                        {% if current_user.is_authenticated %}
+                            <li class="menu_item"><a href="{{ url_for('user.user_detail', user_id=current_user.id) }}" class="menu_link">My profile</a></li>
+                            <li class="menu_item"><a href="{{ log_out_url }}" class="menu_link">Log Out</a></li>
+                        {% else %}
+                            <li class="menu_item"><a href="{{ login_url }}" class="menu_link">Log in</a></li>
+                            <li class="menu_item"><a href="{{ register_url }}" class="menu_link">Register</a></li>
+                        {% endif %}
+
+                    </ul>
+                </nav>
+            </header>
+            <img class="welcome_sweets" src="{{ url_for('static', filename='img/welcome_sweets.jpg') }}" alt="welcome_sweets">
+
+            <div class="main_info">
+                <div class="welcome_text">
+                    <h2 class="welcome_subtitle">Welcome!</h2>
+                    <h1 class="welcome_title">We serve the reachest cofee in the city</h1>
+                    <a class="welcome_button" href="{{ url_for('shop.products') }}">Check our products</a>
+                </div>
+                <img class="welcome_girl" src="{{ url_for('static', filename='img/welcome_girl.jpg') }}" alt="">
+            </div>
+        </div>
+    </section>
+    <section class="drinks">
+        <div class="container">
+            <h2 class="drinks_title">Drinks</h2>
+            <div class="drinks_line"></div>
+            <div class="drinks_title_text">La galley of type and scrambled it to make a type specimen book. It has survived </div>
+            <a class="drinks_link" href="#">All drinks></a>
+            <div class="offer_outer">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="drink_sale_offer">
+                            <img class="offer_img" src="{{ url_for('static', filename='img/cappuccino.png') }}" alt="cappuccino">
+                            <div class="sign_and_price">
+                                <div class="sign">€</div>
+                                <h4 class="price"> 4,20 </h4>
+                            </div>
+                            <h3 class="drink_name">Cappuccino</h3>
+                            <div class="drink_bottom_text">La galley of type and scrambled it to make a type specimen book.</div>
+                            <div class="drink_button_outer">
+                                <a class="drink_order_button" href="">Get delivery</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="drink_sale_offer_2">
+                            <img class="offer_img"  src="{{ url_for('static', filename='img/black_coffee.png') }}" alt="back-coffee">
+                            <div class="sign_and_price">
+                                <div class="sign">€</div>
+                                <h4 class="price"> 2,80 </h4>
+                            </div>
+                            <h3 class="drink_name">Black Cofee</h3>
+                            <div class="drink_bottom_text">La galley of type and scrambled it to make a type specimen book.</div>
+                            <div class="drink_button_outer">
+                                <a class="drink_order_button" href="">Get delivery</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="drink_sale_offer">
+                            <img class="offer_img" src="{{ url_for('static', filename='img/latte.png') }}" alt="latte">
+                            <div class="sign_and_price">
+                                <div class="sign">€</div>
+                                <h4 class="price">3,90</h4>
+                            </div>
+                            <h3 class="drink_name">Cafee Latte</h3>
+                            <div class="drink_bottom_text">La galley of type and scrambled it to make a type specimen book.</div>
+                            <div class="drink_button_outer">
+                                <a class="drink_order_button" href="">Get delivery</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="about">
+        <img class="about_vector" src="{{ url_for('static', filename='img/Vector.png') }}" alt="">
+        <div class="container">
+            <h2 class="about_title">About</h2>
+            <div class="about_title_line"></div>
+            <div class="about_title_text">La galley of type and scrambled it to make a type specimen book. It has survived </div>
+
+            <div class="about_main_outer">
+                <img src="{{ url_for('static', filename='img/logo_products.jpg') }}" alt="" class="about_logo_img">
+                <div class="about_main_text">
+                    <h3 class="about_main_text_title">The perfect place to enjoy cofee</h3>
+                    <div class="text">Simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's
+                        standard dummy text ever since the 1500s.<br><br>When an unknown printer took a galley of type and scrambled it
+                        to make a type specimen book. It has survived not only five centuries, but also the leap into electronic. <br><br>A type specimen book. It has survived not only five centuries, but also the leap into electronic
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
