@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, url_for, request, session, flash, redirect, jsonify
 from flask_login import current_user
 from rest_app.service.product_service import product_data_to_dict
+from rest_app.service.address_service import address_data_to_dict
 from rest_app.service.common_services import get_all_rows_from_db
 from rest_app.models import Product, Category, Address
-from rest_app.forms.personal_info_forms import AddressForm, add_values_to_address_form
+from rest_app.forms.personal_info_forms import AddressForm
 
 shopping = Blueprint('shop', __name__)
 
@@ -38,13 +39,13 @@ def products():
     )
 
 
-@shopping.route('/products/<string:category_id>')
-def products_by_category(category_id):
+@shopping.route('/products/<string:category_name>')
+def products_by_category(category_name):
     categories = [category for category in get_all_rows_from_db(Category)]
-    # category = Category.query.filter(Category.name == category_name).one()
+    category = Category.query.filter(Category.name == category_name).one()
 
     page = request.args.get('page', 1, type=int)
-    products_pagination = Product.query.filter(Product.category_id == category_id).paginate(page=page, per_page=6)
+    products_pagination = Product.query.filter(Product.category_id == category.id).paginate(page=page, per_page=6)
     product_info = [product_data_to_dict(product) for product in products_pagination.items]
 
     return render_template(
@@ -55,24 +56,23 @@ def products_by_category(category_id):
     )
 
 
-
-@shopping.route('/add_product', methods=['POST'])
-def update_cart():
+@shopping.route('/add_item_to_cart', methods=['POST'])
+def add_item_to_cart():
     if current_user.is_authenticated:
-        product_id = request.form['id']
+        product_id = request.get_json()['product_id']
 
         if not session.get('items_in_cart', None):
             session['items_in_cart'] = []
 
         if product_id in session['items_in_cart']:
-            flash('Item is already in the cart', 'info')
+            return jsonify({'message': 'item is already in the cart'})
         else:
             session['items_in_cart'].append(
                 product_id
             )
             session.modified = True
 
-        return render_template('add_to_cart_update.html')
+        return jsonify({'items_qty': len(session['items_in_cart'])})
     else:
         flash('Please log in in order to add items to the cart', 'info')
         return jsonify({'url': url_for('auth.login')})
@@ -98,19 +98,30 @@ def empty_cart():
     return redirect(url_for('shop.products'))
 
 
-@shopping.route('/delete_item/<string:product_id>')
+@shopping.route('/delete_item/<string:product_id>', methods=['POST'])
 def delete_item_from_cart(product_id):
     session.get('items_in_cart').remove(product_id)
     session.modified = True
 
+    return jsonify({'items_qty': len(session['items_in_cart'])})
+
+
 
 @shopping.route('/finalize_checkout', methods=['GET', 'POST'])
 def finalize_checkout():
-    form = add_values_to_address_form(AddressForm(), Address, current_user.id)
-    form.submit.label.text = 'Get Delivery'
+    form = AddressForm()
+    addresses = Address.query.filter(Address.user_id == current_user.id).all()
+    if addresses:
+        form.change_address_values(addresses.pop())
 
-    if len(current_user.addresses.all()) > 1:
-        session['add_address_info'] = True
+    form.submit.label.text = 'Get Delivery'
 
     return render_template('finalize_order.html', address_form=form)
 
+
+@shopping.route('/update_address_values/<string:address_id>', methods=['POST'])
+def get_address_values(address_id):
+    address = Address.query.get(address_id)
+    address_info = address_data_to_dict(address)
+
+    return jsonify(address_info)

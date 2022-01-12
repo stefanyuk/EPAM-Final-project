@@ -20,6 +20,19 @@ def add_address(user_id, city, postal_code, street, street_number):
     return address
 
 
+def address_data_to_dict(address):
+    address_info = {
+        'id': address.id,
+        'city': address.city,
+        'street': address.street,
+        'street_number': address.street_number,
+        'postal_code': address.postal_code
+    }
+
+    return address_info
+
+
+
 def address_data_parser():
     parser = reqparse.RequestParser()
 

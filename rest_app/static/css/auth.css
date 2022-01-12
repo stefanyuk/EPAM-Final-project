@@ -27,7 +27,7 @@
 }
 
 
-.register .register_button, .login .login_button , .personal_profile_button, .add_btn, .remove_button{
+.register .register_button, .login .login_button , .personal_profile_button, .add_btn, .remove_button, .finalize_btn{
     width: 150px;
     height: 54px;
     display: flex;
