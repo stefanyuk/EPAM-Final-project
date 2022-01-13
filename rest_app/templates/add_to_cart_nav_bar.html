@@ -3,7 +3,7 @@
         <div class="navigation_outer">
             <a href="{{ url_for('shop.welcome_landing') }}"><img class="nav_img" src="{{ url_for('static', filename='img/LaCremaLogo.png') }}" alt=""></a>
             <nav class="admin_navigation_upper">
-                <ul class="admin_upper_nav">
+                <ul class="upper_nav">
                     {% if current_user.is_authenticated %}
                         {% if current_user.is_admin %}
                             <li class="menu_item"><a href="{{ url_for('admin.admin_main') }}" class="menu_link">Admin Menu</a></li>
@@ -14,9 +14,9 @@
                     {% else %}
                         <li class="menu_item"><a href="{{ url_for('shop.welcome_landing') }}" class="menu_link">Home Page</a></li>
                     {% endif %}
-                    <span class="items_in_cart">
+                    <span class="items_in_cart_info">
                         {% if session['items_in_cart'] %}
-                            <li class="menu_item"><div class="products_in_cart">Products in cart: {{ session['items_in_cart']|length }}</div></li>
+                            <li class="menu_item qty_info">Products in cart: {{ session['items_in_cart']|length }}</li>
                             <a href="{{ url_for('shop.checkout') }}" class="btn btn-outline-info checkout_btn">Checkout</a>
                         {% endif %}
                     </span>
@@ -24,15 +24,7 @@
             </nav>
         </div>
     </div>
-    <div class="item_in_the_cart_error">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                      {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div class="alert item_in_the_cart_alert hide">
+        <span class="alert_msg">Item is already in the cart</span>
     </div>
 </header>

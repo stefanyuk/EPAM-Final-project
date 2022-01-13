@@ -17,16 +17,16 @@
     align-items: center;
 }
 
-.admin_upper_nav{
+.upper_nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.admin_upper_nav .menu_item{
+.upper_nav .menu_item{
     margin-left: 25px;
 }
-.admin_upper_nav .menu_item:first-child{
+.upper_nav .menu_item:first-child{
     margin-left: 0;
 }
 
@@ -37,17 +37,17 @@
     flex-wrap: wrap;
 }
 
-.admin_header .admin_upper_nav{
+.admin_header .upper_nav{
     margin-bottom: 0;
     list-style-type: none;
 }
 
-.admin_header .admin_upper_nav .menu_item .menu_link{
+.admin_header .upper_nav .menu_item .menu_link{
     text-decoration: none;
     color: white;
 }
 
-.admin_header .admin_upper_nav .menu_item .menu_link:hover{
+.admin_header .upper_nav .menu_item .menu_link:hover{
     color: #c0b9b9;
 }
 

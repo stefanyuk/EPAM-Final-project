@@ -19,22 +19,48 @@ function ready() {
         address.addEventListener('click', changeAddress)
     }
 
-    var quantityInputs = document.getElementsByClassName('cart-quantity-input')
-    for ( i = 0; i < quantityInputs.length; i++){
-        var input = quantityInputs[i]
-        input.addEventListener('change', quantitychanged)
+    if (window.location.pathname.split('/')[1] === 'checkout'){
+        updateCartTotall()
+
+        var quantityInputs = document.getElementsByClassName('cart-quantity-input')
+        for ( i = 0; i < quantityInputs.length; i++){
+            var input = quantityInputs[i]
+            input.addEventListener('change', quantitychanged)
+        }
+
+        const finalizeBtn = document.querySelector('.finalize_btn')
+        finalizeBtn.addEventListener('click', () => {
+            let summarizeArr = [];
+            const cartRows = [...document.querySelectorAll('.main-cart-row')]
+                cartRows.forEach((el, index) => summarizeArr.push({id: el.getAttribute('data-item_id'), quantity: +quantityInputs[index].value}))
+
+            localStorage.setItem("summarizeItemsDetails", JSON.stringify(summarizeArr));
+        })
+
+        setStorageElements()
+
     }
 
-    var addButtons = document.getElementsByClassName('add_to_cart_btn')
-    for (i = 0; i < addButtons.length; i++){
-        var addButton = addButtons[i]
-        addButton.addEventListener('click', updateCartTotalValue)
+    if (window.location.pathname.split('/')[1] === 'finalize_order') {
+        const getDeliveryBtn = document.querySelector('.my_button_test')
+        getDeliveryBtn.addEventListener('click', () => {
+            console.log(JSON.parse(localStorage.getItem("summarizeItemsDetails")))
+        })
     }
+}
 
-    window.onload = function (){
+
+function setStorageElements(){
+    if (localStorage.getItem('summarizeItemsDetails')){
+        let itemDetails = JSON.parse(localStorage.getItem('summarizeItemsDetails'))
+        const quantityInputs =  [...document.querySelectorAll('.cart-quantity-input')]
+        quantityInputs.forEach((el, index) => {
+            el.value = itemDetails[index].quantity
+        })
         updateCartTotall()
     }
 }
+
 
 function createRequest(){
     const xhr = new XMLHttpRequest();
@@ -55,31 +81,6 @@ function changeAddress(){
         updateFormData(data)
     };
     xhr.send();
-}
-
-function updateCartTotalValue(){
-    const itemsTotal = document.getElementById('cart_item_qty')
-    const productId = this.dataset.product_id
-    const url = '/add_item_to_cart'
-    const xhr = createRequest()
-    const myModal = document.getElementById('small_modal')
-    const params = JSON.stringify({
-        product_id: productId
-    })
-
-    xhr.open('POST', url)
-    xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
-    xhr.onload = function (){
-        console.log(xhr.response.message)
-        if (xhr.response.message){
-
-        } else{
-         itemsTotal.value = xhr.response.items_qty
-        }
-    };
-    xhr.send(params);
-    itemsTotal.value = parseInt(itemsTotal.value) + 1
 }
 
 

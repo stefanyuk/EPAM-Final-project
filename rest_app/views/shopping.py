@@ -14,6 +14,7 @@ def welcome_landing():
     login_url = url_for('auth.login')
     log_out_url = url_for('auth.logout')
     register_url = url_for('auth.register')
+
     return render_template(
         'welcome_landing.html',
         login_url=login_url,
@@ -59,7 +60,7 @@ def products_by_category(category_name):
 @shopping.route('/add_item_to_cart', methods=['POST'])
 def add_item_to_cart():
     if current_user.is_authenticated:
-        product_id = request.get_json()['product_id']
+        product_id = request.form['id']
 
         if not session.get('items_in_cart', None):
             session['items_in_cart'] = []
@@ -72,7 +73,7 @@ def add_item_to_cart():
             )
             session.modified = True
 
-        return jsonify({'items_qty': len(session['items_in_cart'])})
+        return render_template('add_to_cart_update.html')
     else:
         flash('Please log in in order to add items to the cart', 'info')
         return jsonify({'url': url_for('auth.login')})
@@ -106,8 +107,8 @@ def delete_item_from_cart(product_id):
     return jsonify({'items_qty': len(session['items_in_cart'])})
 
 
-
-@shopping.route('/finalize_checkout', methods=['GET', 'POST'])
+# TODO YOU CHANGED ROUTE NAME HERE
+@shopping.route('/finalize_order', methods=['GET', 'POST'])
 def finalize_checkout():
     form = AddressForm()
     addresses = Address.query.filter(Address.user_id == current_user.id).all()
