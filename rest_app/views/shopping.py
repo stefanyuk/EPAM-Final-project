@@ -1,9 +1,13 @@
 from flask import Blueprint, render_template, url_for, request, session, flash, redirect, jsonify
 from flask_login import current_user
+from sqlalchemy import and_
 from rest_app.service.product_service import product_data_to_dict
 from rest_app.service.address_service import address_data_to_dict
+from rest_app.service.order_service import create_order
+from rest_app.service.address_service import add_address
+from rest_app.service.order_item_service import create_order_items
 from rest_app.service.common_services import get_all_rows_from_db
-from rest_app.models import Product, Category, Address
+from rest_app.models import Product, Category, Address, Order
 from rest_app.forms.personal_info_forms import AddressForm
 
 shopping = Blueprint('shop', __name__)
@@ -104,20 +108,47 @@ def delete_item_from_cart(product_id):
     session.get('items_in_cart').remove(product_id)
     session.modified = True
 
-    return jsonify({'items_qty': len(session['items_in_cart'])})
+    if not session.get('items_in_cart'):
+        return jsonify({'url': url_for('shop.products')})
+
+    return render_template('add_to_cart_update.html')
 
 
-# TODO YOU CHANGED ROUTE NAME HERE
 @shopping.route('/finalize_order', methods=['GET', 'POST'])
 def finalize_checkout():
-    form = AddressForm()
+    address_form = AddressForm()
+
+    if address_form.validate_on_submit():
+        address = Address.query.filter_by(and_(
+            user_id=current_user.id,
+            street_name=address_form.data['street_name'],
+            street_number=address_form.data['street_number']
+        )).first()
+        if not address:
+            pass
+        create_order(
+            session.get('order_items_info'),
+            user_id=current_user.id,
+
+        )
+
+
+
     addresses = Address.query.filter(Address.user_id == current_user.id).all()
     if addresses:
-        form.change_address_values(addresses.pop())
+        address_form.change_address_values(addresses.pop())
 
-    form.submit.label.text = 'Get Delivery'
+    address_form.submit_address.label.text = 'Get Delivery'
 
-    return render_template('finalize_order.html', address_form=form)
+    return render_template('finalize_order.html', address_form=address_form)
+
+
+@shopping.route('/get_storage_values', methods=['POST'])
+def get_values_from_local_storage():
+    session['order_items_info'] = request.get_json()['order_items_info']
+    session.modified = True
+
+    return '', 204
 
 
 @shopping.route('/update_address_values/<string:address_id>', methods=['POST'])

@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
-    {% include 'add_to_cart_nav_bar.html' %}
-    <div class="container">
-        <a class="add_button" href="{{ url_for('shop.empty_cart') }}">Empty cart</a>
+    {% include 'nav_bar.html' %}
+    <div class="container checkout_container">
+        <a class="empty_cart_btn" href="{{ url_for('shop.empty_cart') }}">Empty cart</a>
         <div class="content-section">
             <div class="cart-row">
                 <span class="cart-item cart-header cart-column">ITEM</span>

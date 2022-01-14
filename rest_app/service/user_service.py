@@ -9,10 +9,10 @@ from rest_app.service.common_services import get_row_by_id
 
 
 def add_user(username, password, first_name, last_name, email, phone_number, gender,
-             birth_date, is_admin, is_employee, id=None):
+             birth_date, is_admin, is_employee):
 
     user = User(
-        id=id if id else str(uuid4()),
+        id=str(uuid4()),
         username=username if username else str(uuid4())[0:8],
         password_hash=generate_password_hash(password) if password else generate_password_hash('12345lacrema'),
         registered_at=datetime.datetime.now().date(),
@@ -22,8 +22,8 @@ def add_user(username, password, first_name, last_name, email, phone_number, gen
         phone_number=phone_number,
         birth_date=birth_date,
         gender=gender,
-        is_admin=is_admin if is_admin else False,
-        is_employee=is_employee if is_employee else False
+        is_admin=is_admin,
+        is_employee=is_employee
     )
 
     db.session.add(user)
@@ -53,12 +53,12 @@ def user_data_parser():
                         help='you didn\'t provide first name', type=str, location=['json', 'form'])
     parser.add_argument('last_name', type=str,
                         help='you didn\'t provide last name', location=['json', 'form'])
-    parser.add_argument('email', type=str, location=['json', 'form'])
+    parser.add_argument('email', type=str, location=['json', 'form'], required=True)
     parser.add_argument('phone_number', type=str, location=['json', 'form'])
     parser.add_argument('birth_date', type=str, location=['json', 'form'])
     parser.add_argument('gender', type=str, location=['json', 'form'])
-    parser.add_argument('is_admin', type=inputs.boolean, location=['json', 'form'])
-    parser.add_argument('is_employee', type=inputs.boolean, location=['json', 'form'])
+    parser.add_argument('is_admin', type=inputs.boolean, location=['json', 'form'], default=False)
+    parser.add_argument('is_employee', type=inputs.boolean, location=['json', 'form'], default=False)
 
     return parser
 
@@ -68,6 +68,10 @@ def form_user_data_parser():
 
     parser.replace_argument('is_admin', type=bool, location='form')
     parser.replace_argument('is_employee', type=bool, location='form')
+
+    for arg in parser.args:
+        if arg.required:
+            arg.required = False
 
     return parser
 

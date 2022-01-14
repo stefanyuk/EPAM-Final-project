@@ -4,19 +4,19 @@
     {% include 'nav_bar.html' %}
 
     <section class="personal_info">
-        <div class="container">
+        <div class="container personal_info_container">
         <div class="row">
-            <div class="col-md-5 mt-1 flashed">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div id="flashed_personal_profile_info" class="flashed hide">
                         {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
+                            <div class="alert alert-{{ category }} message">
                               {{ message }}
                             </div>
                         {% endfor %}
-                    {% endif %}
-                {% endwith %}
-            </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
         </div>
             <div class="row">
                 <div class="col-md-6 profile_title">Account Details</div>
@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-md-4 personal_info_inner">
                     <div class="personal_info_form_wrapper">
-                        <form action="{{ url_for('user.update_user_values', user_id=user_id) }}" method="POST">
+                        <form action="{{ url_for('user.update_user_details', user_id=user_id) }}" method="POST">
                             {{ profile_form.hidden_tag() }}
                             <fieldset class="form-group">
                                 <div class="form-group mb-2">
@@ -96,7 +96,7 @@
                             </fieldset>
                             <div class="buttons_outer">
                                 <div class="form-group">
-                                    {{ profile_form.submit (class='personal_profile_button personal_profile_button--red')}}
+                                    {{ profile_form.submit_profile (class='personal_profile_button personal_profile_button--red')}}
                                 </div>
                                 {% if current_user.is_admin %}
                                     <div class="form-group">
@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 offset-md-2 personal_info_address">
-                    <form action="{{ url_for('user.update_address_details', user_id=user_id) }}" method="POST">
+                    <form action="{{ url_for('user.update_user_details', user_id=user_id) }}" method="POST">
                     {% include 'address_form.html' %}
                     </form>
                 </div>

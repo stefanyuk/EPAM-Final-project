@@ -2,6 +2,7 @@ from rest_app.models import OrderItem, Product
 from rest_app import db
 from uuid import uuid4
 
+# TODO THINK HOW TO COMBINE PRODUCTS WITH ID AND PRODUCTS BY NAME
 
 def create_order_items(products: list, order_id):
     for title in products:

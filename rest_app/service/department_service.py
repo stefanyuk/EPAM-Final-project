@@ -31,12 +31,24 @@ def department_data_to_dict(department):
     department_info = {
         'id': department.id,
         'name': department.name,
-        'average_department_salary': float(get_average_dept_salary(department.id)),
-        'total_employees': get_total_employees(department.id),
+        'average_department_salary': float(get_average_dept_salary(department.id)['avg_salary']),
+        'total_employees': get_total_employees(department.id)['qty'],
         'description': department.description
     }
 
     return department_info
+
+
+def get_average_salary():
+    """
+    Function that creates a query to get average salary for all departments
+    :return:
+    """
+    query = db.session.query(Department.name, func.ROUND(func.AVG(EmployeeInfo.salary), 3).label('avg_salary'))\
+        .join(EmployeeInfo)\
+        .group_by(Department.name)\
+
+    return query
 
 
 def get_average_dept_salary(department_id):
@@ -56,7 +68,7 @@ def get_average_dept_salary(department_id):
         .filter(Department.id == department_id) \
         .group_by(Department.name).one()
 
-    return query['avg_salary']
+    return query
 
 
 def get_total_employees(department_id):
@@ -76,7 +88,7 @@ def get_total_employees(department_id):
         .filter(Department.id == department_id) \
         .group_by(Department.name).one()
 
-    return query['qty']
+    return query
 
 
 def update_department(department_id, **kwargs):

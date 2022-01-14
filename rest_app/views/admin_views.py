@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
+from sqlalchemy import asc, desc
 from functools import wraps
-from rest_app.service.department_service import department_data_to_dict
+from rest_app.service.department_service import department_data_to_dict, get_average_salary, get_total_employees
 from rest_app.service.employee_service import employee_data_to_dict
 from rest_app.service.order_service import order_data_to_dict
 from rest_app.service.product_service import product_data_to_dict
@@ -16,30 +17,30 @@ def admin_main():
     return render_template('admin_main.html')
 
 
+department_table_filter = {
+    'avg_salary': get_average_salary,
+    'total_emp': get_total_employees,
+}
+
+
 @admin.route('/departments')
 def departments_list():
-    page = request.args.get('page', 1, type=int)
-    departments_pagination = Department.query.paginate(page=page, per_page=10)
-    departments_info = [department_data_to_dict(department) for department in departments_pagination.items]
+    return render_template('departments.html')
 
-    return render_template(
-        'departments.html',
-        departments=departments_info,
-        departments_pagination=departments_pagination
-    )
+
+@admin.route('/department_data')
+def department_data():
+    return {'data': [department_data_to_dict(department) for department in Department.query]}
 
 
 @admin.route('/employees')
 def employees_list():
-    page = request.args.get('page', 1, type=int)
-    employees_pagination = EmployeeInfo.query.paginate(page=page, per_page=10)
-    employees_info = [employee_data_to_dict(employee) for employee in employees_pagination.items]
+    return render_template('employees.html')
 
-    return render_template(
-        'employees.html',
-        employees=employees_info,
-        employees_pagination=employees_pagination
-    )
+
+@admin.route('/employee_data')
+def employee_data():
+    return {'data': [employee_data_to_dict(employee) for employee in EmployeeInfo.query]}
 
 
 @admin.route('/orders')
@@ -90,16 +91,15 @@ def users_list():
 def admin_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if current_user.is_authenticated:
-            if not current_user.is_admin:
-                return 'Unauthorized access'
+        if not current_user.is_admin:
+            return 'Unauthorized access'
         return func(*args, **kwargs)
     return wrapper
 
 
 @admin.before_request
-@admin_required
 @login_required
+@admin_required
 def before_admin_request():
     """ Protect all of the admin endpoints. """
 

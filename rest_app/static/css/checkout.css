@@ -1,3 +1,7 @@
+.checkout_container, .finalize_container{
+    margin-top: 115px;
+}
+
 .cart-column {
     display: flex;
     align-items: center;
@@ -47,7 +51,7 @@
     border-radius: 10px;
 }
 
-.remove_button, .finalize_btn{
+.remove_button, .finalize_btn, .empty_cart_btn{
     color: white;
     background-color: #EB5757;
     border: none;
@@ -55,7 +59,12 @@
     font-weight: bold;
 }
 
-.remove_button:hover, .finalize_btn:hover{
+.empty_cart_btn{
+    width: 162px;
+}
+
+
+.remove_button:hover, .finalize_btn:hover, .empty_cart_btn:hover{
     background-color: #CC4C4C;
     text-decoration: none;
     color: white;
@@ -174,7 +183,7 @@
 
 @keyframes show_slide {
     0%{
-        transform: translateX(100%);
+        transform: translateY(100%);
     }
     40%{
         transform: translateX(-10%);

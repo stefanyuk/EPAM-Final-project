@@ -11,22 +11,55 @@ $(document).ready(function () {
         req.done(function(data) {
             if (data.message){
                 const alertElement = $('.alert')
-                alertElement.removeClass('hide')
-                alertElement.addClass('show')
-
-                setTimeout(function(){
-
-                    alertElement.addClass('hide')
-                    alertElement.removeClass('show')
-                }, 2000)
+                removeAddClassWithAnimation(alertElement)
             }
             else if (data.url){
                 window.location = data.url;
             }
             else {
-                console.log('hello')
                 $('.items_in_cart_info').html(data)
             }
         });
     });
+});
+
+
+function removeAddClassWithAnimation(element){
+    element.removeClass('hide')
+    element.addClass('show')
+
+    setTimeout(function(){
+            element.addClass('hide')
+            element.removeClass('show')
+        }, 1200)
+}
+
+
+$(document).ready(function (){
+    if (document.getElementById('flashed_personal_profile_info')){
+        const flashedInfo = $('#flashed_personal_profile_info')
+        removeAddClassWithAnimation(flashedInfo)
+    }
+});
+
+
+
+$(document).ready(function (){
+   $('.remove_button').on('click', function (){
+       const product_id = $(this).attr('data-product');
+
+       req = $.ajax({
+            url: '/delete_item/' + product_id,
+            type: 'POST'
+        })
+
+       req.done(function(data){
+           if (data.url){
+                window.location = data.url
+           }
+           else {
+               $('.items_in_cart_info').html(data)
+           }
+       });
+   });
 });

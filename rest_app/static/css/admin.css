@@ -1,6 +1,6 @@
 /* ADMIN HEADER */
 
-.admin_header{
+.main_header{
     width: 100%;
     height: 80px;
     background-color: #AD0300;
@@ -37,17 +37,17 @@
     flex-wrap: wrap;
 }
 
-.admin_header .upper_nav{
+.main_header .upper_nav{
     margin-bottom: 0;
     list-style-type: none;
 }
 
-.admin_header .upper_nav .menu_item .menu_link{
+.main_header .upper_nav .menu_item .menu_link{
     text-decoration: none;
     color: white;
 }
 
-.admin_header .upper_nav .menu_item .menu_link:hover{
+.main_header .upper_nav .menu_item .menu_link:hover{
     color: #c0b9b9;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .admin_main .admin_navigation, .product_main .product_navigation{
-    margin-top: 30px;
+    margin-top: 115px;
     max-width: 1088px;
     min-height: 130px;
     background: #E99695;
@@ -74,7 +74,7 @@
     flex-direction: row;
 }
 
-.navigation_item, .add_button{
+.navigation_item{
     background-color: #cd2f2c;
     width: 150px;
     height: 54px;
@@ -124,6 +124,34 @@ td a:hover{
     text-decoration: none;
     color: black;
 }
+
+/* BOOTSTRAP TABLE */
+
+#data_filter{
+    float: right;
+    margin-right: 20px;
+}
+
+#data_length{
+    margin: 20px 0 0 15px;
+}
+
+#data{
+    border-bottom: white solid;
+}
+
+#data_paginate{
+    margin-top: 20px;
+}
+
+#data_paginate .pagination li.paginate_button.page-item.active{
+    background-color: #dc7569;
+}
+
+#data_info{
+    margin-top: 30px;
+}
+
 
 /* PAGINATION */
 

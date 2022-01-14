@@ -17,7 +17,7 @@ class UpdateProfileForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     birth_date = DateField(validators=[Optional()])
 
-    submit = SubmitField('Update')
+    submit_profile = SubmitField('Update')
 
     def validate_username(self, username):
         user = User.query.filter(User.id == self.user_id).first()
@@ -50,7 +50,7 @@ class AddressForm(FlaskForm):
     street = StringField('Street', validators=[DataRequired()])
     street_number = IntegerField('Street Number', validators=[DataRequired()])
     postal_code = StringField('Postal Code', validators=[DataRequired()])
-    submit = SubmitField('Update')
+    submit_address = SubmitField('Update')
 
     def change_address_values(self, address):
         self.city.data = address.city

@@ -22,7 +22,7 @@ def get_order_products_total_price(products: list):
     return total_price
 
 
-def create_order(products: list, comments, user_id, address_id, status=None):
+def create_order(products: list, user_id, address_id, comments=None, status=None):
     """
     Creates new order in the database
 
