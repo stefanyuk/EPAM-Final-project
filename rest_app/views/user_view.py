@@ -17,7 +17,7 @@ user = Blueprint('user', __name__, url_prefix='/user')
 def user_detail(user_id):
     address_form = AddressForm()
     profile_form = UpdateProfileForm(user_id)
-    populate_address_info(address_form, profile_form, user_id)
+    populate_personal_info(address_form, profile_form, user_id)
 
     return render_template(
         'personal_info.html',
@@ -41,7 +41,7 @@ def update_user_details(user_id):
         add_address(user_id=user_id, **args)
         flash('Address information has been updated', 'success')
 
-    populate_address_info(address_form, profile_form, user_id)
+    populate_personal_info(address_form, profile_form, user_id)
 
     return redirect(url_for('user.user_detail', user_id=user_id))
 
@@ -72,7 +72,7 @@ def delete_user(user_id):
     return redirect(url_for('admin.admin_main'))
 
 
-def populate_address_info(address_form, profile_form, user_id):
+def populate_personal_info(address_form, profile_form, user_id):
     """
     Pre-populates values in form fields
 
@@ -86,3 +86,4 @@ def populate_address_info(address_form, profile_form, user_id):
         address_form.change_address_values(addresses.pop())
 
     profile_form.change_user_form_values(user_id)
+

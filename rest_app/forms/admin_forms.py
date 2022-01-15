@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
+from wtforms.widgets import TelInput
 import phonenumbers
-from phonenumbers.phonenumberutil import NumberParseException
-from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, FloatField
-from wtforms.validators import DataRequired, Length, Email
-from rest_app.models import Department, User
+from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, FloatField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, Optional
+from rest_app.models import Department, User, Category, Product, EmployeeInfo
 
 
 class AddDepartment(FlaskForm):
@@ -34,7 +34,7 @@ class AddUser(FlaskForm):
                            validators=[DataRequired(), Length(min=5, max=30)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
-    phone_number = StringField('Phone Number', validators=[Length(min=12, max=12)])
+    phone_number = IntegerField('Phone Number', widget=TelInput())
     is_employee = BooleanField('Is employee?')
     is_admin = BooleanField('Is admin?')
     submit = SubmitField('Add')
@@ -61,3 +61,41 @@ class AddUser(FlaskForm):
             raise ValidationError('Invalid phone number')
 
 
+class FilterForm(FlaskForm):
+    filter_option = SelectField('Filter Options', choices=['', 'Search by', 'Sort By'], validators=[DataRequired()])
+    order = SelectField('Sort order', choices=['asc', 'desc'], validators=[Optional()])
+    field_name = SelectField('Field Name', choices=[], validators=[Optional()])
+    submit = SubmitField('Search')
+
+
+class FilterProductsForm(FilterForm, FlaskForm):
+    category = SelectField('Category', choices=[], validators=[Optional()])
+
+    def populate_choices_fields(self):
+        self.category.choices = [category.name for category in Category.query.all()]
+        for row_title in Product.__table__.columns.keys():
+            if row_title not in ['id', 'order_items', 'category_id', 'summary']:
+                self.field_name.choices.append(row_title)
+
+
+class FilterEmployeesForm(FilterForm, FlaskForm):
+    department = SelectField('Department', choices=[], validators=[Optional()])
+
+    def populate_choices_fields(self):
+        self.department.choices = [department.name for department in Department.query.all()]
+
+        for row_title in EmployeeInfo.__table__.columns.keys():
+            if row_title not in ['id', 'user_id', 'vacations', 'department_id']:
+                self.field_name.choices.append(row_title)
+
+        self.field_name.choices += ['last_name', 'first_name']
+
+
+class FilterUserForm(FilterForm, FlaskForm):
+    is_employee = SelectField('Is Employee', choices=[True, False], validators=[Optional()])
+
+    def populate_choices_fields(self):
+        main_fields = ['username', 'last_name', 'first_name', 'last_login_date', 'total_money_spent']
+
+        for row_title in main_fields:
+            self.field_name.choices.append(row_title)

@@ -43,17 +43,9 @@ def product_data_to_dict(product):
     return product_info
 
 
-def get_all_products():
-    """
-    Gathers all the information about each product that is in the database.
-    And prepares it for display on the page
-    """
-    info_about_products = []
+def get_products_by_category(category_name):
+    category = Category.query.filter_by(name=category_name).first()
+    products = Product.query.filter_by(category_id=category.id)
 
-    for category in Category.query.all():
-        for product in category.products:
-            info_about_products.append(
-                product_data_to_dict(product)
-            )
+    return products
 
-    return info_about_products

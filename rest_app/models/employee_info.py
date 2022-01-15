@@ -11,3 +11,6 @@ class EmployeeInfo(db.Model):
     user_id = db.Column(db.ForeignKey('user.id', ondelete='CASCADE'))
     available_holidays = db.Column(db.Integer)
     vacations = db.relationship('Vacation', backref='employee', lazy='dynamic', passive_deletes=True)
+
+
+# TODO DELETE VACATIONS

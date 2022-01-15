@@ -1,7 +1,8 @@
 from werkzeug.security import generate_password_hash
+from sqlalchemy import func
 from flask_restful import reqparse
 from flask_restful import inputs
-from rest_app.models import User
+from rest_app.models import User, Order
 import datetime
 from uuid import uuid4
 from rest_app import db
@@ -9,10 +10,10 @@ from rest_app.service.common_services import get_row_by_id
 
 
 def add_user(username, password, first_name, last_name, email, phone_number, gender,
-             birth_date, is_admin, is_employee):
+             birth_date, is_admin, is_employee, user_id=None):
 
     user = User(
-        id=str(uuid4()),
+        id=user_id if user_id else str(uuid4()),
         username=username if username else str(uuid4())[0:8],
         password_hash=generate_password_hash(password) if password else generate_password_hash('12345lacrema'),
         registered_at=datetime.datetime.now().date(),
@@ -30,6 +31,24 @@ def add_user(username, password, first_name, last_name, email, phone_number, gen
     db.session.commit()
 
     return user
+
+
+def get_total_value_per_user():
+    query = User.query(User.id, func.ROUND(func.SUM(Order.total_price), 3))\
+        .join(Order)\
+        .group_by(User.id)
+
+    return query
+
+
+def get_all_users_by_employee_filter(employee_filter):
+    """
+    Creates a query for search either all users who are employees or who are not
+    :param employee_filter: filter based on which search will be performed
+    """
+    query = User.query.filter_by(is_employee=employee_filter)
+
+    return query
 
 
 def get_total_value_spent_in_the_restaurant(user_id):

@@ -64,10 +64,10 @@ function emptyCartItemElements(){
 
 
 
-function updateCartItemElements(){
+function updateCartItemElements() {
     if (localStorage.getItem('summarizeItemsDetails')){
-        let cartItemDetails = JSON.parse(localStorage.getItem('summarizeItemsDetails'))
-        const quantityInputs =  [...document.querySelectorAll('.cart-quantity-input')]
+        let cartItemDetails = JSON.parse(localStorage.getItem('summarizeItemsDetails'));
+        const quantityInputs =  [...document.querySelectorAll('.cart-quantity-input')];
         quantityInputs.forEach((el, index) => {
             el.value = cartItemDetails[index].quantity
         })

@@ -1,5 +1,5 @@
 from flask_restful import reqparse
-from rest_app.models import EmployeeInfo
+from rest_app.models import EmployeeInfo, Department
 from rest_app.service.common_services import get_row_by_id
 import datetime
 from uuid import uuid4
@@ -89,3 +89,10 @@ def employee_data_parser():
     parser.add_argument('department_id', type=str, help='you did not provide employee department id', required=True)
 
     return parser
+
+
+def get_all_employees_by_department(department_name):
+    dept = Department.query.filter_by(name=department_name).first()
+    query = EmployeeInfo.query.filter_by(department_id=dept.id)
+
+    return query

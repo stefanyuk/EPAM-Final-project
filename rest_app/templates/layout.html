@@ -14,12 +14,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="{{ url_for('static', filename='js/checkout.js') }}" async></script>
     <script defer src="{{ url_for('static', filename='js/shopping.js') }}"></script>
-</head>
-<body>
-    {% block content %}{% endblock content %}
+    <script defer src="{{ url_for('static', filename='js/table_filters.js') }}"></script>
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+</head>
+<body>
+    {% block content %}{% endblock content %}
     {% block scripts %}{% endblock %}
 </body>
 
