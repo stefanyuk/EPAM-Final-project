@@ -113,11 +113,17 @@ function quantitychanged(event){
     updateCartTotall()
 }
 
-function removeCartItem (event){
-    const buttonClicked = event.target
-
-    buttonClicked.parentElement.parentElement.remove()
+function removeCartItem (event) {
+    const buttonClicked = event.target;
+    modifyStorage(event.target.getAttribute('data-product'))
+    buttonClicked.parentElement.parentElement.remove();
     updateCartTotall()
+}
+
+function modifyStorage(cartId) {
+    let temporaryStorage = JSON.parse(localStorage.getItem('summarizeItemsDetails'));
+    let indx = temporaryStorage
+
 }
 
 
