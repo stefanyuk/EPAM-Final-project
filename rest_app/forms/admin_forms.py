@@ -34,7 +34,7 @@ class AddUser(FlaskForm):
                            validators=[DataRequired(), Length(min=5, max=30)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
-    phone_number = IntegerField('Phone Number', widget=TelInput())
+    phone_number = StringField('Phone Number', validators=[Length(min=11, max=16)])
     is_employee = BooleanField('Is employee?')
     is_admin = BooleanField('Is admin?')
     submit = SubmitField('Add')
@@ -50,9 +50,6 @@ class AddUser(FlaskForm):
             raise ValidationError('That email is taken. Please choose a different one.')
 
     def validate_phone_number(self, phone_number):
-        start = phone_number.data[:2]
-        if start != '+1':
-            raise ValidationError('Number should start with +1')
         try:
             p = phonenumbers.parse(phone_number.data)
             if not phonenumbers.is_valid_number(p):

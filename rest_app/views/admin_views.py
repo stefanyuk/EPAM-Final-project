@@ -80,7 +80,8 @@ def employees_search():
         'employees.html',
         employees=employees_info,
         employees_pagination=employees_pagination,
-        form=form
+        form=form,
+        index=index
     )
 
 
@@ -183,8 +184,7 @@ def users_search():
 
     if session.get('users_search'):
         if session.get('search_filter') == 'Search by':
-            users_pagination = get_all_users_by_employee_filter(session.get('is_employee'))\
-                .paginate(page=page, per_page=10)
+            users_pagination = get_all_users_by_employee_filter(session.get('is_employee')).paginate(page=page, per_page=10)
         else:
             if session.get('field_name') == 'total_money_spent':
                 users_pagination = get_total_value_per_user()\

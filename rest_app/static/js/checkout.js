@@ -6,7 +6,7 @@ if (document.readyState === 'loading'){
 
 
 function ready() {
-
+    $('#phone_number').mask('+48(999) 999-999');
     const removeCartItemButtons = document.getElementsByClassName('remove_button')
     for (var i = 0; i < removeCartItemButtons.length; i++){
         const button = removeCartItemButtons[i]
@@ -31,6 +31,11 @@ function ready() {
     }
 
     if (window.location.pathname.split('/')[1] === 'checkout'){
+        window.onbeforeunload = () => {
+            if(window.location.pathname.split('/')[1] === 'checkout') {
+                setCartItemsToStorage();
+            }
+        }
         updateCartTotall()
         emptyCartItemElements()
 
@@ -40,25 +45,22 @@ function ready() {
             input.addEventListener('change', quantitychanged)
         }
 
-        const finalizeBtn = document.querySelector('.finalize_btn')
-        finalizeBtn.addEventListener('click', () => {
-            let summarizeArr = [];
-            const cartRows = [...document.querySelectorAll('.main-cart-row')]
-                cartRows.forEach((el, index) => summarizeArr.push({id: el.getAttribute('data-item_id'), quantity: +quantityInputs[index].value}))
-
-            localStorage.setItem("summarizeItemsDetails", JSON.stringify(summarizeArr));
-        })
-
         updateCartItemElements()
-
+        function setCartItemsToStorage() {
+            let summarizeArr = [];
+            const cartRows = [...document.querySelectorAll('.main-cart-row')];
+            cartRows.forEach((el, index) => summarizeArr.push({id: el.getAttribute('data-item_id'), quantity: +quantityInputs[index].value}));
+            localStorage.setItem("summarizeItemsDetails", JSON.stringify(summarizeArr));
+        }
     }
 
 }
-
 function emptyCartItemElements(){
-    const emptyCartButton = document.querySelector('.empty_cart_btn')
+    const emptyCartButton = document.querySelector('.empty_cart_btn');
     emptyCartButton.addEventListener('click', () => {
-        localStorage.clear()
+            const cartItems = [...document.querySelectorAll('.cart-items')];
+            cartItems.forEach(cartItem => cartItem.remove());
+            localStorage.clear();
     })
 }
 
@@ -114,16 +116,13 @@ function quantitychanged(event){
 }
 
 function removeCartItem (event) {
-    const buttonClicked = event.target;
-    modifyStorage(event.target.getAttribute('data-product'))
-    buttonClicked.parentElement.parentElement.remove();
-    updateCartTotall()
+    event.target.parentElement.parentElement.remove();
+    removeFromStorage(event.target.getAttribute('data-product'));
+    updateCartTotall();
 }
 
-function modifyStorage(cartId) {
-    let temporaryStorage = JSON.parse(localStorage.getItem('summarizeItemsDetails'));
-    let indx = temporaryStorage
-
+function removeFromStorage(cartId) {
+    localStorage.setItem('summarizeItemsDetails', JSON.stringify( JSON.parse(localStorage.getItem('summarizeItemsDetails')).filter(cart => cart.id !== cartId)));
 }
 
 
@@ -142,3 +141,6 @@ function updateCartTotall(){
     total = Math.round(total * 100) / 100
     document.getElementsByClassName('cart-total-price')[0].innerText = "Total Value: " + "$" + total
 }
+
+
+

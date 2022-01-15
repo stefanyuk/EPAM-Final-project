@@ -58,7 +58,6 @@ def create_user():
         flash('User was added successfully', 'success')
         return redirect(url_for('admin.admin_main'))
 
-    form.phone_number.data = '+1'
     return render_template('add_user.html', form=form)
 
 
