@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+import phonenumbers
 from wtforms import StringField, SubmitField, ValidationError, DateField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, Optional
 from rest_app.models import User
@@ -13,8 +14,9 @@ class UpdateProfileForm(FlaskForm):
                            validators=[DataRequired(), Length(min=4)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
+    phone_number = StringField('Phone Number', validators=[Optional()])
+    first_name = StringField('First Name', validators=[Optional()])
+    last_name = StringField('Last Name', validators=[Optional()])
     birth_date = DateField(validators=[Optional()])
 
     submit_profile = SubmitField('Update')
@@ -35,11 +37,20 @@ class UpdateProfileForm(FlaskForm):
             if user:
                 raise ValidationError('That email is taken. Please choose a different one.')
 
+    def validate_phone_number(self, phone_number):
+        try:
+            p = phonenumbers.parse(phone_number.data)
+            if not phonenumbers.is_valid_number(p):
+                raise ValueError()
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError('Invalid phone number')
+
     def change_user_form_values(self, user_id):
         user = User.query.filter(User.id == user_id).first()
 
         self.username.data = user.username
         self.email.data = user.email
+        self.phone_number.data = user.phone_number
         self.first_name.data = user.first_name
         self.last_name.data = user.last_name
         self.birth_date.data = user.birth_date

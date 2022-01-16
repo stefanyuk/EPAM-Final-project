@@ -6,7 +6,10 @@ if (document.readyState === 'loading'){
 
 
 function ready() {
-    $('#phone_number').mask('+48(999) 999-999');
+    // PHONE MASK
+    $('#phone_number').mask('+1-999-999-9999');
+    //
+
     const removeCartItemButtons = document.getElementsByClassName('remove_button')
     for (var i = 0; i < removeCartItemButtons.length; i++){
         const button = removeCartItemButtons[i]
@@ -19,15 +22,7 @@ function ready() {
             const address = addressInfo[i]
             address.addEventListener('click', changeAddress)
         }
-        const params = {order_items_info: localStorage.getItem('summarizeItemsDetails')}
-        const req = createRequest()
-        console.log(params)
-        req.open('POST', '/get_storage_values')
-        req.setRequestHeader('Content-type', 'application/json')
-        req.onload = function (){
-        };
-        req.send(JSON.stringify(params));
-
+        sendStorageValues();
     }
 
     if (window.location.pathname.split('/')[1] === 'checkout'){
@@ -64,6 +59,17 @@ function emptyCartItemElements(){
     })
 }
 
+
+function sendStorageValues(){
+    const params = {order_items_info: JSON.parse(localStorage.getItem('summarizeItemsDetails'))}
+    const req = createRequest()
+    console.log('PARAMS', params)
+    req.open('POST', '/get_storage_values')
+    req.setRequestHeader('Content-type', 'application/json')
+    req.onload = function (){
+    };
+    req.send(JSON.stringify(params));
+}
 
 
 function updateCartItemElements() {

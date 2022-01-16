@@ -13,7 +13,7 @@
             <div class="col-md-5 offset-md-1">
                 {% if current_user.addresses.all()|length > 1 %}
                     <h4 class="delivery_advice_title">Choose one of your previous addresses</h4>
-                    {% for address in current_user.addresses %}
+                    {% for address in addresses %}
                         <div data-address="{{ address.id }}" class="address_to_choose_outer">
                             {{ address.city }} , {{ address.street }} {{ address.street_number }}, {{ address.postal_code }}
                         </div>

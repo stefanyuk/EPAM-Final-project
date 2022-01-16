@@ -55,6 +55,19 @@
                                     {% endif %}
                                 </div>
                                 <div class="form-group mb-2">
+                                    {{ profile_form.phone_number.label (class='form_label')}}
+                                    {% if profile_form.phone_number.errors %}
+                                        {{ profile_form.phone_number(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.phone_number.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.phone_number (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-2">
                                     {{ profile_form.first_name.label (class='form_label')}}
                                     {% if profile_form.first_name.errors %}
                                         {{ profile_form.first_name(class="form-control form-control-sm is-invalid") }}

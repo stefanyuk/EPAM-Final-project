@@ -5,7 +5,6 @@ from rest_app.service.vacation_service import *
 from rest_app.service.common_services import *
 from rest_app.errors.error_messages import record_not_found_by_id_error
 from rest_app.rest.auth import auth
-from rest_app.models import Vacation
 
 
 class VacationsAPI(Resource):

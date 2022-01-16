@@ -44,8 +44,12 @@ def product_data_to_dict(product):
 
 
 def get_products_by_category(category_name):
+    """
+    Select all records for the products that are under provided category
+
+    :param category_name: name of the searched category
+    """
     category = Category.query.filter_by(name=category_name).first()
     products = Product.query.filter_by(category_id=category.id)
 
     return products
-

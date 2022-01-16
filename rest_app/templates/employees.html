@@ -5,7 +5,7 @@
     {% include 'admin_top_menu.html' %}
     <div class="container">
         <div class="control_buttons">
-            <a class="add_button" href="">Add Employee</a>
+            <a class="add_button" href="{{ url_for('employee.create_employee') }}">Add Employee</a>
             <form action="{{ url_for('admin.employees_search') }}" method="POST">
                 {{ form.hidden_tag() }}
                 <div class="product_control_form_inner">
@@ -38,22 +38,22 @@
                     <tr>
                         <th scope="row">{{ index[loop.index] }}</th>
                         <td>
-                            <a href="{{ url_for('employee.employee_detail', employee_id=employee['id']) }}">{{ employee['first_name'] }}</a>
+                            <a href="{{ url_for('employee.update_employee', employee_id=employee['id']) }}">{{ employee['first_name'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url_for('employee.employee_detail', employee_id=employee['id']) }}">{{ employee['last_name'] }}</a>
+                            <a href="{{ url_for('employee.update_employee', employee_id=employee['id']) }}">{{ employee['last_name'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url_for('employee.employee_detail', employee_id=employee['id']) }}">{{ employee['salary'] }}</a>
+                            <a href="{{ url_for('employee.update_employee', employee_id=employee['id']) }}">{{ employee['salary'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url_for('employee.employee_detail', employee_id=employee['id']) }}">{{ employee['hire_date'] }}</a>
+                            <a href="{{ url_for('employee.update_employee', employee_id=employee['id']) }}">{{ employee['hire_date'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url_for('employee.employee_detail', employee_id=employee['id']) }}">{{ employee['department_name'] }}</a>
+                            <a href="{{ url_for('employee.update_employee', employee_id=employee['id']) }}">{{ employee['department_name'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url_for('employee.employee_detail', employee_id=employee['id']) }}">{{ employee['available_holidays'] }}</a>
+                            <a href="{{ url_for('employee.update_employee', employee_id=employee['id']) }}">{{ employee['available_holidays'] }}</a>
                         </td>
                     </tr>
                 {% endfor %}

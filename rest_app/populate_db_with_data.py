@@ -54,7 +54,11 @@ def main(max_qty):
         address = add_address(user_id=user.id, **next(addresses))
         if user.is_employee:
             department_id = random.choice(departments).id
-            add_employee(user_id=user.id, department_id=department_id, **next(employees))
+            add_employee(
+                is_employee=None, user_id=user.id, department_id=department_id, first_name=None,
+                last_name=None, salary=None, birth_date=None, is_admin=None, email=None,
+                password=None, available_holidays=None, **next(employees)
+            )
 
         create_order(
             [random.choice(products).title for i in range(3)],

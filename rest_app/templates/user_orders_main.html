@@ -1,19 +1,36 @@
 {% extends 'layout.html' %}
 {% block content %}
     {% include 'nav_bar.html' %}
-    <div class="container">
-        <h2 class="orders_main_title">Hello {{ current_user.first_name }}</h2>
-        <h3 class="order_main_subtitle">Your orders are below</h3>
+    <div class="container user_orders_container">
+        {% if current_user.first_name %}
+            <h2 class="orders_main_title">Hello, {{ current_user.first_name }}</h2>
+        {% else %}
+            <h2 class="orders_main_title">Hello</h2>
+        {% endif %}
+        <h3 class="orders_main_subtitle">Your orders are below</h3>
         {% for order in orders %}
-            <div class="order_item_outer">
-                <div class="order_and_total_price">
-                    <span id="order_id">Order #{{ order.id }}</span>
-                    <span class="total_price">Total price {{ order.total_price }}</span>
+            <a class="order_link" href="{{ url_for('orders.order_detail', order_id=order.id) }}">
+                <div class="order_item_outer">
+                    <div class="order_and_total_price">
+                        <span id="order_id">Order #{{ order.id }}</span>
+                        <span class="total_price">Total price {{ order.total_price }}</span>
+                    </div>
+                    <div class="order_status">Status: {{ order.status }}</div>
                 </div>
-                <div class="order_status">Status {{ order.status }}</div>
-            </div>
+            </a>
         {% endfor %}
-
+        <div class="orders_pagination">
+            {% for page_num in orders_pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if orders_pagination.page == page_num %}
+                        <a class="btn btn-outline-light mb-4" href="{{ url_for('orders.user_orders_list', user_id=current_user.id, page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-danger mb-4" href="{{ url_for('orders.user_orders_list', user_id=current_user.id, page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-
 {% endblock %}

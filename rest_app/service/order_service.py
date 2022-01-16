@@ -4,7 +4,7 @@ from datetime import datetime
 from rest_app import db
 from rest_app.service.order_item_service import create_order_items, update_order_items
 from rest_app.service.common_services import get_row_by_id
-from rest_app.models import Order, Product
+from rest_app.models import Order, Product, User
 
 
 def get_order_products_total_price(products: list):
@@ -15,14 +15,14 @@ def get_order_products_total_price(products: list):
     """
     total_price = 0
 
-    for title in products:
-        product = db.session.query(Product).filter(Product.title == title).one()
-        total_price += product.price
+    for product in products:
+        product = Product.query.get(product['id'])
+        total_price += product.price * product['quantity']
 
     return total_price
 
 
-def create_order(products: list, user_id, address_id, comments=None, status=None):
+def create_order(products: list, user_id, address_id=None, comments=None, status=None):
     """
     Creates new order in the database
 
@@ -30,8 +30,10 @@ def create_order(products: list, user_id, address_id, comments=None, status=None
     :param comments: comments that customer left for this order
     :param user_id: unique id of a customer
     :param status: status of the order
-    :param address_id: id of the address where food should be delivered
+    :param address_id: address where order needs to be delivered
     """
+    user = User.query.get(user_id)
+
     order = Order(
         id=str(uuid4()),
         status=status if status else 'awaiting fulfilment',
@@ -40,13 +42,13 @@ def create_order(products: list, user_id, address_id, comments=None, status=None
         user_id=user_id,
         order_time=datetime.now().time(),
         total_price=get_order_products_total_price(products),
-        address_id=address_id
+        address_id=address_id if address_id else user.addresses.first().id
     )
 
     db.session.add(order)
     db.session.commit()
 
-    create_order_items(products, order.id)
+    create_order_items(products, order.id, main_key='id')
 
     return order
 
@@ -68,6 +70,7 @@ def order_data_to_dict(order):
 def verify_product_names(products):
     """
     Verifies whether user provided correct product names
+
     :param products: list of product names
     """
     products_not_found = []
@@ -80,16 +83,15 @@ def verify_product_names(products):
     return products_not_found
 
 
-
 def get_all_client_orders(user_id):
     """
     Returns a list of all client's orders from the database and information about them
 
     :param user_id: unique customer id
     """
-    orders = db.session.query(Order).filter(Order.user_id == user_id).all()
+    query = Order.query.filter_by(user_id=user_id)
 
-    return [order_data_to_dict(order) for order in orders]
+    return query
 
 
 def update_order(order_id, **kwargs):
@@ -113,9 +115,9 @@ def update_order(order_id, **kwargs):
 def create_order_data_parser():
     parser = reqparse.RequestParser()
 
-    parser.add_argument('comments', type=str, help='comments to the order')
-    parser.add_argument('user_id', type=str, help='id of the user who placed an order')
-    parser.add_argument('products', type=str, action='append', help='id of the customer who placed an order')
+    parser.add_argument('comments', type=str)
+    parser.add_argument('user_id', type=str, help='you did not provide user id', required=True)
+    parser.add_argument('products', type=str, action='append', help='you did not provide products', required=True)
 
     return parser
 
@@ -125,3 +127,12 @@ def update_order_data_parser():
     parser.add_argument('status', type=str, help='status of the order')
 
     return parser
+
+
+def get_orders_by_status(status):
+    """
+    Creates a query to obtain all orders that have provided status
+    """
+    query = Order.query.filter_by(status=status)
+
+    return query

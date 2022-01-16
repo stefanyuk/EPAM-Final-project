@@ -9,7 +9,7 @@
                             <li class="menu_item"><a href="{{ url_for('admin.admin_main') }}" class="menu_link">Admin Menu</a></li>
                         {% endif %}
                         <li class="menu_item"><a href="{{ url_for('user.user_detail', user_id=current_user.id) }}" class="menu_link">Personal Info</a></li>
-                        <li class="menu_item"><a href="#" class="menu_link">My Orders</a></li>
+                        <li class="menu_item"><a href="{{ url_for('orders.user_orders_list', user_id=current_user.id) }}" class="menu_link">My Orders</a></li>
                         <li class="menu_item"><a href="{{ url_for('shop.products') }}" class="menu_link">Menu</a></li>
                     {% else %}
                         <li class="menu_item"><a href="{{ url_for('shop.welcome_landing') }}" class="menu_link">Home Page</a></li>

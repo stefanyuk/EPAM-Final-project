@@ -7,7 +7,7 @@
 }
 
 
-.register_inner, .login_inner, .add_user_inner{
+.register_inner, .login_inner{
     min-height: 609px;
     padding: 40px 40px;
     max-width: 528px;
@@ -37,7 +37,7 @@
 
 
 .register .register_button, .login .login_button , .personal_profile_button, .add_button, .remove_button,
-.finalize_btn, .empty_cart_btn, .submit_address_btn{
+.finalize_btn, .empty_cart_btn, .submit_address_btn, .create_button, .delete_btn, .cancel_button{
     width: 150px;
     height: 54px;
     display: flex;
@@ -59,7 +59,7 @@
 }
 
 .register .register_button:hover, .login .login_button:hover,
-.personal_profile_button:hover, .delete_btn:hover, .submit_address_btn:hover{
+.personal_profile_button:hover, .delete_btn:hover, .submit_address_btn:hover, .create_button:hover, .cancel_button:hover{
     background-color: #f58580;
     color: #6c0d0d;
 }

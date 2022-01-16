@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {% include 'nav_bar.html' %}
+    <div class="container order_detail_container">
+        <h2 class="order_title">Order details</h2>
+        <div class="order_details_outer">
+             <div class="order_and_total_price">
+                <span id="order_id">Order #{{ order.id }}</span>
+                <span class="total_price">{{ order.total_price }} € total</span>
+            </div>
+            <div class="order_date"> Ordered at {{ order_time }} on {{ order_date }}</div>
+            <div class="delivery_title">Delivery address:</div>
+            <div class="delivery_address_outer">
+                <div class="address">
+                    <span class="city">{{ order.address.city }}</span>
+                    <span class="street">{{ order.address.street }}, {{ order.address.street_number }}, {{ order.address.postal_code }}</span>
+                </div>
+                <a class="cancel_button" href="">Cancel order</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

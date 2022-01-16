@@ -1,53 +1,77 @@
+from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms.widgets import TelInput
 import phonenumbers
-from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, FloatField, IntegerField
-from wtforms.validators import DataRequired, Length, Email, Optional
-from rest_app.models import Department, User, Category, Product, EmployeeInfo
+from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, \
+    FloatField, DateField, IntegerField
+from wtforms.validators import DataRequired, Optional
+from rest_app import db
+from rest_app.models import Department, Category, Product, EmployeeInfo, Order, User
+from rest_app.forms.auth_forms import UserForm
 
 
 class AddDepartment(FlaskForm):
     name = StringField('Department Name', validators=[DataRequired()])
-    description = TextAreaField('Description')
+    description = TextAreaField('Description', validators=[Optional()])
+    submit = SubmitField('Create')
 
     def validate_name(self, name):
-        dept = Department.query.filter(Department.name == name).first()
+        dept = Department.query.filter(Department.name == name.data).first()
 
         if dept:
             raise ValidationError('Department with this name already exists')
 
 
+class UpdateDepartment(AddDepartment, FlaskForm):
+    def __init__(self, department_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.department_id = department_id
+
+    def validate_name(self, name):
+        dept = Department.query.filter_by(id=self.department_id).first()
+        if dept.name != name.data:
+            dept = Department.query.filter_by(name == name.data).first()
+            if dept:
+                raise ValidationError('Department with this name already exists')
+
+    def prepopulate_values(self):
+        dept = Department.query.filter_by(id=self.department_id).first()
+        self.name.data = dept.name
+        self.description.data = dept.description
+        self.submit.label.text = 'Update'
+
+
 class AddEmployee(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
-    department = SelectField(
-        'Department',
-        choices=['1', '2', '3'],
-        validators=[DataRequired()]
-    )
+    department = SelectField('Department', choices=[], validators=[DataRequired()])
     salary = FloatField('Salary', validators=[DataRequired()])
-    submit = SubmitField('Add')
+    hire_date = DateField('Hire Date', validators=[Optional()], default=datetime.today)
+    available_holidays = IntegerField('Holidays', validators=[Optional()], default=25)
+    submit = SubmitField('Create')
 
 
-class AddUser(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=5, max=30)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    phone_number = StringField('Phone Number', validators=[Length(min=11, max=16)])
-    is_employee = BooleanField('Is employee?')
+class UpdateEmployee(AddEmployee, FlaskForm):
+    def __init__(self, employee_id):
+        super().__init__()
+        self.employee_id = employee_id
+
+    def prepopulate_values(self):
+        employee = EmployeeInfo.query.filter_by(id=self.employee_id).first()
+
+        self.first_name.data = employee.user.first_name
+        self.last_name.data = employee.user.last_name
+        self.department.data = employee.department.name
+        self.salary.data = employee.salary
+        self.hire_date.data = employee.hire_date
+        self.submit.label.text = 'Update'
+
+
+
+
+class AddUser(UserForm, FlaskForm):
+    phone_number = StringField('Phone Number', validators=[Optional()])
     is_admin = BooleanField('Is admin?')
-    submit = SubmitField('Add')
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationError('That username is taken. Please choose a different one.')
-
-    def validate_email(self, email):
-        user = User.query.filter(User.email == email.data).first()
-        if user:
-            raise ValidationError('That email is taken. Please choose a different one.')
+    submit = SubmitField('Create')
 
     def validate_phone_number(self, phone_number):
         try:
@@ -88,7 +112,7 @@ class FilterEmployeesForm(FilterForm, FlaskForm):
         self.field_name.choices += ['last_name', 'first_name']
 
 
-class FilterUserForm(FilterForm, FlaskForm):
+class FilterUsersForm(FilterForm, FlaskForm):
     is_employee = SelectField('Is Employee', choices=[True, False], validators=[Optional()])
 
     def populate_choices_fields(self):
@@ -96,3 +120,24 @@ class FilterUserForm(FilterForm, FlaskForm):
 
         for row_title in main_fields:
             self.field_name.choices.append(row_title)
+
+
+class FilterOrdersForm(FilterForm, FlaskForm):
+    status = SelectField('Status', choices=[], validators=[Optional()])
+
+    def populate_choices_fields(self):
+        statuses = ['delivered', 'awaiting fulfilment', 'canceled']
+
+        for row_title in Order.__table__.columns.keys():
+            if row_title not in ['id', 'user_id', 'address_id', 'order_items', 'comments', 'status']:
+                self.field_name.choices.append(row_title)
+
+        self.status.choices += statuses
+
+
+class FilterDepartmentsForm(FilterForm, FlaskForm):
+    department = SelectField('Department', choices=[], validators=[Optional()])
+
+    def populate_choices_fields(self):
+        self.department.choices = [department.name for department in Department.query.all()]
+        self.field_name.choices = ['avg_salary', 'total_employees', 'name']

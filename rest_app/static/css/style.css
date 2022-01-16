@@ -2,6 +2,7 @@
 @import url(admin.css);
 @import url(personal_profile.css);
 @import url(checkout.css);
+@import url(orders.css);
 
 *{
     margin: 0;

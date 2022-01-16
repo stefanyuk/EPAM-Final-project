@@ -3,23 +3,27 @@
 }
 
 .profile_title, .address_title{
-    margin-top: 40px;
+    margin-top: 25px;
     font-style: normal;
     font-weight: normal;
     font-size: 35px;
     color: white;
 }
 
-.address_title{
-    margin-top: 40px;
+.personal_info_address{
+    height: 350px;
+}
+
+.personal_info_inner{
+    height: 587px;
 }
 
 .personal_info_inner, .personal_info_address, .address_form_outer{
-    margin-top: 20px;
+    margin-top: 7px;
     background-color: #fac2c0;
     border-radius: 20px;
     padding: 30px 30px;
-    min-height: 400px;
+    min-height: 450px;
 }
 
 .buttons_outer{
@@ -32,9 +36,8 @@
     height: 42px;
     padding: 0;
 }
-
-.delete_btn{
-    margin-left: 20px;
+.personal_profile_button.delete_btn{
+    margin: 0 0 0 20px;
 }
 
 .delete_btn:hover{
@@ -42,16 +45,16 @@
 }
 
 .flashed{
-    margin-top: 10px;
+    margin-top: 5px;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
     margin-bottom: 0;
-    width: 400px;
+    width: 500px;
     border-radius: 4px;
-    height: 40px;
+    height: 20px;
 }
 
 .flashed.show{
@@ -60,10 +63,10 @@
 
 @keyframes show_flashed {
     0%{
-        transform: translateY(0%);
+        transform: translateY(-100%);
     }
     10%{
-        transform: translateX(15%);
+        transform: translateX(10%);
     }
 }
 

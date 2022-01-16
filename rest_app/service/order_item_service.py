@@ -2,14 +2,15 @@ from rest_app.models import OrderItem, Product
 from rest_app import db
 from uuid import uuid4
 
-# TODO THINK HOW TO COMBINE PRODUCTS WITH ID AND PRODUCTS BY NAME
 
-def create_order_items(products: list, order_id):
-    for title in products:
+def create_order_items(products: list, order_id, main_key='title'):
+    for product in products:
+        product_id = product['id'] if main_key == 'id' else Product.query.filter_by(title=product['title']).first().id
         order_item = OrderItem(
             id=str(uuid4()),
             order_id=order_id,
-            product_id=db.session.query(Product).filter(Product.title == title).one().id
+            product_id=product_id,
+            quantity=product['quantity']
         )
 
         db.session.add(order_item)

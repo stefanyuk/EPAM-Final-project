@@ -60,7 +60,7 @@ class EmployeeAPI(Resource):
         args = employee_data_parser().parse_args()
 
         try:
-            update_employee(employee_id, **args)
+            update_employee_data(employee_id, **args)
         except exc.NoResultFound:
             return record_not_found_by_id_error('employee'), 404
 

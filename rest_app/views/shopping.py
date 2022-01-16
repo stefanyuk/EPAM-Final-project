@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from rest_app.service.product_service import product_data_to_dict
 from rest_app.service.address_service import address_data_to_dict
 from rest_app.service.order_service import create_order
-from rest_app.service.address_service import add_address
+from rest_app.service.address_service import add_address, address_data_form_parser
 from rest_app.service.order_item_service import create_order_items
 from rest_app.service.common_services import get_all_rows_from_db
 from rest_app.models import Product, Category, Address, Order
@@ -18,14 +18,15 @@ def welcome_landing():
     login_url = url_for('auth.login')
     log_out_url = url_for('auth.logout')
     register_url = url_for('auth.register')
+    admin_url = url_for('admin.admin_main')
 
     return render_template(
         'welcome_landing.html',
         login_url=login_url,
         log_out_url=log_out_url,
-        register_url=register_url
+        register_url=register_url,
+        admin_url=admin_url
     )
-
 
 
 @shopping.route('/products')
@@ -66,7 +67,7 @@ def add_item_to_cart():
     if current_user.is_authenticated:
         product_id = request.form['id']
 
-        if not session.get('items_in_cart', None):
+        if not session.get('items_in_cart'):
             session['items_in_cart'] = []
 
         if product_id in session['items_in_cart']:
@@ -93,7 +94,7 @@ def checkout():
             product_data_to_dict(product)
         )
 
-    return render_template('checkout.html', cart_items=cart_items, hide_checkout=True)
+    return render_template('checkout.html', cart_items=cart_items)
 
 
 @shopping.route('/empty_cart')
@@ -119,41 +120,48 @@ def finalize_checkout():
     address_form = AddressForm()
 
     if address_form.validate_on_submit():
-        address = Address.query.filter_by(and_(
-            user_id=current_user.id,
-            street_name=address_form.data['street_name'],
-            street_number=address_form.data['street_number']
-        )).first()
+        address = Address.query.filter(
+            and_(
+                Address.user_id == current_user.id,
+                Address.street == address_form.street.data,
+                Address.street_number == str(address_form.street_number.data)
+            )
+        ).first()
         if not address:
-            pass
-        create_order(
-            session.get('order_items_info'),
-            user_id=current_user.id,
+            args = address_data_form_parser().parse_args()
+            address = add_address(user_id=current_user.id, **args)
 
-        )
-
-
+        create_order(session.get('order_items_info'), user_id=current_user.id, address_id=address.id)
+        flash('Your order was successfully created', 'success')
+        clear_session_from_order_details()
+        return redirect(url_for('admin.admin_main'))
 
     addresses = Address.query.filter(Address.user_id == current_user.id).all()
+
     if addresses:
         address_form.change_address_values(addresses.pop())
 
     address_form.submit_address.label.text = 'Get Delivery'
 
-    return render_template('finalize_order.html', address_form=address_form)
+    return render_template('finalize_order.html', address_form=address_form, addresses=addresses[-5:])
 
 
 @shopping.route('/get_storage_values', methods=['POST'])
 def get_values_from_local_storage():
     session['order_items_info'] = request.get_json()['order_items_info']
     session.modified = True
-
     return '', 204
 
 
 @shopping.route('/update_address_values/<string:address_id>', methods=['POST'])
-def get_address_values(address_id):
+def send_address_values(address_id):
     address = Address.query.get(address_id)
     address_info = address_data_to_dict(address)
 
     return jsonify(address_info)
+
+
+def clear_session_from_order_details():
+    session['order_items_info'].clear()
+    session['items_in_cart'].clear()
+    session.modified = True
