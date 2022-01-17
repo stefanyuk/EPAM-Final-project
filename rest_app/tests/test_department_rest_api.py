@@ -4,13 +4,19 @@ from rest_app.models import *
 from rest_app.tests.data_for_unit_tests import test_department, credentials
 
 
-def test_get_departments_list(client):
+def test_get_department_list_without_auth(client):
+    response = client.get(url_for('rp_api.department_list'))
+
+    assert response.status_code == 401
+
+
+def test_get_departments_list(client, dept_data):
     response = client.get(url_for('rp_api.department_list'), headers={'Authorization': f'Basic {credentials}'})
 
     data = response.get_json()
 
     assert response.status_code == 200
-    assert len(data) == 5
+    assert len(data) == 11
     assert data[-1]['name'] == 'Python'
 
 
@@ -26,21 +32,20 @@ def test_create_new_department(client):
 
     assert response.status_code == 201
     assert 'department with id' in data['message']
-    assert departments[-1].name == 'JavaScript'
-
+    assert departments[-1].name == 'C++'
 
 
 @pytest.mark.parametrize(
-    ('department_id', 'name'),
+    ('index', 'name'),
     (
-            ('1749490a-e61e-45d3-b341-14703af555ec', 'Java'),
-            ('7a4440bf-f8e6-4620-8eb0-795dfefeeff6', 'Training'),
-            ('09568e78-221c-4b58-9851-f3ddd799e465', 'Python')
+        (0, 'Java'),
+        (1, 'Training'),
+        (2, 'JavaScript')
     )
 )
-def test_get_department(client, department_id, name):
+def test_get_department(client, index, name, dept_data):
     response = client.get(
-        url_for('rp_api.department', department_id=department_id),
+        url_for('rp_api.department', department_id=dept_data[index].id),
         headers={'Authorization': f'Basic {credentials}'}
     )
 
@@ -58,7 +63,7 @@ def test_get_department(client, department_id, name):
             ('doesnotexist3', 'Test3')
     )
 )
-def test_get_department_atypical_behaviour(client, department_id, name):
+def test_get_department_atypical_behaviour(client, create_tables, department_id, name):
     response = client.get(
         url_for('rp_api.department', department_id=department_id),
         headers={'Authorization': f'Basic {credentials}'}
@@ -72,16 +77,16 @@ def test_get_department_atypical_behaviour(client, department_id, name):
 
 
 @pytest.mark.parametrize(
-    ('department_id', 'new_name'),
+    ('index', 'new_name'),
     (
-            ('1749490a-e61e-45d3-b341-14703af555ec', 'Java_test'),
-            ('7a4440bf-f8e6-4620-8eb0-795dfefeeff6', 'Training_test'),
-            ('09568e78-221c-4b58-9851-f3ddd799e465', 'Python_test')
+        (0, 'Java_test1'),
+        (1, 'Training_test2'),
+        (2, 'JavaScript_test3')
     )
 )
-def test_update_department(client, department_id, new_name):
+def test_update_department(client, index, new_name, dept_data):
     response = client.put(
-        url_for('rp_api.department', department_id=department_id),
+        url_for('rp_api.department', department_id=dept_data[index].id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'name': new_name}
     )
@@ -89,7 +94,7 @@ def test_update_department(client, department_id, new_name):
     data = response.get_json()
 
     get_response = client.get(
-        url_for('rp_api.department', department_id=department_id),
+        url_for('rp_api.department', department_id=dept_data[index].id),
         headers={'Authorization': f'Basic {credentials}'}
     )
 
@@ -108,7 +113,7 @@ def test_update_department(client, department_id, new_name):
             ('test_id_2', 'test_2')
     )
 )
-def test_update_department_atypical_behaviour(client, department_id, new_name):
+def test_update_department_atypical_behaviour(client, create_tables, department_id, new_name):
     response = client.put(
         url_for('rp_api.department', department_id=department_id),
         headers={'Authorization': f'Basic {credentials}'},
@@ -119,3 +124,24 @@ def test_update_department_atypical_behaviour(client, department_id, new_name):
 
     assert response.status_code == 404
     assert 'department with the provided id was not found' in data['message']
+
+
+@pytest.mark.parametrize('index', (0, 1, 2))
+def test_delete_department(client, index, dept_data):
+    response = client.delete(
+        url_for('rp_api.department', department_id=dept_data[index].id),
+        headers={'Authorization': f'Basic {credentials}'},
+    )
+
+    get_response = client.get(
+        url_for('rp_api.department', department_id=dept_data[index].id),
+        headers={'Authorization': f'Basic {credentials}'},
+    )
+
+    get_data = get_response.get_json()
+
+    assert response.status_code == 204
+    assert get_response.status_code == 404
+    assert 'department with the provided id was not found' in get_data['message']
+
+

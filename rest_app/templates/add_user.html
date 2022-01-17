@@ -3,8 +3,8 @@
 {% block content %}
     {% include 'nav_bar.html' %}
     <section class="add_user">
-        <div class="container">
-            <div class="add_user_inner">
+        <div class="container add_model_container">
+            <div class="add_model_inner">
                 <div class="form_wrapper">
                     <form method="POST" action="">
                         {{ form.hidden_tag() }}
@@ -50,16 +50,12 @@
                                 {% endif %}
                             </div>
                             <div class="form-check">
-                                {{ form.is_employee(class="form-check-input") }}
-                                {{ form.is_employee.label(class="form-check-label") }}
-                            </div>
-                            <div class="form-check">
                                 {{ form.is_admin(class="form-check-input") }}
                                 {{ form.is_admin.label(class="form-check-label") }}
                             </div>
                         </fieldset>
                         <div class="form-group">
-                            {{ form.submit (class='add_btn') }}
+                            {{ form.submit (class='create_button') }}
                         </div>
                     </form>
                 </div>

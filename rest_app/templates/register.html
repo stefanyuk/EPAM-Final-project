@@ -3,7 +3,7 @@
 {% block content %}
 {% include 'nav_bar.html' %}
 <section class="register">
-    <div class="container">
+    <div class="container register_container">
         <div class="register_inner">
             <div class="form_wrapper">
                 <form action="" method="POST">
@@ -64,7 +64,7 @@
                         </div>
                     </fieldset>
                     <div class="form-group">
-                        {{ form.submit (class='register_button register_button--red')}}
+                        {{ form.submit (class='register_button')}}
                     </div>
                 </form>
                 <div class="border-top pt-3">

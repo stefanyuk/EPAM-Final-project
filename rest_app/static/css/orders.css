@@ -1,0 +1,110 @@
+/* ORDERS LIST */
+
+.user_orders_container, .order_detail_container{
+    margin-top: 120px;
+}
+
+.orders_main_title, .orders_main_subtitle{
+    text-align: center;
+    color: white;
+    font-size: 50px;
+}
+
+.orders_main_subtitle{
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.order_item_outer{
+    font-size: 20px;
+    background-color: #E99695;
+    margin-top: 30px;
+    border-radius: 33px;
+    height: 100px;
+    padding: 15px;
+}
+
+.order_item_outer .order_and_total_price{
+    display: flex;
+    justify-content: space-between;
+}
+
+.order_item_outer .order_status{
+    margin-top: 10px;
+}
+
+.order_link{
+    text-decoration: none;
+    color: black;
+
+}
+
+.order_link:hover{
+    color: black;
+    text-decoration: none;
+}
+
+.orders_pagination{
+    width: 74px;
+    margin: 0 auto;
+    margin-top: 25px;
+}
+
+/* ORDER DETAIL */
+
+.order_title{
+    color: white;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 50px;
+    text-align: center;
+}
+
+.order_details_outer{
+    background-color: #E99695;
+    width: 1217px;
+    height: 400px;
+    border-radius: 33px;
+    padding: 40px;
+    margin-top: 40px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 35px;
+}
+
+
+.order_details_outer .order_and_total_price{
+    display: flex;
+    justify-content: space-between;
+}
+
+.order_date{
+    font-size: 25px;
+    margin-top: 10px;
+}
+
+.delivery_title{
+    margin-top: 90px;
+}
+
+.address{
+    font-size: 23px;
+}
+
+.delivery_address_outer{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.cancel_button{
+    float: right;
+    height: 58px;
+    width: 219px;
+    font-size: 23px;
+}
+
+.cancel_button:hover{
+    text-decoration: none;
+    color: white;
+}

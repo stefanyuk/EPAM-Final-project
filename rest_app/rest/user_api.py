@@ -62,7 +62,7 @@ class UserAPI(Resource):
 
         :param user_id: id of the employee
         """
-        args = user_data_parser().parse_args()
+        args = update_user_data_parser().parse_args()
 
         try:
             update_user(user_id, **args)

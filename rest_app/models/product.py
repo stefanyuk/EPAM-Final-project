@@ -11,3 +11,5 @@ class Product(db.Model):
     order_items = db.relationship('OrderItem', backref='product', lazy='dynamic')
     category_id = db.Column(db.ForeignKey('category.id', ondelete='SET NULL'), nullable=False)
 
+
+# TODO ADD IMAGE ROW HERE

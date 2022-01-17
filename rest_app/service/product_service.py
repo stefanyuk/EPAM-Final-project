@@ -1,4 +1,6 @@
+from flask_restful import reqparse
 from rest_app.models import Product, Category
+from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
 from rest_app import db
 from uuid import uuid4
 
@@ -43,17 +45,44 @@ def product_data_to_dict(product):
     return product_info
 
 
-def get_all_products():
+def get_products_by_category(category_name):
     """
-    Gathers all the information about each product that is in the database.
-    And prepares it for display on the page
+    Select all records for the products that are under provided category
+
+    :param category_name: name of the searched category
     """
-    info_about_products = []
+    category = Category.query.filter_by(name=category_name).first()
+    products = Product.query.filter_by(category_id=category.id)
 
-    for category in Category.query.all():
-        for product in category.products:
-            info_about_products.append(
-                product_data_to_dict(product)
-            )
+    return products
 
-    return info_about_products
+
+def product_data_parser():
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('title', type=str, help='you did not provide product title', required=True)
+    parser.add_argument('price', type=float, help='you did not provide product price', required=True)
+    parser.add_argument('category_id', type=str, help='you did not provide product category id', required=True)
+    parser.add_argument('summary', type=str, help='you did not provide product title')
+
+    return parser
+
+
+def product_update_data_parser():
+    parser = product_data_parser().copy()
+
+    return set_all_parser_args_to_unrequired(parser)
+
+
+def update_product(product_id, **kwargs):
+    """
+    Updates information about specified product
+    :param product_id: unique product id
+    """
+    product = get_row_by_id(Product, product_id)
+
+    for field in kwargs:
+        if kwargs[field]:
+            setattr(product, field, kwargs[field])
+
+    db.session.commit()

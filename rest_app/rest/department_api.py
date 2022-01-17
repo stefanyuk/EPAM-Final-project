@@ -60,7 +60,7 @@ class DepartmentAPI(Resource):
         args = department_data_parser().parse_args()
 
         try:
-            update_department(department_id, **args)
+            update_department_data(department_id, **args)
         except exc.NoResultFound:
             return record_not_found_by_id_error('department'), 404
 

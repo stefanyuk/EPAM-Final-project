@@ -11,14 +11,16 @@ import json
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-test_info = {}
-
 
 def create_test_info():
+    test_info = {}
+
     for file in next(os.walk(os.path.join(basedir, 'tests', 'db_schemas')))[2]:
         with open(os.path.join(basedir, 'tests', 'db_schemas', file)) as f:
             name = file[:file.find('.json')]
             test_info[name] = json.load(f)
+
+    return test_info
 
 
 def create_departments(departments):
@@ -28,22 +30,27 @@ def create_departments(departments):
 
 
 def create_categories(categories):
-    categories = [add_category(category) for category in categories]
+    categories_data = {}
 
-    return categories
+    for category in categories:
+        c = add_category(category)
+        categories_data[c.name] = c.id
+
+    return categories_data
 
 
 def main(max_qty):
-    create_test_info()
+    test_info = create_test_info()
     users = test_info['users']
     departments = create_departments(test_info['departments'])
-    categories = create_categories(['Bakery', 'Coffee', 'Croissant', 'Tea'])
+    categories = create_categories(['Bakery', 'Coffee', 'Tea'])
     products = []
 
     for product in test_info['products']:
-        category_id = random.choice(categories).id
+        category_id = categories[product['category']]
+        product.pop('category')
         prod = add_product(**product, category_id=category_id)
-        products.append(prod)
+        products.append({'id': prod.id, 'quantity': random.choice(range(1, 4))})
 
     orders = (order for order in test_info['orders'])
     addresses = (address for address in test_info['addresses'])
@@ -54,10 +61,15 @@ def main(max_qty):
         address = add_address(user_id=user.id, **next(addresses))
         if user.is_employee:
             department_id = random.choice(departments).id
-            add_employee(user_id=user.id, department_id=department_id, **next(employees))
+            add_employee(
+                is_employee=None, user_id=user.id, department_id=department_id, first_name=None,
+                last_name=None, birth_date=None, is_admin=None, email=None,
+                password=None, phone_number=None, **next(employees)
+            )
 
+        r = random.choice(range(1, 4))
         create_order(
-            [random.choice(products).title for i in range(3)],
+            [random.choice(products) for i in range(r)],
             user_id=user.id,
             address_id=address.id,
             **next(orders)

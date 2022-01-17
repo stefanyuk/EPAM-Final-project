@@ -31,7 +31,7 @@ def reset_db_command():
 @click.command('populate-db')
 @with_appcontext
 def populate_db_command():
-    main(10)
+    main(200)
     click.echo('Test data has been added to the database.')
 
 
@@ -42,7 +42,7 @@ def create_superuser():
         'password_hash': generate_password_hash('admin'),
         'last_name': 'Admin',
         'is_admin': True,
-        'is_employee': True,
+        'is_employee': False,
         'email': 'admin'
     }
 

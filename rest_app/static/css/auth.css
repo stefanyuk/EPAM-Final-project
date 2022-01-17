@@ -1,4 +1,13 @@
-.register_inner, .login_inner, .add_user_inner{
+.register_container{
+    margin-top: 115px;
+}
+
+.login_container{
+    margin-top: 140px;
+}
+
+
+.register_inner, .login_inner{
     min-height: 609px;
     padding: 40px 40px;
     max-width: 528px;
@@ -27,7 +36,8 @@
 }
 
 
-.register .register_button, .login .login_button , .personal_profile_button, .add_btn, .remove_button{
+.register .register_button, .login .login_button , .personal_profile_button, .add_button, .remove_button,
+.finalize_btn, .empty_cart_btn, .submit_address_btn, .create_button, .delete_btn, .cancel_button{
     width: 150px;
     height: 54px;
     display: flex;
@@ -48,8 +58,8 @@
     text-decoration: none;
 }
 
-.register .register_button--red:hover, .login .login_button--red:hover,
-.personal_profile_button--red:hover, .add_btn:hover, .delete_btn:hover{
+.register .register_button:hover, .login .login_button:hover,
+.personal_profile_button:hover, .delete_btn:hover, .submit_address_btn:hover, .create_button:hover, .cancel_button:hover{
     background-color: #f58580;
     color: #6c0d0d;
 }

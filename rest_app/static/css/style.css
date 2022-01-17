@@ -2,12 +2,22 @@
 @import url(admin.css);
 @import url(personal_profile.css);
 @import url(checkout.css);
+@import url(orders.css);
 
 *{
     margin: 0;
     padding: 0;
 }
+
 /* HEADER */
+
+.main_header{
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 1000;
+}
+
 .welcome_nav{
     width: 427px;
     margin: 0 auto;
@@ -40,14 +50,14 @@ body{
     height: 938px;
 }
 
-.welcome_logo{
+.welcome_page .welcome_logo{
     display: block;
     height: 302px;
     width: 427px;
     margin: 0 auto;
 }
 
-.welcome_sweets{
+.welcome_page .welcome_sweets_img{
     position: absolute;
     top: 0;
     right: -100px;
@@ -55,7 +65,8 @@ body{
     z-index: -1;
     height: 938px;
 }
-.welcome_girl{
+
+.welcome_page .welcome_girl_img{
     margin-top: 61px;
     position: relative;
     z-index: 1;
@@ -121,7 +132,7 @@ body{
     color: white;
 }
 
-.drinks_line, .about_title_line{
+.drinks_title_line, .about_title_line{
     margin: 0 auto;
     margin-top: 15px;
     width: 130px;
@@ -140,9 +151,14 @@ body{
 .drinks_link{
     text-decoration: none;
     display: block;
-    width: 77px;
+    width: 84px;
     margin: 0 auto;
     margin-top: 30px;
+    color: white;
+}
+
+.drinks_link:hover{
+    text-decoration: none;
     color: white;
 }
 .drinks .offer_outer{
@@ -159,13 +175,9 @@ body{
     box-shadow: 0px 27px 32px 2px rgba(0, 0, 0, 0.25);
 }
 
-.drinks .drink_sale_offer_2{
-    padding: 18px 18px;
-    width: 329px;
-    height: 589px;
+.drinks .drink_sale_offer--black{
     background: rgba(58, 8, 8, 0.6);
     box-shadow: 0px 27px 32px 2px rgba(0, 0, 0, 0.25);
-    border-radius: 41px;
 }
 
 .drinks .drink_order_button{
@@ -292,6 +304,13 @@ body{
 
 .products_outer .card{
     width: 18rem;
+}
+
+.products_outer .card .product_card_img{
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: 0 auto;
 }
 
 
