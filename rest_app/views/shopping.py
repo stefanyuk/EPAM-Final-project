@@ -1,10 +1,8 @@
 from flask import Blueprint, render_template, url_for, request, session, flash, redirect, jsonify
 from flask_login import current_user
-from sqlalchemy import and_
+from rest_app.views.orders_view import finalize_order
 from rest_app.service.product_service import product_data_to_dict
 from rest_app.service.address_service import address_data_to_dict
-from rest_app.service.order_service import create_order
-from rest_app.service.address_service import add_address, address_data_form_parser
 from rest_app.service.common_services import get_all_rows_from_db
 from rest_app.models import Product, Category, Address
 from rest_app.forms.personal_info_forms import AddressForm
@@ -126,20 +124,9 @@ def finalize_checkout():
     address_form = AddressForm()
 
     if address_form.validate_on_submit():
-        address = Address.query.filter(
-            and_(
-                Address.user_id == current_user.id,
-                Address.street == address_form.street.data,
-                Address.street_number == str(address_form.street_number.data)
-            )
-        ).first()
-        if not address:
-            args = address_data_form_parser().parse_args()
-            address = add_address(user_id=current_user.id, **args)
-
-        create_order(session.get('order_items_info'), user_id=current_user.id, address_id=address.id)
-        flash('Your order was successfully created', 'success')
+        finalize_order(address_form)
         clear_session_from_order_details()
+
         if current_user.is_admin:
             return redirect(url_for('admin.admin_main'))
         return redirect(url_for('orders.user_orders_list', user_id=current_user.id))

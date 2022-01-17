@@ -42,7 +42,7 @@ def create_superuser():
         'password_hash': generate_password_hash('admin'),
         'last_name': 'Admin',
         'is_admin': True,
-        'is_employee': True,
+        'is_employee': False,
         'email': 'admin'
     }
 

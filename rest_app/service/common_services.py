@@ -51,6 +51,18 @@ def sort_table_by_field(table, field_name, sort_order='asc', table_to_join=None)
     return query
 
 
+def set_all_parser_args_to_unrequired(parser):
+    """
+    Sets all parser arguments to unrequired
+
+    :param parser: parser that needs to be reset
+    """
+    for arg in parser.args:
+        if arg.required:
+            arg.required = False
+
+    return parser
+
 # We use it in order to sort table in a chosen by user order
 order = {
     'asc': asc,

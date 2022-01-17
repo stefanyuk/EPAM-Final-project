@@ -1,8 +1,12 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from flask_login import current_user
+from sqlalchemy import and_
 from rest_app.service.order_service import get_all_client_orders, order_data_to_dict
 from rest_app.service.common_services import delete_row_by_id
-from rest_app.models import Order
+from rest_app.service.order_item_service import create_order_items
+from rest_app.service.address_service import address_data_form_parser, add_address
+from rest_app.service.order_service import create_order
+from rest_app.models import Order, Address
 
 order = Blueprint('orders', __name__, url_prefix='/order')
 
@@ -36,3 +40,22 @@ def delete_order(order_id):
         if current_user.is_admin:
             return redirect(url_for('admin.admin_main'))
         return redirect(url_for('orders.user_orders_list', user_id=current_user.id))
+
+
+def finalize_order(address_form):
+    address = Address.query.filter(
+        and_(
+            Address.user_id == current_user.id,
+            Address.street == address_form.street.data,
+            Address.street_number == str(address_form.street_number.data)
+        )
+    ).first()
+    if not address:
+        args = address_data_form_parser().parse_args()
+        address = add_address(user_id=current_user.id, **args)
+
+    new_order = create_order(
+        session.get('order_items_info'), user_id=current_user.id, address_id=address.id, main_key='id'
+    )
+    create_order_items(session.get('order_items_info'), new_order.id, main_key='id')
+    flash('Your order was successfully created', 'success')

@@ -11,14 +11,16 @@ import json
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-test_info = {}
-
 
 def create_test_info():
+    test_info = {}
+
     for file in next(os.walk(os.path.join(basedir, 'tests', 'db_schemas')))[2]:
         with open(os.path.join(basedir, 'tests', 'db_schemas', file)) as f:
             name = file[:file.find('.json')]
             test_info[name] = json.load(f)
+
+    return test_info
 
 
 def create_departments(departments):
@@ -38,7 +40,7 @@ def create_categories(categories):
 
 
 def main(max_qty):
-    create_test_info()
+    test_info = create_test_info()
     users = test_info['users']
     departments = create_departments(test_info['departments'])
     categories = create_categories(['Bakery', 'Coffee', 'Tea'])
@@ -64,6 +66,7 @@ def main(max_qty):
                 last_name=None, birth_date=None, is_admin=None, email=None,
                 password=None, phone_number=None, **next(employees)
             )
+
         r = random.choice(range(1, 4))
         create_order(
             [random.choice(products) for i in range(r)],

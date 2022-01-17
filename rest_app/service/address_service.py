@@ -2,6 +2,7 @@ from uuid import uuid4
 from flask_restful import reqparse
 from rest_app.models import Address
 from rest_app import db
+from rest_app.service.common_services import set_all_parser_args_to_unrequired
 
 
 def add_address(user_id, city, postal_code, street, street_number):
@@ -50,30 +51,8 @@ def address_data_parser():
 
 
 def address_data_form_parser():
-    address_parser = address_data_parser().copy()
+    parser = address_data_parser().copy()
 
-    address_parser.remove_argument('user_id')
-    for arg in address_parser.args:
-        arg.required = False
+    parser.remove_argument('user_id')
 
-    return address_parser
-
-
-
-
-
-# def address_data_form_parser():
-#     parser = reqparse.RequestParser()
-#
-#     parser.add_argument('city', type=str, help='you did not provide city name',
-#                         location='form')
-#     parser.add_argument('street', type=str, help='you did not provide name of the street',
-#                         location='form')
-#     parser.add_argument('street_number', type=str, help='you did not provide number of the street',
-#                         location='form')
-#     parser.add_argument('postal_code', type=str, help='you did not provide postal code',
-#                         location='form')
-#     parser.add_argument('user_id', type=str, help='you did not provide user id',
-#                         location='form')
-#
-#     return parser
+    return set_all_parser_args_to_unrequired(parser)

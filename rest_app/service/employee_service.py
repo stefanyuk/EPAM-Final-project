@@ -4,7 +4,7 @@ from uuid import uuid4
 from rest_app import db
 from rest_app.models import EmployeeInfo, Department, User
 from rest_app.service.user_service import add_user, user_data_parser
-from rest_app.service.common_services import get_row_by_id
+from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
 
 
 def add_employee(first_name, last_name, salary, phone_number, department_id, hire_date, birth_date,
@@ -86,6 +86,7 @@ def employee_data_parser():
     """
     parser = user_data_parser().copy()
 
+    parser.replace_argument('email', type=str, location=['form', 'json'], required=False)
     parser.replace_argument('is_employee', type=inputs.boolean, default=True)
     parser.add_argument('hire_date', type=str, location=['form', 'json'], default=datetime.datetime.now().date())
     parser.add_argument('salary', type=float, location=['form', 'json'],
@@ -97,20 +98,25 @@ def employee_data_parser():
     return parser
 
 
+def employee_update_data_parser():
+    """
+    Creates a parser to parse information for employee update. It removes "required", so only
+    desired field can be updated
+    """
+    parser = employee_data_parser().copy()
+
+    return set_all_parser_args_to_unrequired(parser)
+
+
 def employee_form_data_parser():
     """
     Creates a parser to parse information from the form
-    :return:
     """
-    parser = employee_data_parser().copy()
+    parser = employee_update_data_parser().copy()
 
     parser.replace_argument('is_admin', type=bool, location='form')
     parser.replace_argument('is_employee', type=bool, location='form', default=True)
     parser.remove_argument('department_id')
-
-    for arg in parser.args:
-        if arg.required:
-            arg.required = False
 
     return parser
 

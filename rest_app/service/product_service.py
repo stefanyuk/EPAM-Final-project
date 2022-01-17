@@ -1,4 +1,6 @@
+from flask_restful import reqparse
 from rest_app.models import Product, Category
+from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
 from rest_app import db
 from uuid import uuid4
 
@@ -53,3 +55,34 @@ def get_products_by_category(category_name):
     products = Product.query.filter_by(category_id=category.id)
 
     return products
+
+
+def product_data_parser():
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('title', type=str, help='you did not provide product title', required=True)
+    parser.add_argument('price', type=float, help='you did not provide product price', required=True)
+    parser.add_argument('category_id', type=str, help='you did not provide product category id', required=True)
+    parser.add_argument('summary', type=str, help='you did not provide product title')
+
+    return parser
+
+
+def product_update_data_parser():
+    parser = product_data_parser().copy()
+
+    return set_all_parser_args_to_unrequired(parser)
+
+
+def update_product(product_id, **kwargs):
+    """
+    Updates information about specified product
+    :param product_id: unique product id
+    """
+    product = get_row_by_id(Product, product_id)
+
+    for field in kwargs:
+        if kwargs[field]:
+            setattr(product, field, kwargs[field])
+
+    db.session.commit()

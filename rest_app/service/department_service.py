@@ -3,17 +3,22 @@ from flask_restful import reqparse
 from sqlalchemy import func, asc, desc
 from uuid import uuid4
 from rest_app import db
-from rest_app.service.common_services import get_row_by_id
+from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
 
 
-def add_department(name, description):
+def add_department(name, description, dept_id=None):
     """
     Creates new department record in the database
 
     :param name: name of the new department
     :param description: description of the new department
+    :param dept_id: department id
     """
-    new_dept = Department(id=str(uuid4()), name=name, description=description)
+    new_dept = Department(
+        id=dept_id if dept_id else str(uuid4()),
+        name=name,
+        description=description
+    )
 
     db.session.add(new_dept)
     db.session.commit()
@@ -34,8 +39,8 @@ def department_data_to_dict(department):
     department_info = {
         'id': department.id,
         'name': department.name,
-        'average_department_salary': 0 if isinstance(avg_salary, int) else avg_salary.one()['avg_salary'],
-        'total_employees': 0 if isinstance(total_employees, int) else total_employees.one()['qty'],
+        'average_department_salary': 0 if isinstance(avg_salary, int) else str(avg_salary.one()['avg_salary']),
+        'total_employees': 0 if isinstance(total_employees, int) else str(total_employees.one()['qty']),
         'description': department.description
     }
 
@@ -140,6 +145,9 @@ def department_data_parser():
 
 
 def department_form_data_parser():
+    """
+    Creates a parser in order to parse department information from the web form
+    """
     parser = department_data_parser().copy()
     parser.replace_argument('name', location=['form'], required=False)
 

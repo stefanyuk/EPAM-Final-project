@@ -6,6 +6,7 @@ from rest_app.models import User, Order
 import datetime
 from uuid import uuid4
 from rest_app import db
+from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
 
 
 def add_user(username, password, first_name, last_name, email, phone_number,
@@ -102,15 +103,23 @@ def user_data_parser():
     return parser
 
 
-def form_user_data_parser():
+def update_user_data_parser():
+    """
+    Creates a parser that can be used to update user data from json body
+    """
     parser = user_data_parser().copy()
+
+    return set_all_parser_args_to_unrequired(parser)
+
+
+def form_user_data_parser():
+    """
+    Creates a parser that can be used to parse information from web form
+    """
+    parser = update_user_data_parser().copy()
 
     parser.replace_argument('is_admin', type=bool, location='form')
     parser.replace_argument('is_employee', type=bool, location='form')
-
-    for arg in parser.args:
-        if arg.required:
-            arg.required = False
 
     return parser
 
@@ -129,7 +138,8 @@ def user_data_to_dict(user):
         'is_employee': user.is_employee,
         'total_value': str(get_total_value_per_user(user.id)),
         'registered_on': str(user.registered_at),
-        'last_login_date': str(user.last_login_date)
+        'last_login_date': str(user.last_login_date),
+        'address_id': user.addresses.all()[-1].id if user.addresses.all() else None
     }
 
     return user_info
@@ -141,7 +151,7 @@ def update_user(user_id, **kwargs):
 
     :param user_id: unique user id
     """
-    user = User.query.get(user_id)
+    user = get_row_by_id(User, user_id)
 
     for key, value in kwargs.items():
         if key in ('is_admin', 'is_employee') and value is False:

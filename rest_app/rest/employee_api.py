@@ -57,7 +57,7 @@ class EmployeeAPI(Resource):
 
         :param employee_id: id of the employee
         """
-        args = employee_data_parser().parse_args()
+        args = employee_update_data_parser().parse_args()
 
         try:
             update_employee_data(employee_id, **args)

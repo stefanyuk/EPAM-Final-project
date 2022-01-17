@@ -22,3 +22,8 @@ error_resource_not_found = {
     'message': 'Resource not found',
     'correct_url': f'/api/v{Config.API_VERSION}/...'
 }
+
+error_query_string_key_not_found = {
+    'message': 'please provide key by which products should be searched',
+    'options': 'id | title'
+}
