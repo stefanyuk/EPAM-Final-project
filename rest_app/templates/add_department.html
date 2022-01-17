@@ -41,8 +41,15 @@
                                 {% endif %}
                             </div>
                         </fieldset>
-                        <div class="form-group">
-                            {{ form.submit (class='create_button') }}
+                        <div class="buttons_outer">
+                            <div class="form-group">
+                                {{ form.submit (class='create_button') }}
+                            </div>
+                            {% if del_btn %}
+                                <div class="form-group">
+                                    <a class='delete_btn' href="{{ url_for('department.delete_department', department_id=department_id) }}">Delete</a>
+                                </div>
+                            {% endif %}
                         </div>
                     </form>
                 </div>

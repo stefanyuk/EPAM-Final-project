@@ -5,9 +5,8 @@ from rest_app.service.product_service import product_data_to_dict
 from rest_app.service.address_service import address_data_to_dict
 from rest_app.service.order_service import create_order
 from rest_app.service.address_service import add_address, address_data_form_parser
-from rest_app.service.order_item_service import create_order_items
 from rest_app.service.common_services import get_all_rows_from_db
-from rest_app.models import Product, Category, Address, Order
+from rest_app.models import Product, Category, Address
 from rest_app.forms.personal_info_forms import AddressForm
 
 shopping = Blueprint('shop', __name__)
@@ -19,13 +18,19 @@ def welcome_landing():
     log_out_url = url_for('auth.logout')
     register_url = url_for('auth.register')
     admin_url = url_for('admin.admin_main')
+    welcome_products = ['Cappucino', 'Black Coffee', 'Caffee Latte']
+    product_info = {}
+    for title in welcome_products:
+        product = Product.query.filter_by(title=title).first()
+        product_info[title] = product_data_to_dict(product)
 
     return render_template(
         'welcome_landing.html',
         login_url=login_url,
         log_out_url=log_out_url,
         register_url=register_url,
-        admin_url=admin_url
+        admin_url=admin_url,
+        product_info=product_info
     )
 
 
@@ -58,7 +63,8 @@ def products_by_category(category_name):
         'products_main.html',
         products=product_info,
         products_pagination=products_pagination,
-        categories=categories
+        categories=categories,
+        category_name=category_name
     )
 
 
@@ -134,7 +140,9 @@ def finalize_checkout():
         create_order(session.get('order_items_info'), user_id=current_user.id, address_id=address.id)
         flash('Your order was successfully created', 'success')
         clear_session_from_order_details()
-        return redirect(url_for('admin.admin_main'))
+        if current_user.is_admin:
+            return redirect(url_for('admin.admin_main'))
+        return redirect(url_for('orders.user_orders_list', user_id=current_user.id))
 
     addresses = Address.query.filter(Address.user_id == current_user.id).all()
 
@@ -147,9 +155,13 @@ def finalize_checkout():
 
 
 @shopping.route('/get_storage_values', methods=['POST'])
-def get_values_from_local_storage():
+def values_from_local_storage():
+    """
+    Receives information regarding items in the cart and their quantity
+    """
     session['order_items_info'] = request.get_json()['order_items_info']
     session.modified = True
+
     return '', 204
 
 

@@ -96,7 +96,7 @@
                             <div class="form-group">
                                 {{ form.submit (class='create_button') }}
                             </div>
-                            {% if current_user.is_admin %}
+                            {% if del_btn %}
                                 <div class="form-group">
                                     <a class='delete_btn' href="{{ url_for('employee.delete_employee', employee_id=employee_id) }}">Delete</a>
                                 </div>

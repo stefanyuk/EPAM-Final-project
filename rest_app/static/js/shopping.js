@@ -6,7 +6,35 @@ $(document).ready(function () {
    }
     addEventToAddButton();
     addEventToRemoveButton();
+    addEventToGetDeliveryBtn();
 });
+
+
+function addEventToGetDeliveryBtn(){
+    $('.drink_order_button').on('click', function () {
+        const product_id = $(this).attr('data-product_id');
+        const main_url = '/checkout'
+
+        req = $.ajax({
+            url: '/add_item_to_cart',
+            type: 'POST',
+            data: {id: product_id}
+        })
+
+        req.done(function(data) {
+            if (data.message){
+                const alertElement = $('.alert')
+                removeAddClassWithAnimation(alertElement)
+            }
+            else if (data.url){
+                window.location = data.url;
+            }
+            else {
+                window.location = main_url
+            }
+        });
+    });
+}
 
 function addEventToAddButton() {
     $('.add_to_cart_btn').on('click', function () {

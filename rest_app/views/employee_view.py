@@ -50,7 +50,8 @@ def update_employee(employee_id):
         form=form,
         title='Update Employee',
         update=True,
-        employee_id=employee_id
+        employee_id=employee_id,
+        del_btn=True
     )
 
 

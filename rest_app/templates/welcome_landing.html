@@ -39,7 +39,7 @@
             <h2 class="drinks_title">Drinks</h2>
             <div class="drinks_title_line"></div>
             <div class="drinks_title_text">La galley of type and scrambled it to make a type specimen book. It has survived </div>
-            <a class="drinks_link" href="#">All drinks></a>
+            <a class="drinks_link" href="{{ url_for('shop.products_by_category', category_name='Coffee') }}">All coffees></a>
             <div class="offer_outer">
                 <div class="row">
                     <div class="col-4">
@@ -47,12 +47,12 @@
                             <img class="offer_img" src="{{ url_for('static', filename='img/cappuccino.png') }}" alt="cappuccino">
                             <div class="sign_and_price">
                                 <div class="sign">€</div>
-                                <h4 class="price"> 4,20 </h4>
+                                <h4 class="price">{{ product_info['Cappucino']['price'] }}</h4>
                             </div>
-                            <h3 class="drink_name">Cappuccino</h3>
+                            <h3 class="drink_name">{{ product_info['Cappucino']['title'] }}</h3>
                             <div class="drink_bottom_text">La galley of type and scrambled it to make a type specimen book.</div>
                             <div class="drink_button_outer">
-                                <a class="drink_order_button" href="">Get delivery</a>
+                                <a class="drink_order_button" data-product_id="{{ product_info['Cappucino']['id'] }}">Get delivery</a>
                             </div>
                         </div>
                     </div>
@@ -61,12 +61,12 @@
                             <img class="offer_img"  src="{{ url_for('static', filename='img/black_coffee.png') }}" alt="back-coffee">
                             <div class="sign_and_price">
                                 <div class="sign">€</div>
-                                <h4 class="price"> 2,80 </h4>
+                                <h4 class="price">{{ product_info['Black Coffee']['price'] }}</h4>
                             </div>
-                            <h3 class="drink_name">Black Cofee</h3>
+                            <h3 class="drink_name">{{ product_info['Black Coffee']['title'] }}</h3>
                             <div class="drink_bottom_text">La galley of type and scrambled it to make a type specimen book.</div>
                             <div class="drink_button_outer">
-                                <a class="drink_order_button" href="">Get delivery</a>
+                                <a class="drink_order_button" data-product_id="{{ product_info['Black Coffee']['id'] }}">Get delivery</a>
                             </div>
                         </div>
                     </div>
@@ -75,12 +75,12 @@
                             <img class="offer_img" src="{{ url_for('static', filename='img/latte.png') }}" alt="latte">
                             <div class="sign_and_price">
                                 <div class="sign">€</div>
-                                <h4 class="price">3,90</h4>
+                                <h4 class="price">{{ product_info['Caffee Latte']['price'] }}</h4>
                             </div>
-                            <h3 class="drink_name">Cafee Latte</h3>
+                            <h3 class="drink_name">{{ product_info['Caffee Latte']['title'] }}</h3>
                             <div class="drink_bottom_text">La galley of type and scrambled it to make a type specimen book.</div>
                             <div class="drink_button_outer">
-                                <a class="drink_order_button" href="">Get delivery</a>
+                                <a class="drink_order_button" data-product_id="{{ product_info['Caffee Latte']['id'] }}">Get delivery</a>
                             </div>
                         </div>
                     </div>

@@ -35,16 +35,16 @@
                     <tr>
                         <th scope="row">{{ index[loop.index] }}</th>
                         <td>
-                            <a href="">{{ order['status'] }}</a>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['status'] }}</a>
                         </td>
                         <td>
-                            <a href="">{{ order['order_date'] }}</a>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['order_date'] }}</a>
                         </td>
                         <td>
-                            <a href="">{{ order['order_time'] }}</a>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['order_time'] }}</a>
                         </td>
                         <td>
-                            <a href="">{{ order['total_price'] }}</a>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['total_price'] }}</a>
                         </td>
                     </tr>
                 {% endfor %}

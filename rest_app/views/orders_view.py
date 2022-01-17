@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask_login import current_user
 from rest_app.service.order_service import get_all_client_orders, order_data_to_dict
+from rest_app.service.common_services import delete_row_by_id
 from rest_app.models import Order
 
 order = Blueprint('orders', __name__, url_prefix='/order')
@@ -26,4 +28,11 @@ def order_detail(order_id):
 
 @order.route('/<string:order_id>/delete')
 def delete_order(order_id):
-    pass
+    order = Order.query.get(order_id)
+
+    if order.status == 'awaiting fulfilment':
+        delete_row_by_id(Order, order_id)
+        flash('Order was successfully canceled', 'success')
+        if current_user.is_admin:
+            return redirect(url_for('admin.admin_main'))
+        return redirect(url_for('orders.user_orders_list', user_id=current_user.id))

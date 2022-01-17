@@ -16,8 +16,8 @@ def get_order_products_total_price(products: list):
     total_price = 0
 
     for product in products:
-        product = Product.query.get(product['id'])
-        total_price += product.price * product['quantity']
+        new_product = Product.query.get(product['id'])
+        total_price += new_product.price * product['quantity']
 
     return total_price
 

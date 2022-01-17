@@ -22,7 +22,12 @@ function ready() {
             const address = addressInfo[i]
             address.addEventListener('click', changeAddress)
         }
-        sendStorageValues();
+        sendStorageValues()
+
+        const finalizeGetDeliveryBtn = document.querySelector('.submit_address_btn')
+        finalizeGetDeliveryBtn.addEventListener('click', () =>{
+            localStorage.clear();
+        })
     }
 
     if (window.location.pathname.split('/')[1] === 'checkout'){
@@ -50,6 +55,7 @@ function ready() {
     }
 
 }
+
 function emptyCartItemElements(){
     const emptyCartButton = document.querySelector('.empty_cart_btn');
     emptyCartButton.addEventListener('click', () => {

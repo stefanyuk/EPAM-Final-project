@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required
+from rest_app.models import Department
 from rest_app.views.admin_views import admin_required
 from rest_app.forms.admin_forms import AddDepartment, UpdateDepartment
 from rest_app.service.department_service import add_department, department_form_data_parser, update_department_data
+from rest_app.service.common_services import delete_row_by_id
 
 
 department = Blueprint('department', __name__, url_prefix='/department')
@@ -31,12 +33,14 @@ def update_department(department_id):
         flash('Department was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 
-    return render_template('add_department.html', form=form)
+    return render_template('add_department.html', form=form, department_id=department_id, del_btn=True)
 
 
 @department.route('/<string:department_id>/delete')
 def delete_department(department_id):
-    pass
+    delete_row_by_id(Department, department_id)
+    flash('Department was successfully deleted', 'success')
+    return redirect(url_for('admin.admin_main'))
 
 
 @department.before_request

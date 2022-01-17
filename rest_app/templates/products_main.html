@@ -36,9 +36,17 @@
                     {% for page_num in products_pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
                         {% if page_num %}
                             {% if products_pagination.page == page_num %}
-                                <a class="btn btn-danger mb-4" href="{{ url_for('shop.products', page=page_num) }}">{{ page_num }}</a>
+                                {% if category_name %}
+                                    <a class="btn btn-outline-light mb-4" href="{{ url_for('shop.products_by_category', category_name=category_name, page=page_num) }}">{{ page_num }}</a>
+                                {% else %}
+                                    <a class="btn btn-outline-light mb-4" href="{{ url_for('shop.products', page=page_num) }}">{{ page_num }}</a>
+                                {% endif %}
                             {% else %}
-                                <a class="btn btn-outline-danger mb-4" href="{{ url_for('shop.products', page=page_num) }}">{{ page_num }}</a>
+                                {% if category_name %}
+                                    <a class="btn btn-danger mb-4" href="{{ url_for('shop.products_by_category',category_name=category_name, page=page_num) }}">{{ page_num }}</a>
+                                {% else %}
+                                    <a class="btn btn-danger mb-4" href="{{ url_for('shop.products', page=page_num) }}">{{ page_num }}</a>
+                                {% endif %}
                             {% endif %}
                         {% else %}
                             ...
