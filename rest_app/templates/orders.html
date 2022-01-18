@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% include 'nav_bar.html' %}
+    {% include 'admin_top_menu.html' %}
+    <div class="container">
+        <div class="control_buttons orders_control">
+            <form action="{{ url_for('admin.orders_search') }}" method="POST">
+                {{ form.hidden_tag() }}
+                <div class="product_control_form_inner">
+                    {% include 'admin_tables_filter_form.html' %}
+                    <div class="form-field category_field hide">
+                        {{ form.status.label (class='form_label')}}
+                        {{ form.status (class='form-control form-control-sm')}}
+                    </div>
+                    <div class="form-field submit">
+                        {{ form.submit (class='form-control form-control-sm')}}
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="table_outer">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Order date</th>
+                        <th scope="col">Order time</th>
+                        <th scope="col">Total price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <th scope="row">{{ index[loop.index] }}</th>
+                        <td>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['status'] }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['order_date'] }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['order_time'] }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['total_price'] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% for page_num in orders_pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if orders_pagination.page == page_num %}
+                    {% if session.get('orders_search') %}
+                        <a class="btn btn-danger mb-4" href="{{ url_for('admin.orders_search', page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-danger mb-4" href="{{ url_for('admin.orders_list', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    {% if session.get('orders_search') %}
+                        <a class="btn btn-danger mb-4" href="{{ url_for('admin.orders_search', page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-danger mb-4" href="{{ url_for('admin.orders_list', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

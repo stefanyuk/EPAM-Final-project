@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {% include 'nav_bar.html' %}
+
+    <section class="personal_info">
+        <div class="container personal_info_container">
+        <div class="row">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div id="flashed_personal_profile_info" class="flashed hide">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} message">
+                              {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+            <div class="row">
+                <div class="col-md-6 profile_title">Account Details</div>
+                <div class="col-md-6 address_title">Delivery Address</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 personal_info_inner">
+                    <div class="personal_info_form_wrapper">
+                        <form action="{{ url_for('user.update_user_details', user_id=user_id) }}" method="POST">
+                            {{ profile_form.hidden_tag() }}
+                            <fieldset class="form-group">
+                                <div class="form-group mb-2">
+                                    {{ profile_form.username.label (class='form_label')}}
+                                    {% if profile_form.username.errors %}
+                                        {{ profile_form.username(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.username.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.username (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-2">
+                                    {{ profile_form.email.label (class='form_label')}}
+                                    {% if profile_form.email.errors %}
+                                        {{ profile_form.email(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.email.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.email (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-2">
+                                    {{ profile_form.phone_number.label (class='form_label')}}
+                                    {% if profile_form.phone_number.errors %}
+                                        {{ profile_form.phone_number(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.phone_number.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.phone_number (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-2">
+                                    {{ profile_form.first_name.label (class='form_label')}}
+                                    {% if profile_form.first_name.errors %}
+                                        {{ profile_form.first_name(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.first_name.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.first_name (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-2">
+                                    {{ profile_form.last_name.label (class='form_label')}}
+                                    {% if profile_form.last_name.errors %}
+                                        {{ profile_form.last_name(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.last_name.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.last_name (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-2">
+                                    {{ profile_form.birth_date.label (class='form_label')}}
+                                    {% if profile_form.birth_date.errors %}
+                                        {{ profile_form.birth_date(class="form-control form-control-sm is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in profile_form.birth_date.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ profile_form.birth_date (class='form-control form-control-sm')}}
+                                    {% endif %}
+                                </div>
+                            </fieldset>
+                            <div class="buttons_outer">
+                                <div class="form-group">
+                                    {{ profile_form.submit_profile (class='personal_profile_button personal_profile_button--red')}}
+                                </div>
+                                {% if current_user.is_admin %}
+                                    <div class="form-group">
+                                        <a class='personal_profile_button delete_btn' href="{{ url_for('user.delete_user', user_id=user_id) }}">Delete</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-5 offset-md-2 personal_info_address">
+                    <form action="{{ url_for('user.update_user_details', user_id=user_id) }}" method="POST">
+                    {% include 'address_form.html' %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

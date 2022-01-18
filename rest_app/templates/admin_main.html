@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {% include 'nav_bar.html' %}
+    {% include 'admin_top_menu.html' %}
+    <div class="container mt-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                      {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}

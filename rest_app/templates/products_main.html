@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {% include 'nav_bar.html' %}
+    <section class="product_main">
+        <div class="container">
+            <div class="product_navigation">
+                <div class="product_navigation_outer">
+                    {% for category in categories %}
+                        <a href="{{ url_for('shop.products_by_category',  category_name=category.name) }}" class="navigation_item">{{ category.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="products_outer">
+            <div class="row">
+                {% for product in products %}
+                     <div class="col-md-4 mt-4">
+                        <div class="card">
+                            <img class="card-img-top product_card_img" src="{{ url_for('static', filename='img/black_coffee.png') }}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.title }} </h5>
+                                <h5 class="product_price">{{ product.price }} €</h5>
+                                <button class="btn add_to_cart_btn" data-product_id="{{ product.id }}">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="offset-md-5 mt-3">
+                {% if products_pagination.pages > 1 %}
+                    {% for page_num in products_pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                        {% if page_num %}
+                            {% if products_pagination.page == page_num %}
+                                {% if category_name %}
+                                    <a class="btn btn-outline-light mb-4" href="{{ url_for('shop.products_by_category', category_name=category_name, page=page_num) }}">{{ page_num }}</a>
+                                {% else %}
+                                    <a class="btn btn-outline-light mb-4" href="{{ url_for('shop.products', page=page_num) }}">{{ page_num }}</a>
+                                {% endif %}
+                            {% else %}
+                                {% if category_name %}
+                                    <a class="btn btn-danger mb-4" href="{{ url_for('shop.products_by_category',category_name=category_name, page=page_num) }}">{{ page_num }}</a>
+                                {% else %}
+                                    <a class="btn btn-danger mb-4" href="{{ url_for('shop.products', page=page_num) }}">{{ page_num }}</a>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

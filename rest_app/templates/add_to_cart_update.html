@@ -1,0 +1,4 @@
+{% if session['items_in_cart'] %}
+    <li class="menu_item qty_info">Products in cart: {{ session['items_in_cart']|length }}</li>
+    <a href="{{ url_for('shop.checkout') }}" class="btn btn-outline-info checkout_btn">Checkout</a>
+{% endif %}

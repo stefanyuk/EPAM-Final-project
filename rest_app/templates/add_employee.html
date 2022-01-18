@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {% include 'nav_bar.html' %}
+    <section class="add_model">
+        <div class="container add_model_container">
+            <div class="add_model_inner">
+                <div class="form_wrapper">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <fieldset class="form-group">
+                            {% if update %}
+                                <legend class="border-bottom mb-4">Update Employee</legend>
+                            {% else %}
+                                <legend class="border-bottom mb-4">Add Employee</legend>
+                            {% endif %}
+                            <div class="form-group">
+                                {{ form.first_name.label(class="form-control-label") }}
+                                {% if form.first_name.errors %}
+                                    {{ form.first_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.first_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.first_name(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.last_name.label(class="form-control-label") }}
+                                {% if form.last_name.errors %}
+                                    {{ form.last_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.last_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.last_name(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.department.label(class="form-control-label") }}
+                                {% if form.department.errors %}
+                                    {{ form.department(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.department.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.department(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.salary.label(class="form-control-label") }}
+                                {% if form.salary.errors %}
+                                    {{ form.salary(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.salary.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.salary(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.hire_date.label(class="form-control-label") }}
+                                {% if form.hire_date.errors %}
+                                    {{ form.hire_date(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.hire_date.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.hire_date(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.available_holidays.label(class="form-control-label") }}
+                                {% if form.available_holidays.errors %}
+                                    {{ form.available_holidays(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.available_holidays.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.available_holidays(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                        <div class="buttons_outer">
+                            <div class="form-group">
+                                {{ form.submit (class='create_button') }}
+                            </div>
+                            {% if del_btn %}
+                                <div class="form-group">
+                                    <a class='delete_btn' href="{{ url_for('employee.delete_employee', employee_id=employee_id) }}">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,72 @@
+.register_container{
+    margin-top: 115px;
+}
+
+.login_container{
+    margin-top: 140px;
+}
+
+
+.register_inner, .login_inner{
+    min-height: 609px;
+    padding: 40px 40px;
+    max-width: 528px;
+    margin: 0 auto;
+    margin-top: 50px;
+    background-color: #fac2c0;
+    border-radius: 20px;
+}
+
+.login_inner{
+    margin-top: 80px;
+}
+
+.login_inner{
+    min-height: 450px;
+}
+
+.register .register_inner .form_label, .login .login_inner .form_label{
+    color: #6c0d0d;
+}
+
+.register .register_inner .form_legend, .login .login_inner .form_legend{
+    color: #6c0d0d;
+    border-bottom: 2px solid white;
+    margin-bottom: 20px;
+}
+
+
+.register .register_button, .login .login_button , .personal_profile_button, .add_button, .remove_button,
+.finalize_btn, .empty_cart_btn, .submit_address_btn, .create_button, .delete_btn, .cancel_button{
+    width: 150px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 40px;
+
+    border-radius: 30px;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: #cd2f2c;
+    transition: background .1s linear;
+}
+
+.form_bottom_question{
+    text-decoration: none;
+}
+
+.register .register_button:hover, .login .login_button:hover,
+.personal_profile_button:hover, .delete_btn:hover, .submit_address_btn:hover, .create_button:hover, .cancel_button:hover{
+    background-color: #f58580;
+    color: #6c0d0d;
+}
+
+
+.register_question{
+    margin-top: 10px;
+    margin-left: 8px;
+    display: block;
+}
