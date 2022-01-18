@@ -1,6 +1,6 @@
 from flask_restful import reqparse
 from rest_app.models import Product, Category
-from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
+from rest_app.service.common_services import set_all_parser_args_to_unrequired
 from rest_app import db
 from uuid import uuid4
 
@@ -28,23 +28,6 @@ def add_product(title, summary, price, category_id):
     return product
 
 
-def product_data_to_dict(product):
-    """
-    Serializer that returns a dictionary from its fields
-
-    :param product: product object that needs to be serialized
-    :return: product information
-    """
-    product_info = {
-        'id': product.id,
-        'title': product.title,
-        'price': product.price,
-        'category': product.category.name
-    }
-
-    return product_info
-
-
 def get_products_by_category(category_name):
     """
     Select all records for the products that are under provided category
@@ -52,18 +35,18 @@ def get_products_by_category(category_name):
     :param category_name: name of the searched category
     """
     category = Category.query.filter_by(name=category_name).first()
-    products = Product.query.filter_by(category_id=category.id)
 
-    return products
+    return category.products
 
 
 def product_data_parser():
     parser = reqparse.RequestParser()
 
-    parser.add_argument('title', type=str, help='you did not provide product title', required=True)
-    parser.add_argument('price', type=float, help='you did not provide product price', required=True)
-    parser.add_argument('category_id', type=str, help='you did not provide product category id', required=True)
-    parser.add_argument('summary', type=str, help='you did not provide product title')
+    parser.add_argument('title', type=str, location=['json', 'form'], help='you did not provide product title', required=True)
+    parser.add_argument('price', type=float, location=['json', 'form'], help='you did not provide product price', required=True)
+    parser.add_argument('category_id', type=str, location=['json', 'form'],
+                        help='you did not provide product category id', required=True)
+    parser.add_argument('summary', type=str, location=['json', 'form'])
 
     return parser
 
@@ -74,15 +57,10 @@ def product_update_data_parser():
     return set_all_parser_args_to_unrequired(parser)
 
 
-def update_product(product_id, **kwargs):
-    """
-    Updates information about specified product
-    :param product_id: unique product id
-    """
-    product = get_row_by_id(Product, product_id)
+def product_form_data_parser():
+    parser = product_update_data_parser().copy()
 
-    for field in kwargs:
-        if kwargs[field]:
-            setattr(product, field, kwargs[field])
+    parser.remove_argument('category_id')
+    parser.add_argument('category', type=str, location='form')
 
-    db.session.commit()
+    return parser

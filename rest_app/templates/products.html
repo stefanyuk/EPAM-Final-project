@@ -5,7 +5,7 @@
     {% include 'admin_top_menu.html' %}
     <div class="container">
         <div class="control_buttons">
-            <a class="add_button" href="">Add product</a>
+            <a class="add_button" href="{{ url_for('product.product_add') }}">Add product</a>
             <form action="{{ url_for('admin.products_search') }}" method="POST">
                 {{ form.hidden_tag() }}
                 <div class="product_control_form_inner">

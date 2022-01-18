@@ -18,8 +18,8 @@ class ProductsAPI(Resource):
         """
         Returns list of all products
         """
-        products = get_all_rows_from_db(Product)
-        products_list = [product_data_to_dict(product) for product in products]
+        products = Product.query.all()
+        products_list = [product.data_to_dict() for product in products]
 
         return jsonify(products_list)
 
@@ -50,9 +50,9 @@ class ProductAPI(Resource):
         except exc.NoResultFound:
             return record_not_found_by_id_error('product'), 404
 
-        return product_data_to_dict(product)
+        return product.data_to_dict()
 
-    def put(self, product_id):
+    def patch(self, product_id):
         """
         Updates information about the specific product in the database
 
@@ -61,7 +61,7 @@ class ProductAPI(Resource):
         args = product_update_data_parser().parse_args()
 
         try:
-            update_product(product_id, **args)
+            update_table_row(Product, product_id, **args)
         except exc.NoResultFound:
             return record_not_found_by_id_error('product'), 404
 

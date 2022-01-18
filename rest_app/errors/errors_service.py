@@ -8,16 +8,16 @@ from rest_app.errors.error_messages import error_bad_api_version
 errors = Blueprint('errors', __name__)
 
 
-@errors.app_errorhandler(HTTPException)
-def http_error(error):
-    if check_api_version():
-        return error_bad_api_version, 410
-
-    return {
-        'code': error.code,
-        'message': error.name,
-        'description': error.description,
-    }, error.code
+# @errors.app_errorhandler(HTTPException)
+# def http_error(error):
+#     if check_api_version():
+#         return error_bad_api_version, 410
+#
+#     return {
+#         'code': error.code,
+#         'message': error.name,
+#         'description': error.description,
+#     }, error.code
 
 
 @errors.app_errorhandler(IntegrityError)

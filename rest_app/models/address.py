@@ -11,3 +11,20 @@ class Address(db.Model):
     street_number = db.Column(db.String, nullable=False)
     postal_code = db.Column(db.String, nullable=False)
     orders = db.relationship('Order', backref='address', lazy='dynamic')
+
+    def data_to_dict(self):
+        """
+        Returns address information
+        """
+        address_info = {
+            'id': self.id,
+            'city': self.city,
+            'street': self.street,
+            'street_number': self.street_number,
+            'postal_code': self.postal_code
+        }
+
+        return address_info
+
+    def __repr__(self):
+        return '<Address {}>'.format(self.id)

@@ -87,7 +87,7 @@ def test_get_employee_atypical_behaviour(client, create_tables, employee_id, fir
     )
 )
 def test_update_employee(client, index, new_name, employee_data):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.employee', employee_id=employee_data[index].id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'first_name': new_name}
@@ -116,7 +116,7 @@ def test_update_employee(client, index, new_name, employee_data):
     )
 )
 def test_update_employee_atypical_behaviour(client, create_tables, employee_id, new_name):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.employee', employee_id=employee_id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'name': new_name}

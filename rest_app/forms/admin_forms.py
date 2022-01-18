@@ -66,6 +66,10 @@ class UpdateEmployee(AddEmployee, FlaskForm):
         self.submit.label.text = 'Update'
 
 
+class UpdateOrder(FlaskForm):
+    status = SelectField('Status', choices=['delivered', 'awaiting fulfilment', 'canceled'])
+
+    submit = SubmitField('Update')
 
 
 class AddUser(UserForm, FlaskForm):
@@ -80,6 +84,17 @@ class AddUser(UserForm, FlaskForm):
                 raise ValueError()
         except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
             raise ValidationError('Invalid phone number')
+
+
+class AddProduct(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    summary = TextAreaField('Summary', validators=[Optional()])
+    price = FloatField('Price', validators=[DataRequired()])
+    category = SelectField('Category', choices=[], validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+    def populate_choices_fields(self):
+        self.category.choices = [category.name for category in Category.query.all()]
 
 
 class FilterForm(FlaskForm):

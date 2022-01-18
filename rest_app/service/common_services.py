@@ -23,20 +23,9 @@ def get_row_by_id(model, model_id):
     return row
 
 
-def get_all_rows_from_db(model):
-    """
-    Returns all rows from the specified table
-
-    :param model: table where rows needs to be returned
-    """
-    models = model.query.all()
-
-    return models
-
-
 def sort_table_by_field(table, field_name, sort_order='asc', table_to_join=None):
     """
-    Creates a query to sort the users table by provided field name
+    Creates a query to sort the table by provided field name
 
     :param table: table that needs to be sorted
     :param table_to_join: table that needs to be joined to perform a search
@@ -62,6 +51,23 @@ def set_all_parser_args_to_unrequired(parser):
             arg.required = False
 
     return parser
+
+
+def update_table_row(table_to_update, row_id, **kwargs):
+    """
+    Partially updates specified table according to provided data
+
+    :param table_to_update: table where is record that needs to be updated
+    :param row_id: id of the row to update
+    :param kwargs: fields that need to be updated
+    """
+    table = get_row_by_id(table_to_update, row_id)
+
+    for key, value in kwargs.items():
+        if value:
+            setattr(table, key, value)
+
+    db.session.commit()
 
 # We use it in order to sort table in a chosen by user order
 order = {

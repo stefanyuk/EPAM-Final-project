@@ -35,27 +35,6 @@ def add_employee(first_name, last_name, salary, phone_number, department_id, hir
     return employee
 
 
-def employee_data_to_dict(employee):
-    """
-    Serializer that returns a dictionary from its fields
-
-    :param employee: employee object that needs to be serialized
-    :return: employee information
-    """
-
-    employee_info = {
-        'first_name': employee.user.first_name,
-        'last_name': employee.user.last_name,
-        'id': employee.id,
-        'hire_date': str(employee.hire_date),
-        'department_name': employee.department.name,
-        'salary': str(employee.salary),
-        'available_holidays': employee.available_holidays
-    }
-
-    return employee_info
-
-
 def update_employee_data(employee_id, **kwargs):
     """
     Update an existing employee

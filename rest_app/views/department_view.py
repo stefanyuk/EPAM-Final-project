@@ -3,8 +3,8 @@ from flask_login import login_required
 from rest_app.models import Department
 from rest_app.views.admin_views import admin_required
 from rest_app.forms.admin_forms import AddDepartment, UpdateDepartment
-from rest_app.service.department_service import add_department, department_form_data_parser, update_department_data
-from rest_app.service.common_services import delete_row_by_id
+from rest_app.service.department_service import add_department, department_form_data_parser
+from rest_app.service.common_services import delete_row_by_id, update_table_row
 
 
 department = Blueprint('department', __name__, url_prefix='/department')
@@ -29,7 +29,7 @@ def update_department(department_id):
 
     if form.validate_on_submit():
         data = department_form_data_parser().parse_args()
-        update_department_data(department_id, **data)
+        update_table_row(Department, department_id, **data)
         flash('Department was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 

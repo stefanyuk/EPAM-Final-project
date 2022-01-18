@@ -18,8 +18,8 @@ class DepartmentsAPI(Resource):
         """
         Returns a list of all department in the database
         """
-        departments = get_all_rows_from_db(Department)
-        department_list = [department_data_to_dict(department) for department in departments]
+        departments = Department.query.all()
+        department_list = [department.data_to_dict() for department in departments]
 
         return jsonify(department_list)
 
@@ -54,13 +54,13 @@ class DepartmentAPI(Resource):
         except exc.NoResultFound:
             return record_not_found_by_id_error('department'), 404
 
-        return department_data_to_dict(department)
+        return department.data_to_dict()
 
-    def put(self, department_id):
+    def patch(self, department_id):
         args = department_data_parser().parse_args()
 
         try:
-            update_department_data(department_id, **args)
+            update_table_row(Department, department_id, **args)
         except exc.NoResultFound:
             return record_not_found_by_id_error('department'), 404
 

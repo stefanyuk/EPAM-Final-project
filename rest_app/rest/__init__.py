@@ -4,6 +4,7 @@ from rest_app.rest.employee_api import EmployeesAPI, EmployeeAPI
 from rest_app.rest.department_api import DepartmentAPI, DepartmentsAPI
 from rest_app.rest.order_api import OrdersAPI, OrderAPI
 from rest_app.rest.user_api import UsersAPI, UserAPI
+from rest_app.rest.product_api import ProductsAPI, ProductAPI
 
 
 rp_api = Blueprint('rp_api', __name__, url_prefix='/api/v1')
@@ -18,3 +19,5 @@ api.add_resource(OrdersAPI, '/orders', endpoint='order_list')
 api.add_resource(OrderAPI, '/orders/<string:order_id>', endpoint='order')
 api.add_resource(UsersAPI, '/users', endpoint='user_list')
 api.add_resource(UserAPI, '/users/<string:user_id>', endpoint='user')
+api.add_resource(ProductsAPI, '/products', endpoint='product_list')
+api.add_resource(ProductAPI, '/products/<string:product_id>', endpoint='product')

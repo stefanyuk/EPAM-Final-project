@@ -23,7 +23,7 @@ Application uses RESTful web service to perform CRUD operations.
 
 ## Installing and using PostgreSQL
 
-In case if you have some difficulties to set up the PostgreSQL database there is presented such a small tutorial (for Ubuntu 18.04 or 20.04):
+In case if you have some difficulties to set up the PostgreSQL database there is presented a small tutorial (for Ubuntu 20.04):
 
 1. Download PostgreSQL:
 > sudo apt update
@@ -51,20 +51,22 @@ If [-] PostgreSQL it means that server is down. In case if [+] PostgreSQL you ca
 
 2. Create virtual environment in project
 > cd EPAM-Final-project
+
 > python3.9 -m venv venv
+
 > source venv/bin/activate
 
 3. Install project requirements
 > pip install -r requirements.txt
 
 4. Prepare the database for usage. Postgresql must already be installed in the system. 
-Setup environment variables for the database configuration or change the config file.
+Setup environment variables for the database SQLalchemy configuration or change the config file.
 
 Example configuration: 
 > 'postgresql://postgres:1234@localhost:5432/restwebapp'
 
 5. Run the migration scripts to create database schema:
-> flask db init - further use is optional, in case of intentional reinstallation
+> flask db init - further use is optional, only in case of intentional reinstallation
 > flask db migrate
 > flask db update
 
@@ -88,7 +90,7 @@ Current API version - __1__. Each API url should start with __/api/v1__
 
 * /users/user_id
   * GET - get user with a given id in json format
-  * PUT - update user with a given id
+  * PATCH - update user with a given id
   * DELETE - delete user with a given id
 ---
 * /employees
@@ -97,7 +99,7 @@ Current API version - __1__. Each API url should start with __/api/v1__
 
 * /employees/employee_id
   * GET - get employee with a given id in json format
-  * PUT - update employee with a given id
+  * PATCH - update employee with a given id
   * DELETE - delete employee with a given id
 ---
 * /departments
@@ -106,7 +108,7 @@ Current API version - __1__. Each API url should start with __/api/v1__
 
 * /departments/department_id
   * GET - get department with a given id in json format
-  * PUT - update department with a given id
+  * PATCH - update department with a given id
   * DELETE - delete department with a given id
 ---
 * /orders
@@ -115,5 +117,5 @@ Current API version - __1__. Each API url should start with __/api/v1__
 
 * /orders/order_id
   * GET - get order with a given id in json format
-  * PUT - update order with a given id
+  * PATCH - update order with a given id
   * DELETE - delete order with a given id

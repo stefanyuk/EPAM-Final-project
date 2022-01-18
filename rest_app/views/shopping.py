@@ -1,9 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, session, flash, redirect, jsonify
 from flask_login import current_user
 from rest_app.views.orders_view import finalize_order
-from rest_app.service.product_service import product_data_to_dict
-from rest_app.service.address_service import address_data_to_dict
-from rest_app.service.common_services import get_all_rows_from_db
 from rest_app.models import Product, Category, Address
 from rest_app.forms.personal_info_forms import AddressForm
 
@@ -20,7 +17,7 @@ def welcome_landing():
     product_info = {}
     for title in welcome_products:
         product = Product.query.filter_by(title=title).first()
-        product_info[title] = product_data_to_dict(product)
+        product_info[title] = product.data_to_dict()
 
     return render_template(
         'welcome_landing.html',
@@ -34,11 +31,11 @@ def welcome_landing():
 
 @shopping.route('/products')
 def products():
-    categories = [category for category in get_all_rows_from_db(Category)]
+    categories = [category for category in Category.query.all()]
 
     page = request.args.get('page', 1, type=int)
     products_pagination = Product.query.order_by(Product.category_id.asc()).paginate(page=page, per_page=6)
-    product_info = [product_data_to_dict(product) for product in products_pagination.items]
+    product_info = [product.data_to_dict() for product in products_pagination.items]
 
     return render_template(
         'products_main.html',
@@ -50,12 +47,12 @@ def products():
 
 @shopping.route('/products/<string:category_name>')
 def products_by_category(category_name):
-    categories = [category for category in get_all_rows_from_db(Category)]
+    categories = [category for category in Category.query.all()]
     category = Category.query.filter(Category.name == category_name).one()
 
     page = request.args.get('page', 1, type=int)
     products_pagination = Product.query.filter(Product.category_id == category.id).paginate(page=page, per_page=6)
-    product_info = [product_data_to_dict(product) for product in products_pagination.items]
+    product_info = [product.data_to_dict() for product in products_pagination.items]
 
     return render_template(
         'products_main.html',
@@ -95,7 +92,7 @@ def checkout():
     for cart_item in session.get('items_in_cart'):
         product = Product.query.get(cart_item)
         cart_items.append(
-            product_data_to_dict(product)
+            product.data_to_dict()
         )
 
     return render_template('checkout.html', cart_items=cart_items)
@@ -155,7 +152,7 @@ def values_from_local_storage():
 @shopping.route('/update_address_values/<string:address_id>', methods=['POST'])
 def send_address_values(address_id):
     address = Address.query.get(address_id)
-    address_info = address_data_to_dict(address)
+    address_info = address.data_to_dict()
 
     return jsonify(address_info)
 

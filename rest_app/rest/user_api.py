@@ -18,7 +18,7 @@ class UsersAPI(Resource):
         """
         Returns list of all users
         """
-        users = get_all_rows_from_db(User)
+        users = User.query.all()
         users_list = [user_data_to_dict(user) for user in users]
 
         return jsonify(users_list)
@@ -56,7 +56,7 @@ class UserAPI(Resource):
 
         return user_data_to_dict(user)
 
-    def put(self, user_id):
+    def patch(self, user_id):
         """
         Updates information about the specific user in the database
 
@@ -80,3 +80,26 @@ class UserAPI(Resource):
         delete_row_by_id(User, user_id)
 
         return '', 204
+
+
+class UserOrdersAPI(Resource):
+    """
+    Resource that handles HTTP requests related to the orders related to the specific user in the database
+    """
+    decorators = [auth.login_required]
+
+    def get(self, user_id):
+        """
+        Returns information about all orders, placed by a specified user
+
+        :param user_id: unique id of the user
+        """
+        try:
+            user = get_row_by_id(User, user_id)
+        except exc.NoResultFound:
+            return record_not_found_by_id_error('user'), 404
+
+        orders = user.orders
+        orders_info = [order.data_todict() for order in orders]
+
+        return {user_id: orders_info}

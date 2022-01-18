@@ -15,7 +15,7 @@
                     <span class="city">{{ order.address.city }}</span>
                     <span class="street">{{ order.address.street }}, {{ order.address.street_number }}, {{ order.address.postal_code }}</span>
                 </div>
-                <a class="cancel_button" href="{{ url_for('orders.delete_order', order_id=order.id) }}">Cancel order</a>
+                <a class="cancel_button" href="{{ url_for('orders.cancel_order', order_id=order.id) }}">Cancel order</a>
             </div>
         </div>
     </div>

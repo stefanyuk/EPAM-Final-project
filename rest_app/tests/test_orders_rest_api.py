@@ -113,7 +113,7 @@ def test_get_order_atypical_behaviour(client, create_tables, order_id):
     )
 )
 def test_update_order(client, index, new_status, order_data):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.order', order_id=order_data[index].id, main_key='title'),
         headers={'Authorization': f'Basic {credentials}'},
         json={'status': new_status}
@@ -140,7 +140,7 @@ def test_update_order(client, index, new_status, order_data):
     )
 )
 def test_update_order_atypical_behaviour(client, create_tables, order_id, new_status):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.order', order_id=order_id, main_key='title'),
         headers={'Authorization': f'Basic {credentials}'},
         json={'status': new_status}

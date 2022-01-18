@@ -85,7 +85,7 @@ def test_get_department_atypical_behaviour(client, create_tables, department_id,
     )
 )
 def test_update_department(client, index, new_name, dept_data):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.department', department_id=dept_data[index].id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'name': new_name}
@@ -114,7 +114,7 @@ def test_update_department(client, index, new_name, dept_data):
     )
 )
 def test_update_department_atypical_behaviour(client, create_tables, department_id, new_name):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.department', department_id=department_id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'name': new_name}

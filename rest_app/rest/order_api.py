@@ -17,8 +17,8 @@ class OrdersAPI(Resource):
     decorators = [auth.login_required]
 
     def get(self):
-        orders = get_all_rows_from_db(Order)
-        orders_list = [order_data_to_dict(order) for order in orders]
+        orders = Order.query.all()
+        orders_list = [order.data_to_dict() for order in orders]
 
         return jsonify(orders_list)
 
@@ -58,9 +58,9 @@ class OrderAPI(Resource):
         except exc.NoResultFound:
             return record_not_found_by_id_error('order'), 404
 
-        return order_data_to_dict(order)
+        return order.data_to_dict()
 
-    def put(self, order_id):
+    def patch(self, order_id):
         """
         Updates information about the specific order in the database
 
@@ -74,7 +74,7 @@ class OrderAPI(Resource):
         args = update_order_data_parser().parse_args()
 
         try:
-            update_order(order_id, **args)
+            update_order(order_id, key, **args)
         except exc.NoResultFound:
             return record_not_found_by_id_error('order'), 404
 

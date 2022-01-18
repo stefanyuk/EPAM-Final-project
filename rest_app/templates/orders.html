@@ -35,7 +35,7 @@
                     <tr>
                         <th scope="row">{{ index[loop.index] }}</th>
                         <td>
-                            <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['status'] }}</a>
+                            <a href="{{ url_for('orders.order_update', order_id=order.id) }}">{{ order['status'] }}</a>
                         </td>
                         <td>
                             <a href="{{ url_for('orders.order_detail', order_id=order.id) }}">{{ order['order_date'] }}</a>

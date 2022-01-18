@@ -17,8 +17,8 @@ class EmployeesAPI(Resource):
         """
         Returns list of all employees
         """
-        employees = get_all_rows_from_db(EmployeeInfo)
-        employee_list = [employee_data_to_dict(employee) for employee in employees]
+        employees = EmployeeInfo.query.all()
+        employee_list = [employee.data_to_dict() for employee in employees]
 
         return jsonify(employee_list)
 
@@ -49,9 +49,9 @@ class EmployeeAPI(Resource):
         except exc.NoResultFound:
             return record_not_found_by_id_error('employee'), 404
 
-        return employee_data_to_dict(employee)
+        return employee.data_to_dict()
 
-    def put(self, employee_id):
+    def patch(self, employee_id):
         """
         Updates information about the specific employee in the database
 

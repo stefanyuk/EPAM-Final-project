@@ -25,3 +25,6 @@ class User(db.Model, UserMixin):
     addresses = db.relationship('Address', backref='user', lazy='dynamic', passive_deletes=True)
     orders = db.relationship('Order', backref='user', lazy='dynamic')
     employee = db.relationship('EmployeeInfo', backref='user', uselist=False, passive_deletes=True)
+
+    def __repr__(self):
+        return f'<User {self.username}>'

@@ -17,7 +17,13 @@ def create_order_items(products: list, order_id, main_key):
         db.session.commit()
 
 
-def update_order_items(products: list, order_id):
+def update_order_items(products: list, order_id, main_key):
+    """
+    Updates all order items for the specified order
+    :param products: new products that should be assigned to the order
+    :param order_id: unique id of the order
+    :param main_key: key according to which products search will be performed
+    """
     order_items = OrderItem.query.filter_by(order_id=order_id).all()
 
     for item in order_items:
@@ -25,4 +31,4 @@ def update_order_items(products: list, order_id):
 
     db.session.commit()
 
-    create_order_items(products, order_id, '')
+    create_order_items(products, order_id, main_key)

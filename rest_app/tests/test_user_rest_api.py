@@ -84,7 +84,7 @@ def test_get_user_atypical_behaviour(client, create_tables, user_id, username):
     )
 )
 def test_update_user(client, index, new_username, users_data):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.user', user_id=users_data[index].id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'username': new_username}
@@ -112,7 +112,7 @@ def test_update_user(client, index, new_username, users_data):
     )
 )
 def test_update_user_atypical_behaviour(client, users_data, user_id, new_username):
-    response = client.put(
+    response = client.patch(
         url_for('rp_api.user', user_id=user_id),
         headers={'Authorization': f'Basic {credentials}'},
         json={'username': new_username}
