@@ -21,7 +21,7 @@ Application uses RESTful web service to perform CRUD operations.
 - Postgresql database
 
 
-## Installing and using Postgresql
+## Installing and using PostgreSQL
 
 In case if you have some difficulties to set up the PostgreSQL database there is presented such a small tutorial (for Ubuntu 18.04 or 20.04):
 
@@ -43,6 +43,7 @@ If [-] PostgreSQL it means that server is down. In case if [+] PostgreSQL you ca
 4. Create restwebapp database:
 > createdb restwebapp
 
+***
 ## Setup
 
 1. Clone the repo
@@ -68,5 +69,52 @@ Example configuration:
 > flask db migrate
 > flask db update
 
+6. Run flask populate-db command to create test data (make sure you set up environment variables for flask app):
+> flask populate-db
+---
 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+####After these steps you should see the home page of the application
+
+![alt text](https://github.com/stefanyuk/EPAM-Final-project/blob/main/documentation/mockups/welcome.png "Logo Title Text 1")
+
+
+## API Operations
+
+API version - 1. Each API url should start with __/api/v1__
+
+
+* /users
+  * GET - get all users in json format
+  * POST - create a new user
+
+* /users/user_id
+  * GET - get user with a given id in json format
+  * PUT - update user with a given id
+  * DELETE - delete user with a given id
+---
+* /employees
+  * GET - get all employees in json format
+  * POST - create a new employee
+
+* /employees/employee_id
+  * GET - get employee with a given id in json format
+  * PUT - update employee with a given id
+  * DELETE - delete employee with a given id
+---
+* /departments
+  * GET - get all departments in json format
+  * POST - create a new department
+
+* /departments/department_id
+  * GET - get department with a given id in json format
+  * PUT - update department with a given id
+  * DELETE - delete department with a given id
+---
+* /orders
+  * GET - get all orders in json format
+  * POST - create a new order
+
+* /orders/order_id
+  * GET - get order with a given id in json format
+  * PUT - update order with a given id
+  * DELETE - delete order with a given id
