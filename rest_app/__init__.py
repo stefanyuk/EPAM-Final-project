@@ -1,5 +1,5 @@
 from flask import Flask
-from config import DevelopmentConfig
+from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -15,7 +15,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
 
     if test_config is None:
-        app.config.from_object(DevelopmentConfig)
+        app.config.from_object(Config)
     else:
         app.config.from_object(test_config)
 

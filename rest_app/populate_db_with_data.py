@@ -72,7 +72,8 @@ def main(max_qty):
             [random.choice(products) for i in range(r)],
             user_id=user.id,
             address_id=address.id,
-            **next(orders)
+            **next(orders),
+            main_key='id'
         )
 
 
