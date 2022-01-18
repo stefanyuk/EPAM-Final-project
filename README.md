@@ -57,8 +57,7 @@ If [-] PostgreSQL it means that server is down. In case if [+] PostgreSQL you ca
 3. Install project requirements
 > pip install -r requirements.txt
 
-4. Prepare the database for usage
-Postgresql must already be installed in the system. 
+4. Prepare the database for usage. Postgresql must already be installed in the system. 
 Setup environment variables for the database configuration or change the config file.
 
 Example configuration: 
@@ -73,14 +72,14 @@ Example configuration:
 > flask populate-db
 ---
 
-####After these steps you should see the home page of the application
+After these steps you should see the home page of the application
 
 ![alt text](https://github.com/stefanyuk/EPAM-Final-project/blob/main/documentation/mockups/welcome.png "Logo Title Text 1")
 
 
 ## API Operations
 
-API version - 1. Each API url should start with __/api/v1__
+Current API version - __1__. Each API url should start with __/api/v1__
 
 
 * /users
