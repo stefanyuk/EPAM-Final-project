@@ -72,6 +72,12 @@ Example configuration:
 
 6. Run flask populate-db command to create test data (make sure you set up environment variables for flask app):
 > flask populate-db
+
+7. Admin user will be created automatically after you run "flask populate-db" command. You can use following credentials 
+to login and to use API:
+> username: admin
+> 
+> password: admin
 ---
 
 After these steps you should see the home page of the application
