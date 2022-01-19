@@ -1,0 +1,2 @@
+recursive-include rest_app/templates *
+recursive-include rest_app/static *

@@ -33,6 +33,7 @@ def login():
         user = User.query.filter(User.username == form.username.data).first()
         if user and check_password_hash(user.password_hash, form.password.data):
             login_user(user, remember=form.remember.data)
+            user.update_last_login_date()
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('shop.welcome_landing'))
 

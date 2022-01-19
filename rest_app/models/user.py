@@ -1,3 +1,4 @@
+import datetime
 from rest_app import db, login_manager
 from flask_login import UserMixin
 
@@ -25,6 +26,13 @@ class User(db.Model, UserMixin):
     addresses = db.relationship('Address', backref='user', lazy='dynamic', passive_deletes=True)
     orders = db.relationship('Order', backref='user', lazy='dynamic')
     employee = db.relationship('EmployeeInfo', backref='user', uselist=False, passive_deletes=True)
+
+    def update_last_login_date(self):
+        """
+        Updates last login date of the user
+        """
+        self.last_login_date = datetime.datetime.now()
+        db.session.commit()
 
     def __repr__(self):
         return f'<User {self.username}>'
