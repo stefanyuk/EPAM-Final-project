@@ -76,7 +76,7 @@ Example configuration:
 7. Admin user will be created automatically after you run "flask populate-db" command. You can use following credentials 
 to login and to use API:
 > username: admin
-> 
+
 > password: admin
 ---
 
