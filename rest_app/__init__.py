@@ -31,8 +31,8 @@ def create_app(test_config=None):
     # blueprints
     from rest_app.rest import rp_api
     app.register_blueprint(rp_api)
-    # from rest_app.errors.errors_service import errors
-    # app.register_blueprint(errors)
+    from rest_app.errors.errors_service import errors
+    app.register_blueprint(errors)
     from rest_app.views import register_view_blueprints
     register_view_blueprints(app)
 
