@@ -1,11 +1,18 @@
 from uuid import uuid4
 from flask_restful import reqparse
+from sqlalchemy import and_
+from flask_login import current_user
 from rest_app.models import Address
 from rest_app import db
 from rest_app.service.common_services import set_all_parser_args_to_unrequired
 
 
 def add_address(user_id, city, postal_code, street, street_number):
+    """
+    Creates new address record in the database
+    :param user_id: id of the user to which this address belongs
+    :return:
+    """
     address = Address(
         id=str(uuid4()),
         user_id=user_id,
@@ -49,3 +56,19 @@ def address_data_form_parser():
     parser.remove_argument('user_id')
 
     return set_all_parser_args_to_unrequired(parser)
+
+
+def check_if_address_exists(address_form):
+    """
+    Verifies whether address already exists in the list
+    of addresses of the specified user
+    """
+    query = Address.query.filter(
+        and_(
+            Address.user_id == current_user.id,
+            Address.street == address_form.street.data,
+            Address.street_number == str(address_form.street_number.data)
+        )
+    )
+
+    return query

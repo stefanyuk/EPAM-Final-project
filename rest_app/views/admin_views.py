@@ -278,10 +278,10 @@ def get_row_index_and_page_number():
 
 def set_search_form_data_in_session(form, form_name, form_fields: list = None):
     """
-    In case of successful validation, it sets all necessary information for the form in the session,
+    In case of successful validation, it sets all necessary information from the form in the session,
     so it persists while user is using it and can be used to return the result to the user
 
-    :param form: form that needs to be validated and set in the session
+    :param form: form from which data need to be taken
     :param form_name: name that should be used for saving in session
     :param form_fields: not common fields of the form
     """

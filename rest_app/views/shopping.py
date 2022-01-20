@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, session, flash, redirect, jsonify
 from flask_login import current_user
-from rest_app.views.orders_view import finalize_order
+from rest_app.views.orders_view import finalize_order_creation
 from rest_app.models import Product, Category, Address
 from rest_app.forms.personal_info_forms import AddressForm
 
@@ -121,7 +121,7 @@ def finalize_checkout():
     address_form = AddressForm()
 
     if address_form.validate_on_submit():
-        finalize_order(address_form)
+        finalize_order_creation(address_form)
         clear_session_from_order_details()
 
         if current_user.is_admin:
