@@ -76,10 +76,10 @@ def verify_products(products, main_key):
 
 def update_order(order_id, main_key, **kwargs):
     """
-    Update information about existing order
+    Updates information about existing order
 
     :param order_id: unique id of the order
-    :param main_key: according to which products search will be performed
+    :param main_key: key according to which products search will be performed
     """
 
     order = get_row_by_id(Order, order_id)

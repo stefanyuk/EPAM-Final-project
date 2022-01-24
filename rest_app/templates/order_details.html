@@ -15,7 +15,9 @@
                     <span class="city">{{ order.address.city }}</span>
                     <span class="street">{{ order.address.street }}, {{ order.address.street_number }}, {{ order.address.postal_code }}</span>
                 </div>
-                <a class="cancel_button" href="{{ url_for('orders.cancel_order', order_id=order.id) }}">Cancel order</a>
+                {% if order.status == 'awaiting fulfilment' %}
+                    <a class="cancel_button" href="{{ url_for('orders.cancel_order', order_id=order.id) }}">Cancel order</a>
+                {% endif %}
             </div>
         </div>
     </div>
