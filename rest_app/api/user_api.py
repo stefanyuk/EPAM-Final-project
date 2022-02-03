@@ -17,11 +17,7 @@ users_schema = UserSchema(many=True)
 @response(user_schema, status_code=201, description='User was created')
 def new(args):
     """Create a new user"""
-    user = User.create(**args)
-    db.session.add(user)
-    db.session.commit()
-
-    return user
+    return User.create(**args)
 
 
 @users.route('/users', methods=['GET'])

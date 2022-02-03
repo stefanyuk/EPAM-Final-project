@@ -21,5 +21,21 @@ class EmployeeInfo(Common, db.Model):
         db.session.commit()
         return employee
 
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @first_name.setter
+    def first_name(self, value):
+        self.user.first_name = value
+
+    @property
+    def last_name(self):
+        return self.user.first_name
+
+    @last_name.setter
+    def last_name(self, value):
+        self.user.last_name = value
+
     def __repr__(self):
         return f'<Employee {self.user.first_name} {self.user.last_name}>'

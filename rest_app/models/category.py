@@ -13,7 +13,10 @@ class Category(Common, db.Model):
     @classmethod
     def create(cls, **kwargs):
         """Create new category"""
-        return cls(id=str(uuid4()), **kwargs)
+        category = cls(id=str(uuid4()), **kwargs)
+        db.session.add(category)
+        db.session.commit()
+        return category
 
     def __repr__(self):
         return '<Category {}>'.format(self.name)

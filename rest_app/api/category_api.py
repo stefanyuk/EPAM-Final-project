@@ -22,11 +22,7 @@ def get_all():
 @response(category_schema)
 def new(args):
     """Create new category"""
-    category = Category.create(**args)
-    db.session.add(category)
-    db.session.commit()
-
-    return category
+    return Category.create(**args)
 
 
 @categories.route('/categories/<uuid:category_id>', methods=['GET'])

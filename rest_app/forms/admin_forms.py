@@ -93,6 +93,7 @@ class AddProduct(FlaskForm):
     submit = SubmitField('Create')
 
     def populate_choices_fields(self):
+        """Adds categories to choices field"""
         self.category.choices = [category.name for category in Category.query.all()]
 
 

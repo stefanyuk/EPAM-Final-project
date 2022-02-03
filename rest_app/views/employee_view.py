@@ -35,7 +35,7 @@ def update_employee(employee_id):
 
     if form.validate_on_submit():
         data = employee_schema.load(form.data)
-        EmployeeInfo.query.get(employee_id).update(data)
+        EmployeeInfo.update(employee_id, data)
         flash('Employee information was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 

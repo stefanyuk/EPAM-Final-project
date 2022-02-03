@@ -16,11 +16,7 @@ addresses_schema = AddressSchema(many=True)
 @response(address_schema, status_code=201, description='address was created')
 def new(args):
     """Create a new address"""
-    address = Address.create(**args)
-    db.session.add(address)
-    db.session.commit()
-
-    return address
+    return Address.create(**args)
 
 
 @addresses.route('/addresses', methods=['GET'])

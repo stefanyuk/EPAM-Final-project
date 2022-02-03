@@ -15,7 +15,11 @@ class Product(Common, db.Model):
 
     @classmethod
     def create(cls, **kwargs):
-        return cls(id=str(uuid4()), **kwargs)
+        """Creates new product"""
+        product = cls(id=str(uuid4()), **kwargs)
+        db.session.add(product)
+        db.session.commit()
+        return product
 
     def __repr__(self):
         return f'<Product {self.title}>'

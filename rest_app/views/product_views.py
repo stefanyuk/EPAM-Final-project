@@ -11,13 +11,12 @@ product_schema = ProductSchema()
 def product_create():
     """Creates new product"""
     form = AddProduct()
+    form.populate_choices_fields()
 
     if form.validate_on_submit():
         data = product_schema.load(form.data)
         Product.create(**data)
         flash('Product was added to the database', 'success')
         return redirect(url_for('admin.admin_main'))
-
-    form.populate_choices_fields()
 
     return render_template('add_product.html', form=form)

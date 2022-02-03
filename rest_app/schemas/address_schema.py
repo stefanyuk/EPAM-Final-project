@@ -19,7 +19,7 @@ class AddressSchema(ma.SQLAlchemySchema):
     @validates('street_number')
     def validate_street_number(self, value):
         """Validates whether street number is a digit"""
-        if not value.isdigit():
+        if not isinstance(value, int):
             raise ValidationError('Street number must be a digit')
 
     @validates('user_id')

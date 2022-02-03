@@ -22,11 +22,7 @@ def get_all():
 @response(product_schema)
 def new(args):
     """Create new product"""
-    product = Product.create(**args)
-    db.session.add(product)
-    db.session.commit()
-
-    return product
+    return Product.create(**args)
 
 
 @products.route('/products/<uuid:product_id>', methods=['GET'])

@@ -3,13 +3,13 @@ from marshmallow import EXCLUDE
 from flask_login import current_user
 from rest_app.forms.admin_forms import UpdateOrder
 from rest_app.schemas import OrderSchema, AddressSchema
-from rest_app.service.address_service import address_data_form_parser, add_address, check_if_address_exists
-from rest_app.models import Order, User
+from rest_app.service.address_service import check_if_address_exists
+from rest_app.models import Order, User, Address
 
 order = Blueprint('orders', __name__, url_prefix='/order')
 order_schema = OrderSchema(partial=True, unknown=EXCLUDE)
 order_create_schema = OrderSchema()
-address_schema = AddressSchema()
+address_schema = AddressSchema(unknown=EXCLUDE)
 
 
 @order.route('/<string:order_id>/update', methods=['GET', 'POST'])
@@ -18,8 +18,8 @@ def order_update(order_id):
     form = UpdateOrder()
 
     if form.validate_on_submit():
-        order = Order.query.get(order_id)
-        order.update(order_schema.load(form.data))
+        data = order_schema.load(form.data)
+        Order.update(order_id, data)
         flash('Order was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 
@@ -74,8 +74,8 @@ def finalize_order_creation(address_form):
     """
     address = check_if_address_exists(address_form).first()
     if not address:
-        args = address_data_form_parser().parse_args()
-        address = add_address(user_id=current_user.id, **args)
+        data = address_schema.load(address_form.data)
+        address = Address.create(user_id=current_user.id, **data)
 
     Order.create(order_create_schema.load(
         {

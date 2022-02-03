@@ -22,8 +22,7 @@ def get_all():
 @response(order_schema)
 def new(args):
     """Create a new order"""
-    order = Order.create(args)
-    return order
+    return Order.create(args)
 
 
 @orders_api.route('/orders/<string:order_id>', methods=['GET'])

@@ -6,9 +6,8 @@ from rest_app.schemas import *
 from rest_app.service.common_services import sort_table_by_field
 from rest_app.service.department_service import sort_dept_by_average_salary, sort_dept_by_total_employees
 from rest_app.service.employee_service import get_all_employees_by_department
-from rest_app.service.order_service import get_orders_by_status
 from rest_app.service.product_service import get_products_by_category
-from rest_app.service.user_service import user_data_to_dict, get_total_value, get_all_users_by_employee_filter
+from rest_app.service.user_service import get_total_value, get_all_users_by_employee_filter
 from rest_app.models import *
 from rest_app.forms.admin_forms import FilterProductsForm, FilterEmployeesForm, FilterUsersForm, FilterOrdersForm, \
     FilterDepartmentsForm
@@ -62,7 +61,7 @@ def departments_search():
         return redirect(url_for('admin.departments_list'))
 
     departments_pagination = query.paginate(page=page, per_page=10)
-    departments_info = [department.data_to_dict() for department in departments_pagination.items]
+    departments_info = [department_schema.dump(department) for department in departments_pagination.items]
 
     return render_template(
         'departments.html',
@@ -104,7 +103,7 @@ def employees_search():
         return redirect(url_for('admin.employees_list'))
 
     employees_pagination = query.paginate(page=page, per_page=10)
-    employees_info = [employee.data_to_dict() for employee in employees_pagination.items]
+    employees_info = [employee_schema.dump(employee) for employee in employees_pagination.items]
 
     return render_template(
         'employees.html',
@@ -149,7 +148,7 @@ def orders_search():
         return redirect(url_for('admin.orders_list'))
 
     orders_pagination = query.paginate(page=page, per_page=10)
-    orders_info = [order.data_to_dict() for order in orders_pagination.items]
+    orders_info = [order_schema.dump(order) for order in orders_pagination.items]
 
     return render_template(
         'orders.html',
@@ -192,7 +191,7 @@ def products_search():
         return redirect(url_for('admin.products_list'))
 
     products_pagination = query.paginate(page=page, per_page=10)
-    products_info = [product.data_to_dict() for product in products_pagination.items]
+    products_info = [product_schema.dump(product) for product in products_pagination.items]
 
     return render_template(
         'products.html',
@@ -237,7 +236,7 @@ def users_search():
         return redirect(url_for('admin.users_list'))
 
     users_pagination = query.paginate(page=page, per_page=10)
-    users_info = [user_data_to_dict(user) for user in users_pagination.items]
+    users_info = [user_schema.dump(user) for user in users_pagination.items]
 
     return render_template(
         'users.html',

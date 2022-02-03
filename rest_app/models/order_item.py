@@ -39,6 +39,7 @@ class OrderItem(Common, db.Model):
         for item in old_order_items:
             db.session.delete(item)
 
+        db.session.commit()
         cls.create(order_items, order_id)
 
     def __repr__(self):

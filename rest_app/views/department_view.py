@@ -30,7 +30,7 @@ def update_department(department_id):
 
     if form.validate_on_submit():
         data = department_schema.dump(form.data)
-        Department.query.get(department_id).update(data)
+        Department.update(department_id, data)
         flash('Department was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 
