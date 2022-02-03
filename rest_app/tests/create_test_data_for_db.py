@@ -66,7 +66,7 @@ def create_order(ses, user_id, **kwargs):
         order_time=datetime.datetime.now().time()
     )
 
-    ses.add(address)
+    ses.add(order)
     ses.commit()
 
 

@@ -15,6 +15,7 @@ class UserSchema(ma.SQLAlchemySchema):
     registered_on = ma.auto_field(missing=dt.datetime.now().date())
     first_name = ma.auto_field(missing=None)
     last_name = ma.auto_field(missing=None)
+    last_login_date = ma.auto_field(dump_only=True)
     email = ma.auto_field(required=True, validate=validate.Email())
     phone_number = ma.auto_field(missing=None)
     birth_date = ma.auto_field(missing=None)
@@ -41,9 +42,11 @@ class UpdateUserSchema(UserSchema):
     def validate_username(self, value):
         """Validates whether provided username does not exist and whether it starts with a letter"""
         user_id = request.path.split('/')[-1]
-        if value != User.query.get(user_id).username:
-            if User.query.filter_by(username=value).first():
-                raise ValidationError('Username already exists. Use a different username')
+        user = User.query.get(user_id)
+        if user:
+            if value != user.username:
+                if User.query.filter_by(username=value).first():
+                    raise ValidationError('Username already exists. Use a different username')
 
     @validates('email')
     def validate_email(self, value):

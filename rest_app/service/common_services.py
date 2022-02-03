@@ -10,11 +10,11 @@ def sort_table_by_field(table, field_name, sort_order='asc', table_to_join=None)
     :param field_name: name according to which table needs to be sorted
     :param sort_order: order in which table needs to be sorted
     """
-    order = {'asc': asc, 'desc': desc}
+    order = asc if sort_order == 'asc' else desc
 
     if table_to_join:
-        query = table.query.join(table_to_join).order_by(order[sort_order](field_name))
+        query = table.query.join(table_to_join).order_by(order(field_name))
     else:
-        query = table.query.order_by(order[sort_order](field_name))
+        query = table.query.order_by(order(field_name))
 
     return query

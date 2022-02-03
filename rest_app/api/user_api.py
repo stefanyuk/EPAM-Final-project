@@ -1,7 +1,6 @@
 from apifairy import body, response, authenticate
 from apifairy.decorators import other_responses
 from flask import Blueprint
-from rest_app import db
 from rest_app.schemas import UserSchema, AddressSchema, OrderSchema, UpdateUserSchema
 from rest_app.models import User
 from rest_app.api.auth import token_auth
@@ -82,17 +81,14 @@ def orders(user_id):
 @other_responses({404: 'User not found'})
 def update(args, user_id):
     """Update user's information"""
-    user = User.query.get_or_404(user_id)
-    user.update(args)
-    db.session.commit()
-    return user
+    User.query.get_or_404(user_id)
+    return User.update(user_id, args)
 
 
-@users.route('/users/<string:users_id>', methods=['DELETE'])
+@users.route('/users/<string:user_id>', methods=['DELETE'])
 @authenticate(token_auth)
 @other_responses({204: 'No content'})
-def delete(users_id):
+def delete(user_id):
     """Delete user"""
-    User.query.get(users_id).delete()
-    db.session.commit()
+    User.delete(user_id)
     return '', 204

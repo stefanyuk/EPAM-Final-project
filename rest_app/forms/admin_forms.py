@@ -89,12 +89,17 @@ class AddProduct(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     summary = TextAreaField('Summary', validators=[Optional()])
     price = FloatField('Price', validators=[DataRequired()])
-    category = SelectField('Category', choices=[], validators=[DataRequired()])
+    category_name = SelectField('Category', choices=[], validators=[DataRequired()])
     submit = SubmitField('Create')
+
+    def validate_title(self, title):
+        """Validates whether product with the provided title does not exist"""
+        if Product.query.filter_by(title=title.data).first():
+            raise ValidationError('Product with this name already exists')
 
     def populate_choices_fields(self):
         """Adds categories to choices field"""
-        self.category.choices = [category.name for category in Category.query.all()]
+        self.category_name.choices = [category.name for category in Category.query.all()]
 
 
 class FilterForm(FlaskForm):
@@ -146,6 +151,8 @@ class FilterOrdersForm(FilterForm, FlaskForm):
         for row_title in Order.__table__.columns.keys():
             if row_title not in ['id', 'user_id', 'address_id', 'order_items', 'comments', 'status']:
                 self.field_name.choices.append(row_title)
+
+        self.field_name.choices.append('total_price')
 
         self.status.choices += statuses
 

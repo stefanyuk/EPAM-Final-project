@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from flask import url_for
 from rest_app.models import *
 from rest_app.tests.data_for_unit_tests import credentials, test_employee
@@ -10,7 +11,9 @@ def test_get_employee_list_without_auth(client):
     assert response.status_code == 401
 
 
-def test_get_employees_list(client, employee_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_employees_list(mocked_verification, client, employee_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(url_for('rp_api.employee_list'), headers={'Authorization': f'Basic {credentials}'})
 
     data = response.get_json()

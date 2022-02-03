@@ -12,6 +12,7 @@ class ProductSchema(ma.SQLAlchemySchema):
     summary = ma.auto_field()
     price = ma.auto_field(required=True)
     category_name = ma.String(required=True, load_only=True)
+    category = ma.Pluck('CategorySchema', 'name', dump_only=True)
 
     @validates('category_name')
     def validate_category_name(self, value):
@@ -26,8 +27,8 @@ class ProductSchema(ma.SQLAlchemySchema):
             raise ValidationError('Product with the provided name already exists')
 
     @post_load
-    def add_product_id(self, data, **kwargs):
-        """Adds product id to schema load result"""
+    def add_category_id(self, data, **kwargs):
+        """Adds category id to schema load result"""
         category = Category.query.filter_by(name=data.pop('category_name')).first()
         data['category_id'] = category.id
         return data

@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from functools import wraps
 from rest_app.schemas import *
 from rest_app.service.common_services import sort_table_by_field
+from rest_app.service.order_service import get_order_total_value
 from rest_app.service.department_service import sort_dept_by_average_salary, sort_dept_by_total_employees
 from rest_app.service.employee_service import get_all_employees_by_department
 from rest_app.service.product_service import get_products_by_category
@@ -141,9 +142,12 @@ def orders_search():
 
     if session.get('orders_search'):
         if session['search_filter'] == 'Search by':
-            query = get_orders_by_status(session.get('status'))
+            query = Order.query.filter_by(status=session.get('status'))
         else:
-            query = sort_table_by_field(Order, session.get('field_name'), session.get('sort_order'))
+            if session.get('field_name') == 'total_price':
+                query = get_order_total_value(session.get('sort_order'))
+            else:
+                query = sort_table_by_field(Order, session.get('field_name'), session.get('sort_order'))
     else:
         return redirect(url_for('admin.orders_list'))
 

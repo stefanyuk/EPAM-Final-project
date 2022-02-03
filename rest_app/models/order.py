@@ -14,7 +14,7 @@ class Order(Common, db.Model):
     order_time = db.Column(db.Time)
     user_id = db.Column(db.ForeignKey('user.id', ondelete='SET NULL'))
     address_id = db.Column(db.ForeignKey('address.id', ondelete='SET NULL'))
-    order_items = db.relationship('OrderItem', cascade="all, delete", passive_deletes=True)
+    order_items = db.relationship('OrderItem', backref='order')
 
     @classmethod
     def create(cls, args: dict):
@@ -53,6 +53,7 @@ class Order(Common, db.Model):
             OrderItem.update(order_items, order.id)
 
         db.session.commit()
+        return order
 
     def __repr__(self):
         return f'<Order {self.id}>'

@@ -19,6 +19,7 @@ class Common:
             setattr(model, attr, value)
 
         db.session.commit()
+        return model
 
     @classmethod
     def delete(cls, model_id):

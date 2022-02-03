@@ -1,11 +1,14 @@
 import pytest
+from unittest.mock import patch
 from flask import url_for
 from rest_app.models import *
-from rest_app.tests.data_for_unit_tests import test_user, credentials
+from rest_app.tests.data_for_unit_tests import test_user
 
 
-def test_get_users_list(client, users_data):
-    response = client.get(url_for('rp_api.user_list'), headers={'Authorization': f'Basic {credentials}'})
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_users_list(mocked_verification, client, users_data):
+    mocked_verification.return_value = User.query.get('1')
+    response = client.get(url_for('orders_api.get_all'), headers={f'Authorization': f'Bearer {"my-token"}'})
     data = response.get_json()
 
     assert response.status_code == 200
@@ -15,24 +18,25 @@ def test_get_users_list(client, users_data):
 
 
 def test_get_users_list_without_auth(client):
-    response = client.get(url_for('rp_api.user_list'))
+    response = client.get(url_for('users.get', user_id=1))
 
     assert response.status_code == 401
 
 
-def test_create_new_user(client):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_create_new_user(mocked_verification, client):
+    mocked_verification.return_value = User.query.get('1')
     response = client.post(
-        url_for('rp_api.user_list'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('users.new'),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json=test_user
     )
 
     data = response.get_json()
-    users = User.query.all()
 
     assert response.status_code == 201
-    assert 'user with id -' in data['message']
-    assert users[-1].username == 'test_user'
+    assert test_user['username'] in data['username']
+    assert test_user['email'] == data['email']
 
 
 @pytest.mark.parametrize(
@@ -43,10 +47,12 @@ def test_create_new_user(client):
         (2, 'ehansford2')
     )
 )
-def test_get_user(client, index, username, users_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_user(mocked_verification, client, index, username, users_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.user', user_id=users_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('users.get', user_id=users_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
     data = response.get_json()
@@ -63,16 +69,15 @@ def test_get_user(client, index, username, users_data):
             ('doesnotexist3', 'gmcbeath2')
     )
 )
-def test_get_user_atypical_behaviour(client, create_tables, user_id, username):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_user_atypical_behaviour(mocked_verification, client, create_tables, user_id, username):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.user', user_id=user_id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('users.get', user_id=user_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'user with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize(
@@ -83,24 +88,19 @@ def test_get_user_atypical_behaviour(client, create_tables, user_id, username):
         (2, 'ehansford2_new3')
     )
 )
-def test_update_user(client, index, new_username, users_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_user(mocked_verification, client, index, new_username, users_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.user', user_id=users_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('users.update', user_id=users_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json={'username': new_username}
     )
 
     data = response.get_json()
-    get_response = client.get(
-        url_for('rp_api.user', user_id=users_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
-    )
-
-    get_data = get_response.get_json()
 
     assert response.status_code == 200
-    assert 'has been updated' in data['message']
-    assert new_username in get_data['username']
+    assert new_username in data['username']
 
 
 @pytest.mark.parametrize(
@@ -111,34 +111,31 @@ def test_update_user(client, index, new_username, users_data):
             ('test_id_3', 'test_3')
     )
 )
-def test_update_user_atypical_behaviour(client, users_data, user_id, new_username):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_user_atypical_behaviour(mocked_verification, client, users_data, user_id, new_username):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.user', user_id=user_id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('users.update', user_id=user_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json={'username': new_username}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'user with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize('index', (0, 1, 2))
-def test_delete_user(client, index, users_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_delete_user(mocked_verification, client, index, users_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.delete(
-        url_for('rp_api.user', user_id=users_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('users.delete', user_id=users_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
 
     get_response = client.get(
-        url_for('rp_api.user', user_id=users_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('users.get', user_id=users_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
-
-    get_data = get_response.get_json()
 
     assert response.status_code == 204
     assert get_response.status_code == 404
-    assert 'user with the provided id was not found' in get_data['message']
-

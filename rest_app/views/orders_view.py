@@ -40,17 +40,20 @@ def user_orders_list(user_id):
     return render_template('user_orders_main.html', orders=orders_info, orders_pagination=orders_pagination)
 
 
-@order.route('/detail/<string:order_id>')
+@order.route('/<string:order_id>/user_order')
 def order_detail(order_id):
     """
     Returns information about specified order
     :param order_id: unique id of the order
     """
     order = Order.query.get(order_id)
+    total_value = order.calculate_total_price()
     order_time = order.order_time.strftime('%H:%M')
     order_date = order.order_date.strftime('%d %B, %Y')
 
-    return render_template('order_details.html', order=order, order_time=order_time, order_date=order_date)
+    return render_template(
+        'order_details.html', order=order, order_time=order_time, order_date=order_date, total_value=total_value
+    )
 
 
 @order.route('/<string:order_id>/delete')

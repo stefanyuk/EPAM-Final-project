@@ -37,7 +37,7 @@ def populate_db_command():
 
 def create_superuser():
     admin_user_info = {
-        'id': str(uuid4()),
+        'id': '1',
         'username': 'admin',
         'password_hash': generate_password_hash('admin'),
         'last_name': 'Admin',

@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
+from marshmallow import EXCLUDE
 from rest_app.forms.admin_forms import AddProduct
 from rest_app.schemas import ProductSchema
 from rest_app.models import Product
 
 product = Blueprint('product', __name__, url_prefix='/product')
-product_schema = ProductSchema()
+product_schema = ProductSchema(unknown=EXCLUDE)
 
 
 @product.route('/create', methods=['GET', 'POST'])

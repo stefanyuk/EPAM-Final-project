@@ -2,11 +2,12 @@ from flask import Blueprint, render_template, url_for, request, session, flash, 
 from flask_login import current_user
 from rest_app.views.orders_view import finalize_order_creation
 from rest_app.models import Product, Category, Address
-from rest_app.schemas import ProductSchema
+from rest_app.schemas import ProductSchema, AddressSchema
 from rest_app.forms.personal_info_forms import AddressForm
 
 shopping = Blueprint('shop', __name__)
 product_schema = ProductSchema()
+address_schema = AddressSchema()
 
 
 @shopping.route('/')
@@ -154,12 +155,11 @@ def values_from_local_storage():
 @shopping.route('/update_address_values/<string:address_id>', methods=['POST'])
 def send_address_values(address_id):
     address = Address.query.get(address_id)
-    address_info = address.data_to_dict()
-
-    return jsonify(address_info)
+    return address_schema.dumps(address)
 
 
 def clear_session_from_order_details():
+    """Clears session from order details"""
     session['order_items_info'].clear()
     session['items_in_cart'].clear()
     session.modified = True

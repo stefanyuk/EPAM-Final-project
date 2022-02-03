@@ -1,3 +1,4 @@
+import datetime as dt
 import random
 from rest_app.models import *
 import os
@@ -18,7 +19,7 @@ def create_test_info():
 
 
 def create_departments(departments):
-    departments = [add_department(**department) for department in departments]
+    departments = [Department.create(**department) for department in departments]
 
     return departments
 
@@ -27,7 +28,7 @@ def create_categories(categories):
     categories_data = {}
 
     for category in categories:
-        c = add_category(category)
+        c = Category.create(name=category)
         categories_data[c.name] = c.id
 
     return categories_data
@@ -41,10 +42,9 @@ def main(max_qty):
     products = []
 
     for product in test_info['products']:
-        category_id = categories[product['category']]
-        product.pop('category')
-        prod = add_product(**product, category_id=category_id)
-        products.append({'id': prod.id, 'quantity': random.choice(range(1, 4))})
+        category_id = categories[product.pop('category')]
+        prod = Product.create(category_id=category_id, **product)
+        products.append({'product_id': prod.id, 'quantity': random.choice(range(1, 4))})
 
     orders = (order for order in test_info['orders'])
     addresses = (address for address in test_info['addresses'])
@@ -52,24 +52,26 @@ def main(max_qty):
 
     for i in range(max_qty):
         user = User.create(**users[i])
-        address = add_address(user_id=user.id, **next(addresses))
+        address = Address.create(user_id=user.id, **next(addresses))
         if user.is_employee:
             department_id = random.choice(departments).id
-            add_employee(
-                is_employee=None, user_id=user.id, department_id=department_id, first_name=None,
-                last_name=None, birth_date=None, is_admin=None, email=None,
-                password=None, phone_number=None, **next(employees)
+            EmployeeInfo.create(
+                user_id=user.id, department_id=department_id, **next(employees)
             )
 
         r = random.choice(range(1, 4))
-        create_order(
-            [random.choice(products) for i in range(r)],
-            user_id=user.id,
-            address_id=address.id,
-            **next(orders),
-            main_key='id'
+        order = next(orders)
+        Order.create(
+            {
+                'order_items': [random.choice(products) for i in range(r)],
+                'user_id': user.id,
+                'address_id': address.id,
+                'comments': order['comments'],
+                'order_date': order['order_date'],
+                'order_time': dt.datetime.strftime(dt.datetime.utcnow(), '%H:%M:%S')
+            }
         )
 
 
 if __name__ == '__main__':
-    main(251)
+    main(30)

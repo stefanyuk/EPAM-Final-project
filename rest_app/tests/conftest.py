@@ -1,12 +1,15 @@
 import pytest
 import random
+from unittest.mock import patch
+import datetime as dt
 from rest_app import create_app, db
 from rest_app.database import create_superuser
 from config import TestingConfig
-from rest_app.populate_db_with_data import main, create_departments, create_test_info, \
-    add_user, add_employee, add_address, create_order, create_categories, add_product
+from rest_app.models import *
+from rest_app.populate_db_with_data import create_departments, create_test_info, create_categories
 
 test_info = create_test_info()
+
 
 @pytest.fixture()
 def app(postgresql):
@@ -38,9 +41,9 @@ def users_data():
     users = test_info['users']
     new_users = []
     for i in range(4):
-        user = add_user(**users[i])
+        user = User.create(**users[i])
         new_users.append(user)
-        add_address(user_id=user.id, **addresses[i])
+        Address.create(user_id=user.id, **addresses[i])
 
     return new_users
 
@@ -51,10 +54,8 @@ def employee_data(users_data, dept_data):
     employee_info = []
 
     for i in range(4):
-        employee = add_employee(
-            is_employee=None, user_id=users_data[i].id, department_id=dept_data[i].id, first_name=None,
-            last_name=None, birth_date=None, is_admin=None, email=None,
-            password=None, phone_number=None, **next(employees)
+        employee = EmployeeInfo.create(
+            user_id=users_data[i].id, department_id=dept_data[i].id, **next(employees)
         )
 
         employee_info.append(employee)
@@ -68,14 +69,15 @@ def products():
     new_products = []
 
     for index, product in enumerate(test_info['products']):
-        category_id = categories[product['category']]
-        product_info = {k: v for k, v in product.items() if k != 'category'}
-        prod = add_product(**product_info, category_id=category_id)
-        new_products.append({'id': prod.id, 'quantity': random.choice(range(1, 4))})
+        category_id = categories[product.get('category')]
+        product = {k: v for k, v in product.items() if k != 'category'}
+        prod = Product.create(category_id=category_id, **product)
+        new_products.append({'product_id': prod.id, 'quantity': random.choice(range(1, 4))})
         if index == 4:
             break
 
     return new_products
+
 
 @pytest.fixture
 def order_data(users_data, products):
@@ -84,19 +86,16 @@ def order_data(users_data, products):
 
     for user in users_data:
         r = random.choice(range(1, 4))
-        new_orders.append(
-            create_order(
-                [random.choice(products) for i in range(r)],
-                user_id=user.id,
-                address_id=user.addresses.first().id,
-                main_key='id',
-                **next(orders)
-            )
+        order = next(orders)
+        new_order = Order.create(
+            {
+                'order_items': [random.choice(products) for i in range(r)],
+                'user_id': user.id,
+                'address_id': user.addresses.first().id,
+                'comments': order['comments'],
+                'order_date': order['order_date'],
+                'order_time': dt.datetime.strftime(dt.datetime.utcnow(), '%H:%M:%S')
+            }
         )
-
+        new_orders.append(new_order)
     return new_orders
-
-
-@pytest.fixture
-def add_data_to_db():
-    main(10)

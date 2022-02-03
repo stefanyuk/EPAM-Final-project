@@ -4,7 +4,7 @@ credentials = b64encode(b'admin:admin').decode('utf-8')
 
 test_user = {
     'username': 'test_user',
-    'password_hash': 'test',
+    'password': 'passwordtest',
     'last_name': 'test_last',
     'email': 'testuser@gmail.com'
 }
@@ -27,13 +27,13 @@ test_employee = {
 }
 
 test_order = {
-    'products': [
+    'order_items': [
         {
-            'title': 'Caffee Latte',
+            'product_id': 'Caffee Latte',
             'quantity': 2
         },
         {
-            'title': 'Cafe au lait',
+            'product_id': 'Cafe au lait',
             'quantity': 3
         }
     ]

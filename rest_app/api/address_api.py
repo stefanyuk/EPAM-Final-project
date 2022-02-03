@@ -40,9 +40,8 @@ def get(address_id):
 @other_responses({404: 'Address not found'})
 def update(args, address_id):
     """Update an address"""
-    address = Address.query.get_or_404(address_id)
-    address.update(args)
-    return address
+    Address.query.get_or_404(address_id)
+    return Address.update(address_id, args)
 
 
 @addresses.route('/addresses/<string:address_id>', methods=['DELETE'])

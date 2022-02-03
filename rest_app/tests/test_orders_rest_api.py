@@ -1,45 +1,52 @@
 import pytest
+from unittest.mock import patch
 from flask import url_for
 from rest_app.models import *
 from rest_app.tests.data_for_unit_tests import credentials, test_order
 
 
-def test_create_new_order_without_user_id(client, users_data, order_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_create_new_order_without_user_id(mocked_verification, client, users_data, order_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.post(
-        url_for('rp_api.order_list'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.new'),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json=test_order
     )
-
     data = response.get_json()
 
+    assert "Missing data for required field." in data['messages']['json']['user_id']
+    assert "Missing data for required field." in data['messages']['json']['address_id']
     assert response.status_code == 400
-    assert {'user_id': 'you did not provide user id'} == data['message']
 
 
-def test_create_new_order_without_address_id(client, users_data, order_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_create_new_order_without_address_id(mocked_verification, client, users_data, order_data):
+    mocked_verification.return_value = User.query.get('1')
     test_order['user_id'] = users_data[0].id
 
     response = client.post(
-        url_for('rp_api.order_list'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.new'),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json=test_order
     )
 
     data = response.get_json()
 
     assert response.status_code == 400
-    assert {'address_id': 'you did not provide address id'} == data['message']
+    assert "Missing data for required field." in data['messages']['json']['address_id']
 
 
 def test_get_orders_list_without_auth(client):
-    response = client.get(url_for('rp_api.order_list'))
+    response = client.get(url_for('orders_api.get_all'))
 
     assert response.status_code == 401
 
 
-def test_get_orders_list(client, order_data):
-    response = client.get(url_for('rp_api.order_list'), headers={'Authorization': f'Basic {credentials}'})
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_orders_list(mocked_verification, client, order_data):
+    mocked_verification.return_value = User.query.get('1')
+    response = client.get(url_for('orders_api.get_all'), headers={f'Authorization': f'Bearer {"my-token"}'})
 
     data = response.get_json()
 
@@ -47,61 +54,49 @@ def test_get_orders_list(client, order_data):
     assert len(data) == 4
 
 
-def test_create_new_order(client, users_data, order_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_create_new_order(mocked_verification, client, users_data, products):
+    mocked_verification.return_value = User.query.get('1')
     test_order['address_id'] = users_data[0].addresses.first().id
     test_order['user_id'] = users_data[0].id
+    test_order['order_items'][0]['product_id'] = products[0]['product_id']
+    test_order['order_items'][1]['product_id'] = products[1]['product_id']
 
     response = client.post(
-        url_for('rp_api.order_list', main_key='title'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.new'),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json=test_order
     )
 
     data = response.get_json()
-    orders = Order.query.all()
 
     assert response.status_code == 201
-    assert 'order with id -' in data['message']
-    assert orders[-1].user_id == test_order['user_id']
-
-
-def test_create_new_order_without_query_string(client, users_data, order_data):
-    test_order['address_id'] = users_data[0].addresses.first().id
-    test_order['user_id'] = users_data[0].id
-
-    response = client.post(
-        url_for('rp_api.order_list'),
-        headers={'Authorization': f'Basic {credentials}'},
-        json=test_order
-    )
-
-    data = response.get_json()
-
-    assert response.status_code == 400
-    assert 'please provide key by which products should be searched' in data['message']
+    assert 'id' in data
+    assert data['user'] == users_data[0].username
 
 
 @pytest.mark.parametrize('index', (0, 1, 2))
-def test_get_order(client, index, order_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_order(mocked_verification, client, index, order_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.order', order_id=order_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('orders_api.get', order_id=order_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
     assert response.status_code == 200
 
 
 @pytest.mark.parametrize('order_id', ('doesnotexist', 'doesnotexist2', 'doesnotexist3'))
-def test_get_order_atypical_behaviour(client, create_tables, order_id):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_order_atypical_behaviour(mocked_verification, client, create_tables, order_id):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.order', order_id=order_id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('orders_api.get', order_id=order_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'order with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize(
@@ -112,24 +107,19 @@ def test_get_order_atypical_behaviour(client, create_tables, order_id):
             (2, 'test_update')
     )
 )
-def test_update_order(client, index, new_status, order_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_order(mocked_verification, client, index, new_status, order_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.order', order_id=order_data[index].id, main_key='title'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.get', order_id=order_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json={'status': new_status}
     )
 
     data = response.get_json()
-    get_response = client.get(
-        url_for('rp_api.order', order_id=order_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
-    )
-
-    get_data = get_response.get_json()
 
     assert response.status_code == 200
-    assert 'has been updated' in data['message']
-    assert new_status in get_data['status']
+    assert new_status in data['status']
 
 
 @pytest.mark.parametrize(
@@ -139,33 +129,34 @@ def test_update_order(client, index, new_status, order_data):
             ('test_id_2', 'test_2')
     )
 )
-def test_update_order_atypical_behaviour(client, create_tables, order_id, new_status):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_order_atypical_behaviour(mocked_verification, client, create_tables, order_id, new_status):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.order', order_id=order_id, main_key='title'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.get', order_id=order_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json={'status': new_status}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'order with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize('index', (0, 1, 2))
-def test_delete_order(client, index, order_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_delete_order(mocked_verification, client, index, order_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.delete(
-        url_for('rp_api.order', order_id=order_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.delete', order_id=order_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
 
     get_response = client.get(
-        url_for('rp_api.order', order_id=order_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('orders_api.get', order_id=order_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
 
-    get_data = get_response.get_json()
+    items = OrderItem.query.filter_by(order_id=order_data[index].id).all()
 
     assert response.status_code == 204
     assert get_response.status_code == 404
-    assert 'order with the provided id was not found' in get_data['message']
+    assert len(items) == 0
