@@ -49,7 +49,7 @@ function ready() {
         function setCartItemsToStorage() {
             let summarizeArr = [];
             const cartRows = [...document.querySelectorAll('.main-cart-row')];
-            cartRows.forEach((el, index) => summarizeArr.push({id: el.getAttribute('data-item_id'), quantity: +quantityInputs[index].value}));
+            cartRows.forEach((el, index) => summarizeArr.push({product_id: el.getAttribute('data-item_id'), quantity: +quantityInputs[index].value}));
             localStorage.setItem("summarizeItemsDetails", JSON.stringify(summarizeArr));
         }
     }

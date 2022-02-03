@@ -1,20 +1,25 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
+from marshmallow import EXCLUDE
 from flask_login import current_user
 from rest_app.forms.admin_forms import UpdateOrder
-from rest_app.service.order_item_service import create_order_items
+from rest_app.schemas import OrderSchema, AddressSchema
 from rest_app.service.address_service import address_data_form_parser, add_address, check_if_address_exists
-from rest_app.service.order_service import create_order, update_order
 from rest_app.models import Order, User
 
 order = Blueprint('orders', __name__, url_prefix='/order')
+order_schema = OrderSchema(partial=True, unknown=EXCLUDE)
+order_create_schema = OrderSchema()
+address_schema = AddressSchema()
 
 
 @order.route('/<string:order_id>/update', methods=['GET', 'POST'])
 def order_update(order_id):
+    """Updates specified order"""
     form = UpdateOrder()
 
     if form.validate_on_submit():
-        update_order(order_id, 'id', status=form.status.data)
+        order = Order.query.get(order_id)
+        order.update(order_schema.load(form.data))
         flash('Order was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 
@@ -30,7 +35,7 @@ def user_orders_list(user_id):
     page = request.args.get('page', 1, type=int)
     query = User.query.get(user_id).orders
     orders_pagination = query.paginate(page=page, per_page=3)
-    orders_info = [order.data_to_dict() for order in orders_pagination.items]
+    orders_info = [order_schema.dump(order) for order in orders_pagination.items]
 
     return render_template('user_orders_main.html', orders=orders_info, orders_pagination=orders_pagination)
 
@@ -54,7 +59,8 @@ def cancel_order(order_id):
     order = Order.query.get(order_id)
 
     if order.status == 'awaiting fulfilment':
-        update_order(order_id, 'id', status='canceled')
+        order = Order.query.get(order_id)
+        order.update({'status': 'canceled'})
         flash('Order was successfully canceled', 'success')
         if current_user.is_admin:
             return redirect(url_for('admin.admin_main'))
@@ -71,8 +77,11 @@ def finalize_order_creation(address_form):
         args = address_data_form_parser().parse_args()
         address = add_address(user_id=current_user.id, **args)
 
-    new_order = create_order(
-        session.get('order_items_info'), user_id=current_user.id, address_id=address.id, main_key='id'
-    )
-    create_order_items(session.get('order_items_info'), new_order.id, main_key='id')
+    Order.create(order_create_schema.load(
+        {
+            'order_items': session.get('order_items_info'),
+            'user_id': current_user.id,
+            'address_id': address.id
+        }
+    ))
     flash('Your order was successfully created', 'success')

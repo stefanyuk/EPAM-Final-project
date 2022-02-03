@@ -1,7 +1,9 @@
+from uuid import uuid4
 from rest_app import db
+from rest_app.models.common import Common
 
 
-class Address(db.Model):
+class Address(Common, db.Model):
     __tablename__ = 'address'
 
     id = db.Column(db.String, primary_key=True)
@@ -12,19 +14,10 @@ class Address(db.Model):
     postal_code = db.Column(db.String, nullable=False)
     orders = db.relationship('Order', backref='address', lazy='dynamic')
 
-    def data_to_dict(self):
-        """
-        Returns address information
-        """
-        address_info = {
-            'id': self.id,
-            'city': self.city,
-            'street': self.street,
-            'street_number': self.street_number,
-            'postal_code': self.postal_code
-        }
-
-        return address_info
+    @classmethod
+    def create(cls, **kwargs):
+        """Creates new address"""
+        return cls(id=str(uuid4()), **kwargs)
 
     def __repr__(self):
         return '<Address {}>'.format(self.id)

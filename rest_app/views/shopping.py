@@ -2,9 +2,11 @@ from flask import Blueprint, render_template, url_for, request, session, flash, 
 from flask_login import current_user
 from rest_app.views.orders_view import finalize_order_creation
 from rest_app.models import Product, Category, Address
+from rest_app.schemas import ProductSchema
 from rest_app.forms.personal_info_forms import AddressForm
 
 shopping = Blueprint('shop', __name__)
+product_schema = ProductSchema()
 
 
 @shopping.route('/')
@@ -17,7 +19,7 @@ def welcome_landing():
     product_info = {}
     for title in welcome_products:
         product = Product.query.filter_by(title=title).first()
-        product_info[title] = product.data_to_dict()
+        product_info[title] = product_schema.dump(product)
 
     return render_template(
         'welcome_landing.html',
@@ -35,7 +37,7 @@ def products():
 
     page = request.args.get('page', 1, type=int)
     products_pagination = Product.query.order_by(Product.category_id.asc()).paginate(page=page, per_page=6)
-    product_info = [product.data_to_dict() for product in products_pagination.items]
+    product_info = [product_schema.dump(product) for product in products_pagination.items]
 
     return render_template(
         'products_main.html',
@@ -52,7 +54,7 @@ def products_by_category(category_name):
 
     page = request.args.get('page', 1, type=int)
     products_pagination = Product.query.filter(Product.category_id == category.id).paginate(page=page, per_page=6)
-    product_info = [product.data_to_dict() for product in products_pagination.items]
+    product_info = [product_schema.dump(product) for product in products_pagination.items]
 
     return render_template(
         'products_main.html',
@@ -92,7 +94,7 @@ def checkout():
     for cart_item in session.get('items_in_cart'):
         product = Product.query.get(cart_item)
         cart_items.append(
-            product.data_to_dict()
+            product_schema.dump(product)
         )
 
     return render_template('checkout.html', cart_items=cart_items)

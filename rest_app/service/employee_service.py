@@ -3,7 +3,6 @@ import datetime
 from uuid import uuid4
 from rest_app import db
 from rest_app.models import EmployeeInfo, Department, User
-from rest_app.service.user_service import add_user, user_data_parser
 from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
 
 

@@ -1,23 +1,19 @@
+from uuid import uuid4
 from rest_app import db
+from rest_app.models.common import Common
 
 
-class Category(db.Model):
+class Category(Common, db.Model):
     __tablename = 'category'
 
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, unique=True)
     products = db.relationship('Product', backref='category', lazy='dynamic')
 
-    def data_to_dict(self):
-        """
-        Returns category information
-        """
-        category_info = {
-            'id': self.id,
-            'name': self.name
-        }
-
-        return category_info
+    @classmethod
+    def create(cls, **kwargs):
+        """Create new category"""
+        return cls(id=str(uuid4()), **kwargs)
 
     def __repr__(self):
         return '<Category {}>'.format(self.name)

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from flask_login import login_required, current_user
 from sqlalchemy import desc
 from functools import wraps
+from rest_app.schemas import *
 from rest_app.service.common_services import sort_table_by_field
 from rest_app.service.department_service import sort_dept_by_average_salary, sort_dept_by_total_employees
 from rest_app.service.employee_service import get_all_employees_by_department
@@ -13,6 +14,11 @@ from rest_app.forms.admin_forms import FilterProductsForm, FilterEmployeesForm, 
     FilterDepartmentsForm
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
+employee_schema = EmployeeSchema()
+department_schema = DepartmentSchema()
+order_schema = OrderSchema()
+product_schema = ProductSchema()
+user_schema = UserSchema()
 
 
 @admin.route('/')
@@ -25,7 +31,7 @@ def departments_list():
     page, index = get_row_index_and_page_number()
     form = create_search_form_and_add_choice_fields(FilterDepartmentsForm)
     departments_pagination = Department.query.paginate(page=page, per_page=10)
-    departments_info = [department.data_to_dict() for department in departments_pagination.items]
+    departments_info = [department_schema.dump(department) for department in departments_pagination.items]
 
     return render_template(
         'departments.html',
@@ -72,7 +78,7 @@ def employees_list():
     page, index = get_row_index_and_page_number()
     form = create_search_form_and_add_choice_fields(FilterEmployeesForm)
     employees_pagination = EmployeeInfo.query.paginate(page=page, per_page=10)
-    employees_info = [employee.data_to_dict() for employee in employees_pagination.items]
+    employees_info = [employee_schema.dump(employee) for employee in employees_pagination.items]
 
     return render_template(
         'employees.html',
@@ -117,7 +123,7 @@ def orders_list():
     orders_pagination = Order.query.order_by(desc(Order.order_date), desc(Order.order_time)) \
         .paginate(page=page, per_page=10)
 
-    orders_info = [order.data_to_dict() for order in orders_pagination.items]
+    orders_info = [order_schema.dump(order) for order in orders_pagination.items]
 
     return render_template(
         'orders.html',
@@ -160,7 +166,7 @@ def products_list():
     form = create_search_form_and_add_choice_fields(FilterProductsForm)
 
     products_pagination = Product.query.paginate(page=page, per_page=10)
-    products_info = [product.data_to_dict() for product in products_pagination.items]
+    products_info = [product_schema.dump(product) for product in products_pagination.items]
 
     return render_template(
         'products.html',
@@ -202,7 +208,7 @@ def users_list():
     page, index = get_row_index_and_page_number()
     form = create_search_form_and_add_choice_fields(FilterUsersForm)
     users_pagination = User.query.paginate(page=page, per_page=10)
-    users_info = [user_data_to_dict(user) for user in users_pagination.items]
+    users_info = [user_schema.dump(user) for user in users_pagination.items]
 
     return render_template(
         'users.html',

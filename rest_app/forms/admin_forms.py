@@ -4,7 +4,6 @@ import phonenumbers
 from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, \
     FloatField, DateField, IntegerField
 from wtforms.validators import DataRequired, Optional
-from rest_app import db
 from rest_app.models import Department, Category, Product, EmployeeInfo, Order, User
 from rest_app.forms.auth_forms import UserForm
 

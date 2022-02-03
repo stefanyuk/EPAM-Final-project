@@ -1,7 +1,9 @@
+from uuid import uuid4
 from rest_app import db
+from rest_app.models.common import Common
 
 
-class Product(db.Model):
+class Product(Common, db.Model):
     __tablename__ = 'product'
 
     id = db.Column(db.String, primary_key=True)
@@ -11,21 +13,12 @@ class Product(db.Model):
     order_items = db.relationship('OrderItem', backref='product', lazy='dynamic')
     category_id = db.Column(db.ForeignKey('category.id', ondelete='SET NULL'), nullable=False)
 
-    def data_to_dict(self):
-        """
-        Serializer that returns a dictionary from product table fields
-        """
-        product_info = {
-            'id': self.id,
-            'title': self.title,
-            'price': str(self.price),
-            'category': self.category.name
-        }
-
-        return product_info
+    @classmethod
+    def create(cls, **kwargs):
+        return cls(id=str(uuid4()), **kwargs)
 
     def __repr__(self):
-        return f'<Product {self.name}>'
+        return f'<Product {self.title}>'
 
 
 # TODO ADD IMAGE ROW HERE

@@ -1,34 +1,55 @@
+from uuid import uuid4
 from rest_app import db
+from rest_app.models import OrderItem
+from rest_app.models.common import Common
 
 
-class Order(db.Model):
+class Order(Common, db.Model):
     __tablename__ = 'order'
 
     id = db.Column(db.String, primary_key=True)
-    status = db.Column(db.String(20))
+    status = db.Column(db.String(30))
     order_date = db.Column(db.Date)
     comments = db.Column(db.Text)
-    total_price = db.Column(db.Numeric(10, 3))
     order_time = db.Column(db.Time)
     user_id = db.Column(db.ForeignKey('user.id', ondelete='SET NULL'))
     address_id = db.Column(db.ForeignKey('address.id', ondelete='SET NULL'))
-    order_items = db.relationship('OrderItem', backref='order', passive_deletes=True)
+    order_items = db.relationship('OrderItem', cascade="all, delete", passive_deletes=True)
 
-    def data_to_dict(self):
-        """
-        Serializer that returns a dictionary from order table fields
-        """
-        order_data = {
-            'id': self.id,
-            'status': self.status,
-            'order_date': str(self.order_date),
-            'order_time': str(self.order_time)[:8],
-            'user_id': self.user_id,
-            'total_price': float(self.total_price),
-            'order_items': [order_item.product.title for order_item in self.order_items]
-        }
+    @classmethod
+    def create(cls, args: dict):
+        """Creates new order"""
+        order_items = args.pop('order_items')
+        order = Order(id=str(uuid4()), **args)
+        db.session.add(order)
+        db.session.commit()
 
-        return order_data
+        OrderItem.create(order_items, order.id)
+        return order
+
+    def calculate_total_price(self):
+        """Calculates total value of the order"""
+        total_price = 0
+
+        for item in self.order_items:
+            total_price += item.product.price * item.quantity
+
+        return total_price
+
+    def update(self, data: dict):
+        """
+        Updates information about order
+        :param data: dictionary containing new information about order
+        """
+        order_items = data.pop('order_items', None)
+
+        for attr, value in data.items():
+            setattr(self, attr, value)
+
+        if order_items:
+            OrderItem.update(order_items, self.id)
+
+        db.session.commit()
 
     def __repr__(self):
         return f'<Order {self.id}>'

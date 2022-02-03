@@ -1,22 +1,23 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from rest_app.forms.admin_forms import AddProduct
-from rest_app.service.product_service import add_product, product_form_data_parser
-from rest_app.models import Category
+from rest_app.schemas import ProductSchema
+from rest_app.models import Product
 
 product = Blueprint('product', __name__, url_prefix='/product')
+product_schema = ProductSchema()
 
 
 @product.route('/create', methods=['GET', 'POST'])
-def product_add():
+def product_create():
+    """Creates new product"""
     form = AddProduct()
-    form.populate_choices_fields()
 
     if form.validate_on_submit():
-        args = product_form_data_parser().parse_args()
-        category = Category.query.filter_by(name=args['category']).first()
-        args.pop('category')
-        add_product(category_id=category.id, **args)
+        data = product_schema.load(form.data)
+        Product.create(**data)
         flash('Product was added to the database', 'success')
         return redirect(url_for('admin.admin_main'))
+
+    form.populate_choices_fields()
 
     return render_template('add_product.html', form=form)

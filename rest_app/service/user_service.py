@@ -1,35 +1,9 @@
-from werkzeug.security import generate_password_hash
 from sqlalchemy import func, asc, desc
 from flask_restful import reqparse
 from flask_restful import inputs
 from rest_app.models import User, Order
-import datetime
-from uuid import uuid4
 from rest_app import db
 from rest_app.service.common_services import get_row_by_id, set_all_parser_args_to_unrequired
-
-
-def add_user(username, password, first_name, last_name, email, phone_number,
-             birth_date, is_admin, is_employee, user_id=None):
-
-    user = User(
-        id=user_id if user_id else str(uuid4()),
-        username=username if username else str(uuid4())[0:8],
-        password_hash=generate_password_hash(password) if password else generate_password_hash('12345lacrema'),
-        registered_at=datetime.datetime.now().date(),
-        first_name=first_name,
-        last_name=last_name,
-        email=f"{first_name}.{last_name}@lacrema.com" if is_employee else email,
-        phone_number=phone_number,
-        birth_date=birth_date,
-        is_admin=is_admin,
-        is_employee=is_employee
-    )
-
-    db.session.add(user)
-    db.session.commit()
-
-    return user
 
 
 def get_total_value(sort_order='acs'):
@@ -137,7 +111,7 @@ def user_data_to_dict(user):
         'is_admin': user.is_admin,
         'is_employee': user.is_employee,
         'total_value': str(get_total_value_per_user(user.id)),
-        'registered_on': str(user.registered_at),
+        'registered_on': str(user.registered_on),
         'last_login_date': str(user.last_login_date),
         'address_id': user.addresses.all()[-1].id if user.addresses.all() else None
     }

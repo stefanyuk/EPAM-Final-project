@@ -3,9 +3,13 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_marshmallow import Marshmallow
+from apifairy import APIFairy
 
 db = SQLAlchemy()
 migrate = Migrate()
+ma = Marshmallow()
+apifairy = APIFairy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
@@ -21,6 +25,8 @@ def create_app(test_config=None):
 
     db.init_app(app)
     migrate.init_app(app, db, directory=app.config['MIGRATION_DIR'])
+    ma.init_app(app)
+    apifairy.init_app(app)
     login_manager.init_app(app)
 
     # cli commands
@@ -29,10 +35,10 @@ def create_app(test_config=None):
     app.cli.add_command(populate_db_command)
 
     # blueprints
-    from rest_app.rest import rp_api
-    app.register_blueprint(rp_api)
-    from rest_app.errors.errors_service import errors
-    app.register_blueprint(errors)
+    from rest_app.api import register_api_blueprints
+    register_api_blueprints(app)
+    # from rest_app.errors.errors_service import errors
+    # app.register_blueprint(errors)
     from rest_app.views import register_view_blueprints
     register_view_blueprints(app)
 

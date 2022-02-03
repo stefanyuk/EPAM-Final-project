@@ -1,7 +1,9 @@
+from uuid import uuid4
 from rest_app import db
+from rest_app.models.common import Common
 
 
-class EmployeeInfo(db.Model):
+class EmployeeInfo(Common, db.Model):
     __tablename__ = 'employee_info'
 
     id = db.Column(db.String, primary_key=True)
@@ -11,21 +13,13 @@ class EmployeeInfo(db.Model):
     user_id = db.Column(db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     available_holidays = db.Column(db.Integer)
 
-    def data_to_dict(self):
-        """
-        Serializer that returns a dictionary from employee table fields
-        """
-        employee_info = {
-            'id': self.id,
-            'first_name': self.user.first_name,
-            'last_name': self.user.last_name,
-            'hire_date': str(self.hire_date),
-            'department_name': self.department.name,
-            'salary': str(self.salary),
-            'available_holidays': self.available_holidays
-        }
-
-        return employee_info
+    @classmethod
+    def create(cls, **kwargs):
+        """Creates new employee"""
+        employee = cls(id=str(uuid4()), **kwargs)
+        db.session.add(employee)
+        db.session.commit()
+        return employee
 
     def __repr__(self):
         return f'<Employee {self.user.first_name} {self.user.last_name}>'

@@ -4,8 +4,8 @@ from rest_app.service.employee_service import add_employee
 from rest_app.service.address_service import add_address
 from rest_app.service.order_service import create_order
 from rest_app.service.product_service import add_product
-from rest_app.service.user_service import add_user
 from rest_app.service.category_service import add_category
+from rest_app.models import *
 import os
 import json
 
@@ -57,7 +57,7 @@ def main(max_qty):
     employees = (employee for employee in test_info['employees'])
 
     for i in range(max_qty):
-        user = add_user(**users[i])
+        user = User.create(**users[i])
         address = add_address(user_id=user.id, **next(addresses))
         if user.is_employee:
             department_id = random.choice(departments).id

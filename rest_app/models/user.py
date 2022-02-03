@@ -1,6 +1,10 @@
-import datetime
+import datetime as dt
+from uuid import uuid4
+from werkzeug.security import generate_password_hash, check_password_hash
 from rest_app import db, login_manager
 from flask_login import UserMixin
+from rest_app.models import Token
+from rest_app.models.common import Common
 
 
 @login_manager.user_loader
@@ -8,13 +12,13 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-class User(db.Model, UserMixin):
+class User(Common, db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.String, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
-    registered_at = db.Column(db.Date)
+    registered_on = db.Column(db.Date)
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     email = db.Column(db.String, nullable=False)
@@ -23,16 +27,55 @@ class User(db.Model, UserMixin):
     birth_date = db.Column(db.Date)
     is_admin = db.Column(db.Boolean)
     is_employee = db.Column(db.Boolean)
-    addresses = db.relationship('Address', backref='user', lazy='dynamic', passive_deletes=True)
+    addresses = db.relationship('Address', backref='user', lazy='dynamic', cascade="all, delete", passive_deletes=True)
     orders = db.relationship('Order', backref='user', lazy='dynamic')
-    employee = db.relationship('EmployeeInfo', backref='user', uselist=False, passive_deletes=True)
+    employee = db.relationship(
+        'EmployeeInfo', backref='user', uselist=False, cascade="all, delete", passive_deletes=True
+    )
+    token = db.relationship('Token', backref='user', lazy='dynamic', cascade="all, delete", passive_deletes=True)
+
+    @classmethod
+    def create(cls, **kwargs):
+        """Creates a new user"""
+        user = cls(
+            id=str(uuid4()) if not kwargs.get('id') else kwargs.pop('id'),
+            **kwargs
+        )
+        db.session.add(user)
+        db.session.commit()
+
+        return user
 
     def update_last_login_date(self):
-        """
-        Updates last login date of the user
-        """
-        self.last_login_date = datetime.datetime.now()
+        """Updates last login date of the user"""
+        self.last_login_date = dt.datetime.now().date()
         db.session.commit()
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        """Verifies whether provided password is correct"""
+        return check_password_hash(self.password_hash, password)
+
+    def generate_auth_token(self):
+        """Generates new authentication token and assigns it to the user"""
+        token = Token(user_id=self.id, id=str(uuid4()))
+        token.generate()
+        return token
+
+    @staticmethod
+    def verify_access_token(access_token):
+        """Verifies whether provided token exists and if it is still valid"""
+        token = Token.query.filter_by(access_token=access_token).first()
+        if token:
+            if token.access_expiration > dt.datetime.utcnow():
+                return token.user
 
     def __repr__(self):
         return f'<User {self.username}>'
