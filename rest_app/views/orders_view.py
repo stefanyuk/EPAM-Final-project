@@ -9,7 +9,7 @@ from rest_app.models import Order, User, Address
 order = Blueprint('orders', __name__, url_prefix='/order')
 order_schema = OrderSchema(partial=True, unknown=EXCLUDE)
 order_create_schema = OrderSchema()
-address_schema = AddressSchema(unknown=EXCLUDE)
+address_schema = AddressSchema(partial=True, unknown=EXCLUDE)
 
 
 @order.route('/<string:order_id>/update', methods=['GET', 'POST'])
@@ -62,8 +62,7 @@ def cancel_order(order_id):
     order = Order.query.get(order_id)
 
     if order.status == 'awaiting fulfilment':
-        order = Order.query.get(order_id)
-        order.update({'status': 'canceled'})
+        Order.update(order_id, {'status': 'canceled'})
         flash('Order was successfully canceled', 'success')
         if current_user.is_admin:
             return redirect(url_for('admin.admin_main'))

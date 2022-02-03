@@ -6,7 +6,7 @@ from rest_app.schemas import UserSchema
 from flask_login import login_user, current_user, logout_user
 
 auth = Blueprint('auth', __name__)
-user_schema = UserSchema(unknown=EXCLUDE)
+user_schema = UserSchema(partial=True, unknown=EXCLUDE)
 
 
 @auth.route('/register', methods=('GET', 'POST'))

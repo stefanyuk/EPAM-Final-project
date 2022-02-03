@@ -39,8 +39,10 @@ class EmployeeSchema(ma.SQLAlchemySchema):
     @pre_load
     def convert_date_to_string(self, data, **kwargs):
         """Convert provided date to string in case if it's datetime object"""
-        if not isinstance(data['hire_date'], str):
-            data['hire_date'] = dt.datetime.strftime(data['hire_date'], '%Y-%m-%d')
+        if date := data.get('hire_date'):
+            if not isinstance(date, str):
+                data['hire_date'] = dt.datetime.strftime(date, '%Y-%m-%d')
+
         return data
 
     @post_dump

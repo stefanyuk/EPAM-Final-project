@@ -2,11 +2,11 @@ import pytest
 from unittest.mock import patch
 from flask import url_for
 from rest_app.models import *
-from rest_app.tests.data_for_unit_tests import credentials, test_employee
+from rest_app.tests.data_for_unit_tests import test_employee
 
 
 def test_get_employee_list_without_auth(client):
-    response = client.get(url_for('rp_api.employee_list'))
+    response = client.get(url_for('employees.get_all'))
 
     assert response.status_code == 401
 
@@ -14,7 +14,7 @@ def test_get_employee_list_without_auth(client):
 @patch('rest_app.models.user.User.verify_access_token')
 def test_get_employees_list(mocked_verification, client, employee_data):
     mocked_verification.return_value = User.query.get('1')
-    response = client.get(url_for('rp_api.employee_list'), headers={'Authorization': f'Basic {credentials}'})
+    response = client.get(url_for('employees.get_all'), headers={f'Authorization': f'Bearer {"my-token"}'})
 
     data = response.get_json()
 
@@ -23,22 +23,22 @@ def test_get_employees_list(mocked_verification, client, employee_data):
     assert data[0]['first_name'] == 'Charlton'
 
 
-def test_create_new_employee(client, create_tables, dept_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_create_new_employee(mocked_verification, client, create_tables, dept_data):
+    mocked_verification.return_value = User.query.get('1')
     test_employee['department_id'] = dept_data[0].id
 
     response = client.post(
-        url_for('rp_api.employee_list'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('employees.new'),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json=test_employee
     )
 
     data = response.get_json()
-    employees = EmployeeInfo.query.all()
 
     assert response.status_code == 201
-    assert 'employee with id -' in data['message']
-    assert len(employees) == 1
-    assert employees[-1].department_id == dept_data[0].id
+    assert test_employee['first_name'] in data['first_name']
+    assert 'Java' == data['department']
 
 
 @pytest.mark.parametrize(
@@ -49,10 +49,12 @@ def test_create_new_employee(client, create_tables, dept_data):
         (2, 'Emmalynn')
     )
 )
-def test_get_employee(client, index, first_name, employee_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_employee(mocked_verification, client, index, first_name, employee_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.employee', employee_id=employee_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('employees.get', employee_id=employee_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
     data = response.get_json()
@@ -69,16 +71,15 @@ def test_get_employee(client, index, first_name, employee_data):
             ('doesnotexist3', 'Test3')
     )
 )
-def test_get_employee_atypical_behaviour(client, create_tables, employee_id, first_name):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_employee_atypical_behaviour(mocked_verification, client, create_tables, employee_id, first_name):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.employee', employee_id=employee_id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('employees.get', employee_id=employee_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'employee with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize(
@@ -89,26 +90,20 @@ def test_get_employee_atypical_behaviour(client, create_tables, employee_id, fir
         (2, 'Emmalynn_test3')
     )
 )
-def test_update_employee(client, index, new_name, employee_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_employee(mocked_verification, client, index, new_name, employee_data, dept_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.employee', employee_id=employee_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
-        json={'first_name': new_name}
+        url_for('employees.update', employee_id=employee_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
+        json={'first_name': new_name, 'department_id': dept_data[3].id}
     )
 
     data = response.get_json()
 
-    get_response = client.get(
-        url_for('rp_api.employee', employee_id=employee_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
-    )
-
-    get_data = get_response.get_json()
-
     assert response.status_code == 200
-    assert get_response.status_code == 200
-    assert 'has been updated' in data['message']
-    assert new_name in get_data['first_name']
+    assert new_name in data['first_name']
+    assert dept_data[3].name in data['department']
 
 
 @pytest.mark.parametrize(
@@ -118,33 +113,47 @@ def test_update_employee(client, index, new_name, employee_data):
             ('test_id_2', 'test_2')
     )
 )
-def test_update_employee_atypical_behaviour(client, create_tables, employee_id, new_name):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_employee_atypical_behaviour(mocked_verification, client, create_tables, employee_id, new_name):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.employee', employee_id=employee_id),
-        headers={'Authorization': f'Basic {credentials}'},
-        json={'name': new_name}
+        url_for('employees.update', employee_id=employee_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
+        json={'first_name': new_name}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'employee with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize('index', (0, 1, 2))
-def test_delete_employee(client, index, employee_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_delete_employee(mocked_verification, client, index, employee_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.delete(
-        url_for('rp_api.employee', employee_id=employee_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('employees.delete', employee_id=employee_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
 
     get_response = client.get(
-        url_for('rp_api.employee', employee_id=employee_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('employees.get', employee_id=employee_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
-
-    get_data = get_response.get_json()
 
     assert response.status_code == 204
     assert get_response.status_code == 404
-    assert 'employee with the provided id was not found' in get_data['message']
+
+
+@pytest.mark.parametrize('index', (0, 1, 2))
+@patch('rest_app.models.user.User.verify_access_token')
+def test_if_employee_deletes_on_user_delete(mocked_verification, client, index, employee_data):
+    mocked_verification.return_value = User.query.get('1')
+    user_id = employee_data[index].user.id
+
+    response = client.delete(
+        url_for('users.delete', user_id=user_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
+    )
+    employee = EmployeeInfo.query.filter_by(user_id=user_id).first()
+
+    assert response.status_code == 204
+    assert employee is None

@@ -2,8 +2,8 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 import phonenumbers
 from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, \
-    FloatField, DateField, IntegerField
-from wtforms.validators import DataRequired, Optional
+    FloatField, DateField, IntegerField, PasswordField
+from wtforms.validators import DataRequired, Optional, Length
 from rest_app.models import Department, Category, Product, EmployeeInfo, Order, User
 from rest_app.forms.auth_forms import UserForm
 
@@ -28,7 +28,7 @@ class UpdateDepartment(AddDepartment, FlaskForm):
     def validate_name(self, name):
         dept = Department.query.filter_by(id=self.department_id).first()
         if dept.name != name.data:
-            dept = Department.query.filter_by(name == name.data).first()
+            dept = Department.query.filter_by(name=name.data).first()
             if dept:
                 raise ValidationError('Department with this name already exists')
 
@@ -74,6 +74,7 @@ class UpdateOrder(FlaskForm):
 class AddUser(UserForm, FlaskForm):
     phone_number = StringField('Phone Number', validators=[Optional()])
     is_admin = BooleanField('Is admin?')
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=5, max=30)])
     submit = SubmitField('Create')
 
     def validate_phone_number(self, phone_number):

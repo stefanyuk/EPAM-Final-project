@@ -8,7 +8,7 @@ from rest_app.tests.data_for_unit_tests import test_user
 @patch('rest_app.models.user.User.verify_access_token')
 def test_get_users_list(mocked_verification, client, users_data):
     mocked_verification.return_value = User.query.get('1')
-    response = client.get(url_for('orders_api.get_all'), headers={f'Authorization': f'Bearer {"my-token"}'})
+    response = client.get(url_for('users.get_all'), headers={f'Authorization': f'Bearer {"my-token"}'})
     data = response.get_json()
 
     assert response.status_code == 200
@@ -139,3 +139,5 @@ def test_delete_user(mocked_verification, client, index, users_data):
 
     assert response.status_code == 204
     assert get_response.status_code == 404
+
+

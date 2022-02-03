@@ -1,5 +1,6 @@
-from marshmallow import validate, validates, ValidationError
+from marshmallow import validate, validates, ValidationError, pre_load
 from flask import request
+import phonenumbers
 import datetime as dt
 from rest_app import ma
 from rest_app.models import User
@@ -35,6 +36,25 @@ class UserSchema(ma.SQLAlchemySchema):
         """Validates whether provided email does not exist"""
         if User.query.filter_by(email=value).first():
             raise ValidationError('Email already exists. Use a different email')
+
+    @validates('phone_number')
+    def validate_phone_number(self, phone_number):
+        if isinstance(phone_number, str):
+            try:
+                p = phonenumbers.parse(phone_number)
+                if not phonenumbers.is_possible_number(p):
+                    raise ValueError()
+            except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+                raise ValidationError('Invalid phone number')
+
+    @pre_load
+    def convert_date_to_string(self, data, **kwargs):
+        """Convert provided date to string in case if it's datetime object"""
+        if date := data.get('birth_date'):
+            if not isinstance(date, str):
+                data['birth_date'] = dt.datetime.strftime(date, '%Y-%m-%d')
+
+        return data
 
 
 class UpdateUserSchema(UserSchema):

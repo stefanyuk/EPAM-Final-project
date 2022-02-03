@@ -19,11 +19,7 @@ test_employee = {
     'available_holidays': 25,
     'first_name': 'Test',
     'last_name': 'TestSurname',
-    'birth_date': '1990-10-22',
-    'city': 'New York',
-    'street': 'TEST',
-    'street_number': 23,
-    'postal_code': '91-048'
+    'hire_date': '2022-02-03'
 }
 
 test_order = {

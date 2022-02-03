@@ -1,17 +1,20 @@
 import pytest
 from flask import url_for
+from unittest.mock import patch
 from rest_app.models import *
-from rest_app.tests.data_for_unit_tests import test_department, credentials
+from rest_app.tests.data_for_unit_tests import test_department
 
 
 def test_get_department_list_without_auth(client):
-    response = client.get(url_for('rp_api.department_list'))
+    response = client.get(url_for('departments.get_all'))
 
     assert response.status_code == 401
 
 
-def test_get_departments_list(client, dept_data):
-    response = client.get(url_for('rp_api.department_list'), headers={'Authorization': f'Basic {credentials}'})
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_departments_list(mocked_verification, client, dept_data):
+    mocked_verification.return_value = User.query.get('1')
+    response = client.get(url_for('departments.get_all'), headers={f'Authorization': f'Bearer {"my-token"}'})
 
     data = response.get_json()
 
@@ -20,19 +23,19 @@ def test_get_departments_list(client, dept_data):
     assert data[-1]['name'] == 'Python'
 
 
-def test_create_new_department(client):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_create_new_department(mocked_verification, client):
+    mocked_verification.return_value = User.query.get('1')
     response = client.post(
-        url_for('rp_api.department_list'),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('departments.new'),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json=test_department
     )
 
     data = response.get_json()
-    departments = Department.query.all()
 
     assert response.status_code == 201
-    assert 'department with id' in data['message']
-    assert departments[-1].name == 'C++'
+    assert test_department['name'] in data['name']
 
 
 @pytest.mark.parametrize(
@@ -43,10 +46,12 @@ def test_create_new_department(client):
         (2, 'JavaScript')
     )
 )
-def test_get_department(client, index, name, dept_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_department(mocked_verification, client, index, name, dept_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.department', department_id=dept_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('departments.get', department_id=dept_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
     data = response.get_json()
@@ -63,17 +68,15 @@ def test_get_department(client, index, name, dept_data):
             ('doesnotexist3', 'Test3')
     )
 )
-def test_get_department_atypical_behaviour(client, create_tables, department_id, name):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_get_department_atypical_behaviour(mocked_verification, client, create_tables, department_id, name):
+    mocked_verification.return_value = User.query.get('1')
     response = client.get(
-        url_for('rp_api.department', department_id=department_id),
-        headers={'Authorization': f'Basic {credentials}'}
+        url_for('departments.get', department_id=department_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'department with the provided id was not found' in data['message']
-
 
 
 @pytest.mark.parametrize(
@@ -84,26 +87,19 @@ def test_get_department_atypical_behaviour(client, create_tables, department_id,
         (2, 'JavaScript_test3')
     )
 )
-def test_update_department(client, index, new_name, dept_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_department(mocked_verification, client, index, new_name, dept_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.department', department_id=dept_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('departments.update', department_id=dept_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json={'name': new_name}
     )
 
     data = response.get_json()
 
-    get_response = client.get(
-        url_for('rp_api.department', department_id=dept_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'}
-    )
-
-    get_data = get_response.get_json()
-
     assert response.status_code == 200
-    assert get_response.status_code == 200
-    assert 'has been updated' in data['message']
-    assert new_name in get_data['name']
+    assert new_name in data['name']
 
 
 @pytest.mark.parametrize(
@@ -113,35 +109,42 @@ def test_update_department(client, index, new_name, dept_data):
             ('test_id_2', 'test_2')
     )
 )
-def test_update_department_atypical_behaviour(client, create_tables, department_id, new_name):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_update_department_atypical_behaviour(mocked_verification, client, create_tables, department_id, new_name):
+    mocked_verification.return_value = User.query.get('1')
     response = client.patch(
-        url_for('rp_api.department', department_id=department_id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('departments.update', department_id=department_id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
         json={'name': new_name}
     )
 
-    data = response.get_json()
-
     assert response.status_code == 404
-    assert 'department with the provided id was not found' in data['message']
 
 
 @pytest.mark.parametrize('index', (0, 1, 2))
-def test_delete_department(client, index, dept_data):
+@patch('rest_app.models.user.User.verify_access_token')
+def test_delete_department(mocked_verification, client, index, dept_data):
+    mocked_verification.return_value = User.query.get('1')
     response = client.delete(
-        url_for('rp_api.department', department_id=dept_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
+        url_for('departments.delete', department_id=dept_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
     )
-
-    get_response = client.get(
-        url_for('rp_api.department', department_id=dept_data[index].id),
-        headers={'Authorization': f'Basic {credentials}'},
-    )
-
-    get_data = get_response.get_json()
 
     assert response.status_code == 204
-    assert get_response.status_code == 404
-    assert 'department with the provided id was not found' in get_data['message']
 
 
+@pytest.mark.parametrize('index', (0, 1, 2))
+@patch('rest_app.models.user.User.verify_access_token')
+def test_employee_set_null_on_dept_delete(mocked_verification, client, index, dept_data):
+    mocked_verification.return_value = User.query.get('1')
+    employees = Department.query.get(dept_data[index].id).employees
+
+    response = client.delete(
+        url_for('departments.delete', department_id=dept_data[index].id),
+        headers={f'Authorization': f'Bearer {"my-token"}'},
+    )
+
+    for employee in employees:
+        assert employee.department is None
+
+    assert response.status_code == 204
