@@ -89,15 +89,16 @@ After these steps you should see the home page of the application
 
 ## API Operations
 
-You can get familiar with the API, by using SWAGGER API. If you run the server on the local host, got to the following 
-link
+You can get familiar with the API, by using SWAGGER API. If you run the server on the local host, go to the following 
+link:
 > http://127.0.0.1:5000/docs#/
 
 Now you should see the following
 ![alt text](https://github.com/stefanyuk/EPAM-Final-project/blob/main/documentation/mockups/api_docs.png "Logo Title Text 1")
 
-Some of the operations are listed below
 Current API version - __1__. Each API url should start with __/api/v1__
+
+Some of the operations are listed below.
 
 * /users
   * GET - get all users in json format
