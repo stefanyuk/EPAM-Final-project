@@ -15,7 +15,7 @@ test_info = create_test_info()
 def app(postgresql):
     TestingConfig.SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{postgresql.info.user}:@{postgresql.info.host}' + \
                                             f':{postgresql.info.port}/{postgresql.info.dbname}'
-    app = create_app(test_config=TestingConfig)
+    app = create_app(config_class=TestingConfig)
 
     return app
 

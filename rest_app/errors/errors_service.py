@@ -1,23 +1,28 @@
 import re
+from config import Config
 from flask import Blueprint, current_app, request
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from werkzeug.exceptions import HTTPException, InternalServerError
-from rest_app.errors.error_messages import error_bad_api_version
 
 
 errors = Blueprint('errors', __name__)
 
 
-# @errors.app_errorhandler(HTTPException)
-# def http_error(error):
-#     if check_api_version():
-#         return error_bad_api_version, 410
-#
-#     return {
-#         'code': error.code,
-#         'message': error.name,
-#         'description': error.description,
-#     }, error.code
+@errors.app_errorhandler(HTTPException)
+def http_error(error):
+    if check_api_version():
+        return {
+            'status': 410,
+            'message': 'You are using not the current version of api.' +
+                       f' Please use the newest version which is {Config.API_VERSION}',
+            'correct_url': f'/api/v{Config.API_VERSION}/...'
+        }, 410
+
+    return {
+        'code': error.code,
+        'message': error.name,
+        'description': error.description,
+    }, error.code
 
 
 @errors.app_errorhandler(IntegrityError)
@@ -56,3 +61,10 @@ def check_api_version():
 
     if not p.search(path):
         return True
+    else:
+        return {
+            'status': 410,
+            'message': 'You are using not the current version of api.' +
+                       f' Please use the newest version which is {Config.API_VERSION}',
+            'correct_url': f'/api/v{Config.API_VERSION}/...'
+        }

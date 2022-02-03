@@ -39,7 +39,7 @@ class UserSchema(ma.SQLAlchemySchema):
 
     @validates('phone_number')
     def validate_phone_number(self, phone_number):
-        if isinstance(phone_number, str):
+        if phone_number and isinstance(phone_number, str):
             try:
                 p = phonenumbers.parse(phone_number)
                 if not phonenumbers.is_possible_number(p):

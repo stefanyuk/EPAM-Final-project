@@ -15,13 +15,9 @@ login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
 
 
-def create_app(test_config=None):
+def create_app(config_class=Config):
     app = Flask(__name__)
-
-    if test_config is None:
-        app.config.from_object(Config)
-    else:
-        app.config.from_object(test_config)
+    app.config.from_object(config_class)
 
     db.init_app(app)
     migrate.init_app(app, db, directory=app.config['MIGRATION_DIR'])
@@ -37,9 +33,11 @@ def create_app(test_config=None):
     # blueprints
     from rest_app.api import register_api_blueprints
     register_api_blueprints(app)
-    # from rest_app.errors.errors_service import errors
-    # app.register_blueprint(errors)
+    from rest_app.errors.errors_service import errors
+    app.register_blueprint(errors)
     from rest_app.views import register_view_blueprints
     register_view_blueprints(app)
+
+    from rest_app.models import EmployeeInfo, User, Order, Product, OrderItem, Department, Address, Category
 
     return app
