@@ -1,4 +1,4 @@
-from marshmallow import validate, validates, ValidationError, pre_load
+from marshmallow import validate, validates, ValidationError, pre_load, post_dump
 from flask import request
 import phonenumbers
 import datetime as dt
@@ -54,6 +54,13 @@ class UserSchema(ma.SQLAlchemySchema):
             if not isinstance(date, str):
                 data['birth_date'] = dt.datetime.strftime(date, '%Y-%m-%d')
 
+        return data
+
+    @post_dump
+    def add_total_value(self, data, **kwargs):
+        """Adds total value that specified user spent in the shop"""
+        user = User.query.get(data.get('id'))
+        data['total_value'] = user.total_value()
         return data
 
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import desc
 from functools import wraps
@@ -8,7 +8,7 @@ from rest_app.service.order_service import get_order_total_value
 from rest_app.service.department_service import sort_dept_by_average_salary, sort_dept_by_total_employees
 from rest_app.service.employee_service import get_all_employees_by_department
 from rest_app.service.product_service import get_products_by_category
-from rest_app.service.user_service import get_total_value, get_all_users_by_employee_filter
+from rest_app.service.common_services import search_table
 from rest_app.models import *
 from rest_app.forms.admin_forms import FilterProductsForm, FilterEmployeesForm, FilterUsersForm, FilterOrdersForm, \
     FilterDepartmentsForm
@@ -26,51 +26,28 @@ def admin_main():
     return render_template('admin_main.html')
 
 
+@admin.route('/users')
+def users_list():
+    """Shows list of all users"""
+    return render_template('users.html', title='Users Table')
+
+
+@admin.route('/users_search')
+def users_search():
+    """Runs a server-side filtering, searching and filtering of the users table"""
+    return search_table(User, user_schema)
+
+
 @admin.route('/departments')
 def departments_list():
-    page, index = get_row_index_and_page_number()
-    form = create_search_form_and_add_choice_fields(FilterDepartmentsForm)
-    departments_pagination = Department.query.paginate(page=page, per_page=10)
-    departments_info = [department_schema.dump(department) for department in departments_pagination.items]
-
-    return render_template(
-        'departments.html',
-        form=form,
-        index=index,
-        departments_pagination=departments_pagination,
-        departments=departments_info
-    )
+    """Shows list of departments"""
+    return render_template('departments.html', title='Departments Table')
 
 
-@admin.route('/departments/search', methods=['GET', 'POST'])
+@admin.route('/departments_search', methods=['GET', 'POST'])
 def departments_search():
-    page, index = get_row_index_and_page_number()
-    form = create_search_form_and_add_choice_fields(FilterDepartmentsForm)
-    set_search_form_data_in_session(form, 'departments_search', [form.department])
-
-    if session.get('departments_search'):
-        if session.get('search_filter') == 'Search by':
-            query = Department.query.filter_by(name=session.get('department'))
-        else:
-            if session.get('field_name') == 'avg_salary':
-                query = sort_dept_by_average_salary(session.get('sort_order'))
-            elif session.get('field_name') == 'total_employees':
-                query = sort_dept_by_total_employees(session.get('sort_order'))
-            else:
-                query = sort_table_by_field(Department, session.get('field_name'), session.get('sort_order'))
-    else:
-        return redirect(url_for('admin.departments_list'))
-
-    departments_pagination = query.paginate(page=page, per_page=10)
-    departments_info = [department_schema.dump(department) for department in departments_pagination.items]
-
-    return render_template(
-        'departments.html',
-        form=form,
-        index=index,
-        departments_pagination=departments_pagination,
-        departments=departments_info
-    )
+    """Runs a server-side filtering, searching and filtering of the users table"""
+    return search_table(Department, department_schema)
 
 
 @admin.route('/employees')
@@ -201,51 +178,6 @@ def products_search():
         'products.html',
         products=products_info,
         products_pagination=products_pagination,
-        form=form,
-        index=index
-    )
-
-
-@admin.route('/users')
-def users_list():
-    page, index = get_row_index_and_page_number()
-    form = create_search_form_and_add_choice_fields(FilterUsersForm)
-    users_pagination = User.query.paginate(page=page, per_page=10)
-    users_info = [user_schema.dump(user) for user in users_pagination.items]
-
-    return render_template(
-        'users.html',
-        users=users_info,
-        users_pagination=users_pagination,
-        form=form,
-        index=index
-    )
-
-
-@admin.route('users/search', methods=['GET', 'POST'])
-def users_search():
-    page, index = get_row_index_and_page_number()
-    form = create_search_form_and_add_choice_fields(FilterUsersForm)
-    set_search_form_data_in_session(form, 'users_search', [form.is_employee])
-
-    if session.get('users_search'):
-        if session.get('search_filter') == 'Search by':
-            query = get_all_users_by_employee_filter(session.get('is_employee'))
-        else:
-            if session.get('field_name') == 'total_money_spent':
-                query = get_total_value(session.get('sort_order'))
-            else:
-                query = sort_table_by_field(User, session.get('field_name'), session.get('sort_order'))
-    else:
-        return redirect(url_for('admin.users_list'))
-
-    users_pagination = query.paginate(page=page, per_page=10)
-    users_info = [user_schema.dump(user) for user in users_pagination.items]
-
-    return render_template(
-        'users.html',
-        users=users_info,
-        users_pagination=users_pagination,
         form=form,
         index=index
     )

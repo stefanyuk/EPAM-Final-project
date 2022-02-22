@@ -1,3 +1,5 @@
+from flask import request
+
 from rest_app import db
 
 
@@ -35,3 +37,20 @@ class Common:
         """Retrieves row by name attribute"""
         return cls.query.filter_by(name=name).first()
 
+    @classmethod
+    def sort_by_column(cls):
+        order = []
+        i = 0
+        while True:
+            col_index = request.args.get(f'order[{i}][column]')
+            if col_index is None:
+                break
+            col_name = cls.verify_colum_name(request.args.get(f'columns[{col_index}][data]'))
+            descending = request.args.get(f'order[{i}][dir]') == 'desc'
+            col = getattr(cls, col_name)
+            if descending:
+                col = col.desc()
+            order.append(col)
+            i += 1
+
+        return order

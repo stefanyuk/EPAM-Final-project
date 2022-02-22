@@ -142,9 +142,14 @@
 .table_outer{
     margin-top: 40px;
     background-color: #dc7569;
+    padding-right: 5px;
 }
 
 th{
+    cursor: pointer;
+}
+
+td{
     cursor: pointer;
 }
 
@@ -161,21 +166,6 @@ th{
 .name_field.hide{
     display: none;
 }
-
-
-/* MY OLD TABLE, DELETE IF DECIDE TO LEAVE THE NEW ONE*/
-td a {
-   display: block;
-   text-decoration: none;
-    padding: 2px;
-    color: black;
-}
-
-td a:hover{
-    text-decoration: none;
-    color: black;
-}
-/* MY OLD TABLE, DELETE IF DECIDE TO LEAVE THE NEW ONE*/
 
 /* BOOTSTRAP TABLE */
 
@@ -204,9 +194,6 @@ td a:hover{
     margin-top: 30px;
 }
 
-.dataTables_paginate.paging_simple_numbers{
-    display: none;
-}
 
 /* PAGINATION */
 
