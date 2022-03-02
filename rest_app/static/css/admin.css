@@ -95,35 +95,6 @@
 
 /* CONTROL BUTTONS */
 
-.control_buttons{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.control_buttons.orders_control{
-    justify-content: right;
-}
-
-.product_control_form_inner{
-    display: flex;
-    justify-content: space-between;
-}
-
-.product_control_form_inner .form-field{
-    margin-left: 30px;
-    color: white;
-}
-
-.product_control_form_inner .form-field.submit{
-    margin-top: 31px;
-}
-
-#dropdownMenuButton{
-    margin-top: 35px;
-}
-
 .add_button{
     margin: 30px 30px 0 0;
     background-color: #E99695;

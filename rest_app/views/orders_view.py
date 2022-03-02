@@ -23,7 +23,7 @@ def order_update(order_id):
         flash('Order was successfully updated', 'success')
         return redirect(url_for('admin.admin_main'))
 
-    return render_template('order_update.html', form=form)
+    return render_template('order_update.html', form=form, order_id=order_id)
 
 
 @order.route('/<string:user_id>')

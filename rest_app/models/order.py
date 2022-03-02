@@ -1,10 +1,42 @@
 from uuid import uuid4
+from sqlalchemy import func
 from rest_app import db
-from rest_app.models import OrderItem
+from rest_app.models import OrderItem, Product
 from rest_app.models.common import Common
 
 
-class Order(Common, db.Model):
+class OrderSearch():
+    @staticmethod
+    def verify_colum_name(col_name):
+        if col_name not in ['status', 'total_price', 'order_date', 'order_time']:
+            col_name = 'status'
+
+        return col_name
+
+    @classmethod
+    def sort_by_total_price(cls, order):
+        """Creates a query that sorts a total price column of the Order table in the specified order"""
+        subquery = db.session.query(OrderItem.order_id,
+                                    func.SUM(Product.price * OrderItem.quantity).label('total_price')) \
+            .join(Product) \
+            .group_by(OrderItem.order_id).subquery(name='sub')
+        query = db.session.query(Order.id, Order.status, Order.order_time, Order.order_date, subquery.c.total_price) \
+            .join(subquery, Order.id == subquery.c.order_id) \
+            .order_by(order(subquery.c.total_price))
+
+        return query
+
+    @classmethod
+    def table_search(cls, query, search):
+        """Performs a search on the specific fields of the Order table according to the provided data"""
+        query = query.filter(db.or_(
+            cls.status.like(f'%{search}%')
+        ))
+
+        return query
+
+
+class Order(Common, OrderSearch, db.Model):
     __tablename__ = 'order'
 
     id = db.Column(db.String, primary_key=True)

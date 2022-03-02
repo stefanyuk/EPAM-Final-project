@@ -28,6 +28,9 @@
                             <div class="form-group">
                                 {{ form.submit (class='create_button') }}
                             </div>
+                            <div class="form-group">
+                                <a class='delete_btn' href="{{ url_for('orders.order_detail', order_id=order_id) }}">Details</a>
+                            </div>
                         </div>
                     </form>
                 </div>

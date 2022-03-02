@@ -42,8 +42,9 @@ def main(max_qty):
     products = []
 
     for product in test_info['products']:
+        image_file = random.choice(next(os.walk(os.path.join(basedir, 'static', 'img', 'product_pics')))[2])
         category_id = categories[product.pop('category')]
-        prod = Product.create(category_id=category_id, **product)
+        prod = Product.create(category_id=category_id, image_file=image_file, **product)
         products.append({'product_id': prod.id, 'quantity': random.choice(range(1, 4))})
 
     orders = (order for order in test_info['orders'])
@@ -68,7 +69,8 @@ def main(max_qty):
                 'address_id': address.id,
                 'comments': order['comments'],
                 'order_date': order['order_date'],
-                'order_time': dt.datetime.strftime(dt.datetime.utcnow(), '%H:%M:%S')
+                'order_time': dt.datetime.strftime(dt.datetime.utcnow(), '%H:%M:%S'),
+                'status': 'awaiting fulfilment' if random.choice([1, 2]) == 1 else 'delivered'
             }
         )
 

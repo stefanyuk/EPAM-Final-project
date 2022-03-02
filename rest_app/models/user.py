@@ -1,6 +1,5 @@
 import datetime as dt
-from flask import request
-from sqlalchemy import func, desc, asc
+from sqlalchemy import func
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from rest_app import db, login_manager
@@ -14,7 +13,44 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-class User(Common, db.Model, UserMixin):
+class UserSearch():
+    @classmethod
+    def table_search(cls, query, search):
+        """Performs a search on the specific fields of the User table according to the provided data"""
+        query = query.filter(db.or_(
+            cls.username.like(f'%{search}%'),
+            cls.first_name.like(f'%{search}%'),
+            cls.last_name.like(f'%{search}%')
+        ))
+
+        return query
+
+    @staticmethod
+    def verify_colum_name(col_name):
+        if col_name not in ['username', 'first_name', 'last_name', 'last_login_date', 'is_employee', 'total_value']:
+            col_name = 'username'
+
+        return col_name
+
+    @classmethod
+    def sort_by_total_value(cls, order):
+        """Creates a query that sorts a total value column of the User table in the specified order"""
+        subquery = db.session.query(User.id.label('user_id'), func.sum(Product.price * OrderItem.quantity) \
+                                    .label('total_value')) \
+            .join(Order) \
+            .join(OrderItem) \
+            .join(Product) \
+            .group_by(User.id).subquery(name='sub')
+        query = db.session.query(
+            User.id, User.username, User.first_name, User.last_name, User.last_login_date,
+            User.phone_number, User.is_employee, subquery.c.total_value
+        ) \
+            .join(subquery, User.id == subquery.c.user_id) \
+            .order_by(order(subquery.c.total_value))
+        return query
+
+
+class User(Common, UserSearch, db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.String, primary_key=True)
@@ -86,62 +122,6 @@ class User(Common, db.Model, UserMixin):
             total_value += order.calculate_total_price()
 
         return total_value
-
-    @classmethod
-    def table_search(cls, query, search):
-        """Performs a search on the specific fields of the User table according to the provided data"""
-        query = query.filter(db.or_(
-            User.username.like(f'%{search}%'),
-            User.first_name.like(f'%{search}%'),
-            User.last_name.like(f'%{search}%'),
-            User.email.like(f'%{search}%')
-        ))
-
-        return query
-
-    @staticmethod
-    def verify_colum_name(col_name):
-        if col_name not in ['username', 'first_name', 'last_name', 'last_login_date', 'is_employee', 'total_value']:
-            col_name = 'username'
-
-        return col_name
-
-    @classmethod
-    def sort_by_column(cls):
-        order = []
-        i = 0
-        while True:
-            col_index = request.args.get(f'order[{i}][column]')
-            if col_index is None:
-                break
-            col_name = cls.verify_colum_name(request.args.get(f'columns[{col_index}][data]'))
-            if col_name == 'total_value':
-                return cls.sort_by_total_value(i)
-            descending = request.args.get(f'order[{i}][dir]') == 'desc'
-            col = getattr(cls, col_name)
-            if descending:
-                col = col.desc()
-            order.append(col)
-            i += 1
-
-        return order
-
-    @classmethod
-    def sort_by_total_value(cls, index):
-        order = desc if request.args.get(f'order[{index}][dir]') == 'desc' else asc
-        subquery = db.session.query(User.id.label('user_id'), func.sum(Product.price * OrderItem.quantity) \
-                                    .label('total_value')) \
-            .join(Order) \
-            .join(OrderItem) \
-            .join(Product) \
-            .group_by(User.id).subquery(name='sub')
-        query = db.session.query(
-            User.id, User.username, User.first_name, User.last_name, User.last_login_date,
-            User.phone_number, User.is_employee, subquery.c.total_value
-        ) \
-            .join(subquery, User.id == subquery.c.user_id) \
-            .order_by(order(subquery.c.total_value))
-        return query
 
     def __repr__(self):
         return f'<User {self.username}>'

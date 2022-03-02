@@ -59,8 +59,15 @@ class UserSchema(ma.SQLAlchemySchema):
     @post_dump
     def add_total_value(self, data, **kwargs):
         """Adds total value that specified user spent in the shop"""
-        user = User.query.get(data.get('id'))
-        data['total_value'] = user.total_value()
+        user = None
+
+        if user_id := data.get('id'):
+            user = User.query.get(user_id)
+        elif username := data.get('username'):
+            user = User.query.filter_by(username=username).first()
+        if user:
+            data['total_value'] = user.total_value()
+
         return data
 
 

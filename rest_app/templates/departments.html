@@ -4,6 +4,9 @@
     {% include 'nav_bar.html' %}
     {% include 'admin_top_menu.html' %}
     <div class="container">
+        <div class="add_item">
+            <a class="add_button" href="{{ url_for('department.create_department') }}">Add department</a>
+        </div>
         <div class="table_outer">
             <table id="data" class="table table-striped table-hover">
                 <thead>
@@ -38,7 +41,7 @@
             $('#data').on('click', 'tbody tr', function (){
                 const currentRow = $(this).closest('tr');
                 const department_id = $('#data').DataTable().row(currentRow).data()['id'];
-                window.location = '/' + department_id + '/update'
+                window.location = '/department/' + department_id + '/update'
             });
         }
     </script>

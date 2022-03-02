@@ -53,18 +53,11 @@ def sqlalchemy_error(error):
 def check_api_version():
     """
     Performs verification of the API version used by client in case if "NOT FOUND" exception occurs
-
-    :return: error message that will be showed to the client
     """
     p = re.compile(r'/api/v1')
     path = request.path
 
-    if not p.search(path):
-        return True
+    if p.search(path) or not path.startswith('/api/v'):
+        return False
     else:
-        return {
-            'status': 410,
-            'message': 'You are using not the current version of api.' +
-                       f' Please use the newest version which is {Config.API_VERSION}',
-            'correct_url': f'/api/v{Config.API_VERSION}/...'
-        }
+        return True

@@ -36,7 +36,7 @@ def update_department(department_id):
 
     form.prepopulate_values()
 
-    return render_template('add_department.html', form=form, department_id=department_id, del_btn=True)
+    return render_template('add_department.html', form=form, department_id=department_id, del_btn=True, update=True)
 
 
 @department.route('/<string:department_id>/delete')

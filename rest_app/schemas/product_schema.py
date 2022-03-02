@@ -1,4 +1,4 @@
-from marshmallow import validates, ValidationError, post_load
+from marshmallow import validates, ValidationError, post_load, post_dump
 from rest_app import ma
 from rest_app.models import Product, Category
 
@@ -13,6 +13,7 @@ class ProductSchema(ma.SQLAlchemySchema):
     price = ma.auto_field(required=True)
     category_name = ma.String(required=True, load_only=True)
     category = ma.Pluck('CategorySchema', 'name', dump_only=True)
+    image_file = ma.auto_field()
 
     @validates('category_name')
     def validate_category_name(self, value):
@@ -31,4 +32,13 @@ class ProductSchema(ma.SQLAlchemySchema):
         """Adds category id to schema load result"""
         category = Category.query.filter_by(name=data.pop('category_name')).first()
         data['category_id'] = category.id
+        return data
+
+    @post_dump
+    def add_category_name(self, data, **kwargs):
+        """Adds category name to schema dump result"""
+        if not data.get('category'):
+            product = Product.query.get(data['id'])
+            data['category'] = product.category.name
+
         return data

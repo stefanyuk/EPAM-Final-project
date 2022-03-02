@@ -1,4 +1,3 @@
-from uuid import uuid4
 from flask.cli import with_appcontext
 import click
 from werkzeug.security import generate_password_hash

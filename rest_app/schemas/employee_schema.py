@@ -54,6 +54,16 @@ class EmployeeSchema(ma.SQLAlchemySchema):
         data['email'] = user.email
         return data
 
+    @post_dump
+    def add_department_name(self, data, **kwargs):
+        """Adds department name to the result"""
+        if not data.get('department'):
+            user = User.query.get(data['user_id'])
+            department = user.employee.department.name
+            data['department'] = department
+
+        return data
+
     @validates('user_id')
     def validate_user_id(self, value):
         """Validates provided user id"""

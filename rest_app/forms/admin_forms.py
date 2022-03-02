@@ -3,8 +3,9 @@ from flask_wtf import FlaskForm
 import phonenumbers
 from wtforms import TextAreaField, SubmitField, ValidationError, StringField, BooleanField, SelectField, \
     FloatField, DateField, IntegerField, PasswordField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Optional, Length
-from rest_app.models import Department, Category, Product, EmployeeInfo, Order, User
+from rest_app.models import Department, Category, Product, EmployeeInfo
 from rest_app.forms.auth_forms import UserForm
 
 
@@ -50,8 +51,8 @@ class AddEmployee(FlaskForm):
 
 
 class UpdateEmployee(AddEmployee, FlaskForm):
-    def __init__(self, employee_id):
-        super().__init__()
+    def __init__(self, employee_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.employee_id = employee_id
 
     def prepopulate_values(self):
@@ -91,6 +92,7 @@ class AddProduct(FlaskForm):
     summary = TextAreaField('Summary', validators=[Optional()])
     price = FloatField('Price', validators=[DataRequired()])
     category_name = SelectField('Category', choices=[], validators=[DataRequired()])
+    image_file = FileField('Update product picture', validators=[FileAllowed(['jpeg', 'png', 'jpg'])])
     submit = SubmitField('Create')
 
     def validate_title(self, title):
@@ -103,64 +105,24 @@ class AddProduct(FlaskForm):
         self.category_name.choices = [category.name for category in Category.query.all()]
 
 
-class FilterForm(FlaskForm):
-    filter_option = SelectField('Filter Options', choices=['', 'Search by', 'Sort By'], validators=[DataRequired()])
-    order = SelectField('Sort order', choices=['asc', 'desc'], validators=[Optional()])
-    field_name = SelectField('Field Name', choices=[], validators=[Optional()])
-    submit = SubmitField('Search')
+class UpdateProduct(AddProduct, FlaskForm):
+    def __init__(self, product_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.product_id = product_id
 
+    def validate_title(self, title):
+        """Validates whether product with the provided title does not exist"""
+        product = Product.query.filter_by(id=self.product_id).first()
+        if title.data != product.title:
+            product = Product.query.filter_by(title=title.data).first()
+            if product:
+                raise ValidationError('Product with this name already exists')
 
-class FilterProductsForm(FilterForm, FlaskForm):
-    category = SelectField('Category', choices=[], validators=[Optional()])
+    def prepopulate_values(self):
+        product = Product.query.filter_by(id=self.product_id).first()
 
-    def populate_choices_fields(self):
-        self.category.choices = [category.name for category in Category.query.all()]
-        for row_title in Product.__table__.columns.keys():
-            if row_title not in ['id', 'order_items', 'category_id', 'summary']:
-                self.field_name.choices.append(row_title)
-
-
-class FilterEmployeesForm(FilterForm, FlaskForm):
-    department = SelectField('Department', choices=[], validators=[Optional()])
-
-    def populate_choices_fields(self):
-        self.department.choices = [department.name for department in Department.query.all()]
-
-        for row_title in EmployeeInfo.__table__.columns.keys():
-            if row_title not in ['id', 'user_id', 'vacations', 'department_id']:
-                self.field_name.choices.append(row_title)
-
-        self.field_name.choices += ['last_name', 'first_name']
-
-
-class FilterUsersForm(FilterForm, FlaskForm):
-    is_employee = SelectField('Is Employee', choices=[True, False], validators=[Optional()])
-
-    def populate_choices_fields(self):
-        main_fields = ['username', 'last_name', 'first_name', 'last_login_date', 'total_money_spent']
-
-        for row_title in main_fields:
-            self.field_name.choices.append(row_title)
-
-
-class FilterOrdersForm(FilterForm, FlaskForm):
-    status = SelectField('Status', choices=[], validators=[Optional()])
-
-    def populate_choices_fields(self):
-        statuses = ['delivered', 'awaiting fulfilment', 'canceled']
-
-        for row_title in Order.__table__.columns.keys():
-            if row_title not in ['id', 'user_id', 'address_id', 'order_items', 'comments', 'status']:
-                self.field_name.choices.append(row_title)
-
-        self.field_name.choices.append('total_price')
-
-        self.status.choices += statuses
-
-
-class FilterDepartmentsForm(FilterForm, FlaskForm):
-    department = SelectField('Department', choices=[], validators=[Optional()])
-
-    def populate_choices_fields(self):
-        self.department.choices = [department.name for department in Department.query.all()]
-        self.field_name.choices = ['avg_salary', 'total_employees', 'name']
+        self.title.data = product.title
+        self.summary.data = product.summary
+        self.price.data = product.price
+        self.category_name.choices = [product.category.name] + [category.name for category in Category.query.all() if category.name != product.category.name]
+        self.submit.label.text = 'Update'
